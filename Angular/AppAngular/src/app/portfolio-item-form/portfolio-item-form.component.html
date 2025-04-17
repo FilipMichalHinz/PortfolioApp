@@ -1,0 +1,64 @@
+<div class="form-wrapper">
+  <h3>Add Portfolio Item</h3>
+  <form (ngSubmit)="create()" #portfolioForm="ngForm" class="form-grid">
+    
+    <label for="name">Asset Name</label>
+    <input
+      type="text"
+      id="name"
+      [(ngModel)]="item.name"
+      name="name"
+      required
+      placeholder="e.g., Tesla"
+    />
+
+    <label for="assetType">Asset Type</label>
+    <select
+      id="assetType"
+      [(ngModel)]="item.assetTypeId"
+      name="assetTypeId"
+      required
+    >
+      <option value="" disabled selected>Select Type</option>
+      <option *ngFor="let type of assetTypes" [value]="type.id">
+        {{ type.name }}
+      </option>
+    </select>
+
+    <label for="price">Purchase Price</label>
+    <input
+      type="number"
+      id="price"
+      [(ngModel)]="item.purchasePrice"
+      name="purchasePrice"
+      required
+      step="0.01"
+      placeholder="e.g., 250.00"
+    />
+
+    <label for="quantity">Quantity</label>
+    <input
+      type="number"
+      id="quantity"
+      [(ngModel)]="item.quantity"
+      name="quantity"
+      required
+      step="0.01"
+      placeholder="e.g., 5"
+    />
+
+    <label for="date">Purchase Date</label>
+    <input
+      type="date"
+      id="date"
+      [(ngModel)]="item.purchaseDate"
+      name="purchaseDate"
+      required
+    />
+
+    <div class="button-row">
+      <button type="submit" [disabled]="portfolioForm.invalid">Create</button>
+      <button type="button" class="cancel" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>

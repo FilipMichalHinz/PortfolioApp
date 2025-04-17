@@ -1,0 +1,14 @@
+@if (isLoading) {
+  <div class="loading">Loading portfolios...</div>
+} @else if (portfolios.length === 0) {
+  <div class="empty">No portfolios found.</div>
+} @else {
+  <div class="portfolio-list">
+    @for (portfolio of portfolios; track $index) {
+      <app-portfolio [portfolio]="portfolio" (deleted)="onPortfolioDeleted($event)"></app-portfolio>
+    }
+  </div>
+}
+
+<!-- Form is shown after the portfolio list -->
+<app-portfolio-form (created)="onPortfolioCreated($event)"></app-portfolio-form>

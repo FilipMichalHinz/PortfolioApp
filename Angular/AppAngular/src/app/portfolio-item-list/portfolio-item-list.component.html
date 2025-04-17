@@ -1,0 +1,55 @@
+<h2>📊 Portfolio Overview</h2>
+
+<label for="portfolio-select">Select Portfolio:</label>
+<select id="portfolio-select" [(ngModel)]="selectedPortfolioId" (change)="onPortfolioChange()">
+  <option *ngFor="let portfolio of portfolios" [value]="portfolio.id">
+    {{ portfolio.portfolioName }}
+  </option>
+</select>
+
+@if (isLoading) {
+  <div class="loading">Loading portfolio items...</div>
+} @else if (portfolioItems.length === 0) {
+  <div class="empty">No items in portfolio yet.</div>
+} @else {
+  <table class="portfolio-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Purchase Price</th>
+        <th>Quantity</th>
+        <th>Purchase Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of portfolioItems; track $index) {
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ getAssetTypeName(item.assetTypeId) }}</td>
+          <td>{{ item.purchasePrice | currency }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.purchaseDate | date }}</td>
+          <td>
+            <button (click)="deletePortfolioItem(item.id)">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+<!-- Button to toggle form -->
+<div class="form-toggle">
+  <button (click)="showForm = true" *ngIf="!showForm">Add Portfolio Item</button>
+</div>
+
+<!-- PortfolioItem form (only visible when showForm is true) -->
+@if (showForm) {
+  <app-portfolio-item-form
+    (created)="onItemCreated($event)"
+    (cancel)="onCancel()"
+    [portfolioId]="selectedPortfolioId!"
+  />
+}

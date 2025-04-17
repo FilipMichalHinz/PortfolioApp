@@ -1,0 +1,17 @@
+<div class="portfolio-card">
+  <table>
+    <tr>
+      <td><b>Id</b></td>
+      <td>{{ portfolio.id }}</td>
+    </tr>
+    <tr>
+      <td><b>Portfolio name</b></td>
+      <td>{{ portfolio.portfolioName }}</td>
+    </tr>
+   
+  </table>
+
+  <div class="action">
+    <button (click)="deletePortfolio()">Delete</button>
+  </div>
+</div>

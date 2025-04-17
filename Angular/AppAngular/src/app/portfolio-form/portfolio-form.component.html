@@ -1,0 +1,15 @@
+<div class="form-container">
+  <button (click)="toggleForm()" *ngIf="!showForm">+ Add portfolio</button>
+
+  <form *ngIf="showForm" (ngSubmit)="onSubmit()" #form="ngForm">
+    <div class="form-group">
+      <label>Portfolio Name</label>
+      <input [(ngModel)]="newPortfolio.portfolioName" name="portfolioName" required />
+    </div>
+
+    <div class="buttons">
+      <button type="submit">Create</button>
+      <button type="button" class="cancel" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>
