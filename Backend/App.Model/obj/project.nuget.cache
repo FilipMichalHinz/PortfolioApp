@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sa+JBktiAvQ=",
+  "dgSpecHash": "Nc4M3146kcY=",
   "success": true,
-  "projectFilePath": "/Users/filiphinz/PortfolioApp16042025_20.55/Backend/App.Model/App.Model.csproj",
+  "projectFilePath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj",
   "expectedPackageFiles": [
     "/Users/filiphinz/.nuget/packages/microsoft.extensions.configuration/9.0.3/microsoft.extensions.configuration.9.0.3.nupkg.sha512",
     "/Users/filiphinz/.nuget/packages/microsoft.extensions.configuration.abstractions/9.0.3/microsoft.extensions.configuration.abstractions.9.0.3.nupkg.sha512",

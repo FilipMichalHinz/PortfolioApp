@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/filiphinz/PortfolioApp16042025_20.55/Backend/App.Model/App.Model.csproj": {}
+    "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj": {}
   },
   "projects": {
-    "/Users/filiphinz/PortfolioApp16042025_20.55/Backend/App.Model/App.Model.csproj": {
+    "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/filiphinz/PortfolioApp16042025_20.55/Backend/App.Model/App.Model.csproj",
+        "projectUniqueName": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj",
         "projectName": "App.Model",
-        "projectPath": "/Users/filiphinz/PortfolioApp16042025_20.55/Backend/App.Model/App.Model.csproj",
+        "projectPath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj",
         "packagesPath": "/Users/filiphinz/.nuget/packages/",
-        "outputPath": "/Users/filiphinz/PortfolioApp16042025_20.55/Backend/App.Model/obj/",
+        "outputPath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/filiphinz/.nuget/NuGet/NuGet.Config"
