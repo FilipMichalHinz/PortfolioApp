@@ -15,6 +15,8 @@ namespace App.Model.Entities
 
         public int AssetTypeId { get; set; }
 
+        public string Name {get; set; } // Example: "Tesla", "Apple", "Google"
+
         public string Ticker { get; set; } // Example: "TSLA", "AAPL", "GOOGL"
 
         public decimal PurchasePrice { get; set; }

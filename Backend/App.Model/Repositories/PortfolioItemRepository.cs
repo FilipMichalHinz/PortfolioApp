@@ -10,7 +10,7 @@ namespace App.Model.Repositories
         public PortfolioItemRepository(IConfiguration configuration) : base(configuration) { }
 
         // Get all portfolio items for a specific user
-        public List<PortfolioItem> GetPortfolioItemsByPortfolio(int portfolioIdId)
+        public List<PortfolioItem> getByPortfolio(int portfolioId)
         {
             NpgsqlConnection dbConn = null;
             var items = new List<PortfolioItem>();
@@ -20,7 +20,7 @@ namespace App.Model.Repositories
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
                 cmd.CommandText = "SELECT * FROM portfolioitems WHERE portfolioid = @portfolioId";
-                cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, portfolioIdId);
+                cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, portfolioId);
 
                 var data = GetData(dbConn, cmd);
                 if (data != null)
@@ -32,7 +32,7 @@ namespace App.Model.Repositories
                         {
                             PortfolioId = Convert.ToInt32(data["portfolioid"]),
                             AssetTypeId = Convert.ToInt32(data["assettypeid"]),
-                            Ticker = data["ticker"].ToString(),
+                            Ticker = data["ticker"].ToString()!,
                             PurchasePrice = Convert.ToDecimal(data["purchaseprice"]),
                             Quantity = Convert.ToDecimal(data["quantity"]),
                             PurchaseDate = Convert.ToDateTime(data["purchasedate"])
@@ -59,13 +59,14 @@ namespace App.Model.Repositories
                 var cmd = dbConn.CreateCommand();
                 cmd.CommandText = @"
                     INSERT INTO portfolioitems 
-                    (portfolioid, assettypeid, ticker, purchaseprice, quantity, purchasedate) 
+                    (portfolioid, assettypeid, ticker, name , purchaseprice, quantity, purchasedate) 
                     VALUES 
-                    (@portfolioId, @assetTypeId, @ticker, @purchasePrice, @quantity, @purchaseDate)";
+                    (@portfolioId, @assetTypeId, @ticker, @name, @purchasePrice, @quantity, @purchaseDate)";
 
                 cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, item.PortfolioId);
                 cmd.Parameters.AddWithValue("@assetTypeId", NpgsqlDbType.Integer, item.AssetTypeId);
                 cmd.Parameters.AddWithValue("@ticker", NpgsqlDbType.Text, item.Ticker);
+                cmd.Parameters.AddWithValue("@name", NpgsqlDbType.Text, item.Name);
                 cmd.Parameters.AddWithValue("@purchasePrice", NpgsqlDbType.Numeric, item.PurchasePrice);
                 cmd.Parameters.AddWithValue("@quantity", NpgsqlDbType.Numeric, item.Quantity);
                 cmd.Parameters.AddWithValue("@purchaseDate", NpgsqlDbType.Date, item.PurchaseDate);
@@ -80,7 +81,7 @@ namespace App.Model.Repositories
         }
 
         // Delete a portfolio item by ID
-        public bool DeletePortfolioItem(int id)
+        public bool delete(int id)
         {
             NpgsqlConnection dbConn = null;
             try

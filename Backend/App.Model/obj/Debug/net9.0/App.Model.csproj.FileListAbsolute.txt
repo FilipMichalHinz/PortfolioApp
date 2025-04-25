@@ -34,3 +34,15 @@
 /Users/filiphinz/PortfolioApp2/Backend/App.Model/obj/Debug/net9.0/refint/App.Model.dll
 /Users/filiphinz/PortfolioApp2/Backend/App.Model/obj/Debug/net9.0/App.Model.pdb
 /Users/filiphinz/PortfolioApp2/Backend/App.Model/obj/Debug/net9.0/ref/App.Model.dll
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/bin/Debug/net9.0/App.Model.deps.json
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/bin/Debug/net9.0/App.Model.dll
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/bin/Debug/net9.0/App.Model.pdb
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.csproj.AssemblyReference.cache
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.GeneratedMSBuildEditorConfig.editorconfig
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.AssemblyInfoInputs.cache
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.AssemblyInfo.cs
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.csproj.CoreCompileInputs.cache
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.dll
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/refint/App.Model.dll
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.pdb
+/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/ref/App.Model.dll

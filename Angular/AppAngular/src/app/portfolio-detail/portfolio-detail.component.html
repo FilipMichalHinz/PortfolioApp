@@ -1,0 +1,83 @@
+
+
+<div class="detail-container">
+   
+    <header class="detail-header">
+      <button class="back-btn" routerLink="/portfolio-list">
+        ← Back
+      </button>
+       <h1 class="title">
+           
+           {{ portfolio?.portfolioName || ('Portfolio ' + summary.portfolioId) }}
+        </h1>
+    </header>
+  
+
+    <section class="charts-panel">
+      <div class="chart-placeholder line-chart">
+        
+        Performance Chart
+      </div>
+      <div class="chart-placeholder pie-chart">
+        
+        Allocation Pie
+      </div>
+    </section>
+  
+    
+    <section class="metrics-panel">
+      <div class="metric-card">
+        <div class="label">Invested</div>
+        <div class="value">{{ summary.initialInvestment | currency }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Current Value</div>
+        <div class="value">{{ summary.currentValue | currency }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Total P/L</div>
+        <div
+          class="value"
+          [class.positive]="summary.totalProfitLoss >= 0"
+          [class.negative]="summary.totalProfitLoss < 0"
+        >
+          {{ summary.totalProfitLoss | currency }}
+          <span class="pct">({{ summary.changePercent | number:'1.0-0' }}%)</span>
+        </div>
+      </div>
+    </section>
+   
+    <section class="assets-panel">
+      <h2>Assets Breakdown</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Qty</th>
+            <th>Buy Price</th>
+            <th>Current Price</th>
+            <th>Value</th>
+            <th>P/L</th>
+            <th>Δ%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of summary.byAsset">
+            <td>{{ a.ticker }}</td>
+            <td>{{ a.quantity }}</td>
+            <td>{{ a.purchasePrice | currency }}</td>
+            <td>{{ a.currentPrice | currency }}</td>
+            <td>{{ a.currentValue | currency }}</td>
+            <td
+              [class.positive]="a.profitLoss >= 0"
+              [class.negative]="a.profitLoss < 0"
+            >
+              {{ a.profitLoss | currency }}
+            </td>
+            <td>{{ a.changePercent | number:'1.0-0' }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+  

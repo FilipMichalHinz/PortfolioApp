@@ -1,50 +1,61 @@
+
+
 import { Component, OnInit } from '@angular/core';
-import { Portfolio } from '../model/portfolio';
-import { PortfolioComponent } from '../portfolio/portfolio.component';
+import { CommonModule } from '@angular/common'; // for ngIf and ngFor
+import { RouterModule } from '@angular/router'; // for routerLink
+
 import { PortfolioService } from '../services/portfolio.service';
+import { PortfolioOverview } from '../model/portfolio-overview';
+import { Portfolio } from '../model/portfolio';
+
+import { PortfolioCardComponent } from '../portfolio-card/portfolio-card.component';
 import { PortfolioFormComponent } from '../portfolio-form/portfolio-form.component';
 
 @Component({
   selector: 'app-portfolio-list',
   standalone: true,
-  imports: [PortfolioComponent, PortfolioFormComponent],
+  imports: [
+    CommonModule,           
+    PortfolioCardComponent, 
+    PortfolioFormComponent,
+    RouterModule  
+  ],
   templateUrl: './portfolio-list.component.html',
   styleUrls: ['./portfolio-list.component.css']
 })
 export class PortfolioListComponent implements OnInit {
-  portfolios: Portfolio[] = [];
+  portfolios: PortfolioOverview[] = [];
+  isLoading = false;
 
   constructor(private portfolioService: PortfolioService) {}
 
-
-  // Additional features:
-  
-  // Error handling for data loading
-
-  isLoading = true;
-
   ngOnInit(): void {
-    this.portfolioService.getPortfolios().subscribe({
-      next: portfolios => {
-        this.portfolios = portfolios;
+    this.loadOverviews();
+  }
+
+  loadOverviews(): void {
+    this.isLoading = true;
+    this.portfolioService.getAllOverviews().subscribe({
+      next: (list) => {
+        this.portfolios = list;
         this.isLoading = false;
+        console.log('OVERVIEW DATA', list); // For debugging
       },
-      error: err => {
-        console.error('Error', err);
+      error: (err) => {
+        console.error('Failed to load portfolios', err);
         this.isLoading = false;
       }
     });
   }
 
-  // Removes the portfolio with the given ID from the local portfolios array
-  // This ensures the UI updates immediately after deletion without reloading or re-fetching data
   onPortfolioDeleted(id: number): void {
-    this.portfolios = this.portfolios.filter(u => u.id !== id);
+    // Remove from local list so the UI updates immediately
+    this.portfolios = this.portfolios.filter(p => p.id !== id);
   }
 
-  onPortfolioCreated(portfolio: Portfolio): void {
-    this.portfolioService.createPortfolio(portfolio).subscribe((createdPortfolio) => {
-      this.portfolios.push(createdPortfolio);
-    });
+  onPortfolioCreated(created: Portfolio): void {
+    // After creating a new portfolio, reload the overviews
+    this.loadOverviews();
   }
 }
+

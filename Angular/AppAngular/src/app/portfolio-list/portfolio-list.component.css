@@ -12,3 +12,18 @@
   flex-direction: column;
   gap: 1rem;
 }
+
+.card-link {
+  
+  text-decoration: none;
+   
+  display: block;
+
+  color: inherit;
+}
+
+.card-link:hover {
+  text-decoration: none;
+}
+
+

@@ -1,6 +1,15 @@
 <div class="form-wrapper">
   <h3>Add Portfolio Item</h3>
   <form (ngSubmit)="create()" #portfolioForm="ngForm" class="form-grid">
+
+    <label for="ticker">Ticker symbol</label>
+    <input
+      id="ticker"
+      name="ticker"
+      type="text"
+      [(ngModel)]="item.ticker"
+      required
+    />
     
     <label for="name">Asset Name</label>
     <input

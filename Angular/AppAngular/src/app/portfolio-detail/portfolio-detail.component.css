@@ -1,0 +1,107 @@
+
+
+.detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    font-family: sans-serif;
+  }
+  
+  .detail-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .back-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-right: 1rem;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+  
+  .charts-panel {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .chart-placeholder {
+    background: #f5f5f5;
+    border-radius: 8px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 1rem;
+  }
+  
+  .metrics-panel {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .metric-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+  
+  .metric-card .label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+  }
+  
+  .metric-card .value {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+  
+  .metric-card .value.positive { color: #0a0; }
+  .metric-card .value.negative { color: #a00; }
+  
+  .metric-card .pct {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 0.3rem;
+  }
+  
+  .assets-panel h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+  }
+  
+  .assets-panel table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .assets-panel th,
+  .assets-panel td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: right;
+  }
+  
+  .assets-panel th:first-child,
+  .assets-panel td:first-child {
+    text-align: left;
+  }
+  
+  .assets-panel tr:hover {
+    background: #fafafa;
+  }
+  

@@ -5,6 +5,7 @@ export interface PortfolioItem {
     name: string;
     purchasePrice: number;
     quantity: number;
-    purchaseDate: Date;
+    purchaseDate: string;
+    ticker: string;
   }
   

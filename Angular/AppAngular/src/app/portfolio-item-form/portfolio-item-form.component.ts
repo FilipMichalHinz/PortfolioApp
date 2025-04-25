@@ -25,13 +25,14 @@ export class PortfolioItemFormComponent implements OnInit {
     portfolioId: 0,
     assetTypeId: 0,
     name: '',
+    ticker: '',
     purchasePrice: 0,
     quantity: 0,
-    purchaseDate: new Date()
+    purchaseDate: '' //new Date()
   };
 
   constructor(
-    private portfolioService: PortfolioItemService,
+    private portfolioItemService: PortfolioItemService,
     private assetTypeService: AssetTypeService
   ) {}
 
@@ -50,13 +51,15 @@ export class PortfolioItemFormComponent implements OnInit {
 
   // Called when the form is submitted
   create(): void {
-    if (!this.item.name || this.item.assetTypeId === 0 || this.item.purchasePrice <= 0 || this.item.quantity <= 0) {
+    if (!this.item.name || this.item.assetTypeId === 0 || this.item.purchasePrice <= 0 || this.item.quantity <= 0 || !this.item.purchaseDate) {
       alert('Please fill in all required fields correctly.');
       return;
     }
 
-    this.portfolioService.createPortfolioItem(this.item).subscribe({
-      next: createdItem => {
+   
+
+    this.portfolioItemService.create(this.item).subscribe({
+      next: (createdItem: PortfolioItem) => {
         this.created.emit(createdItem); // notify parent
         this.resetForm();
       },
@@ -77,9 +80,10 @@ export class PortfolioItemFormComponent implements OnInit {
       portfolioId: this.portfolioId,
       assetTypeId: 0,
       name: '',
+      ticker: '',
       purchasePrice: 0,
       quantity: 0,
-      purchaseDate: new Date()
+      purchaseDate: '' //new Date()
     };
   }
 }

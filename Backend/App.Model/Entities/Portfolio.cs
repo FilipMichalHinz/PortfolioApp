@@ -14,5 +14,7 @@ namespace App.Model.Entities
         public string PortfolioName { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+
     }
 }

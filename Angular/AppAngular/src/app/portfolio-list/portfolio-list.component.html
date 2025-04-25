@@ -1,14 +1,27 @@
-@if (isLoading) {
-  <div class="loading">Loading portfolios...</div>
-} @else if (portfolios.length === 0) {
-  <div class="empty">No portfolios found.</div>
-} @else {
-  <div class="portfolio-list">
-    @for (portfolio of portfolios; track $index) {
-      <app-portfolio [portfolio]="portfolio" (deleted)="onPortfolioDeleted($event)"></app-portfolio>
-    }
-  </div>
-}
+<!-- src/app/portfolio-list/portfolio-list.component.html -->
 
-<!-- Form is shown after the portfolio list -->
+<div *ngIf="isLoading" class="loading">
+  Loading portfolios...
+</div>
+
+<div *ngIf="!isLoading && portfolios.length === 0" class="empty">
+  No portfolios found.
+</div>
+
+<div *ngIf="!isLoading && portfolios.length > 0" class="portfolio-list">
+  <a
+    *ngFor="let p of portfolios"
+    [routerLink]="['/portfolio', p.id]"
+    class="card-link"
+  >
+  <app-portfolio-card
+    
+    [portfolio]="p"
+    (deleted)="onPortfolioDeleted($event)"
+  ></app-portfolio-card>
+  </a>
+</div>
+
+<!-- Always show the "Add portfolio" form below -->
 <app-portfolio-form (created)="onPortfolioCreated($event)"></app-portfolio-form>
+

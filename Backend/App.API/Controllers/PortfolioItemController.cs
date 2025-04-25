@@ -20,7 +20,7 @@ namespace App.API.Controllers
         [HttpGet("portfolios/{portfolioId}")]
         public ActionResult<IEnumerable<PortfolioItem>> GetByUser([FromRoute] int portfolioId)
         {
-            var items = Repository.GetPortfolioItemsByPortfolio(portfolioId);
+            var items = Repository.getByPortfolio(portfolioId);
             return Ok(items);
         }
 
@@ -29,14 +29,14 @@ namespace App.API.Controllers
         public ActionResult Post([FromBody] PortfolioItem item)
         {
             if (item == null)
-            {
+            
                 return BadRequest("PortfolioItem info not correct");
-            }
+            
 
-            bool status = Repository.InsertPortfolioItem(item);
-            if (status)
+            bool ok = Repository.InsertPortfolioItem(item);
+            if (ok)
             {
-                return Ok();
+                return Ok(item); // returns full object
             }
             return BadRequest("Unable to insert portfolio item");
         }
@@ -45,7 +45,7 @@ namespace App.API.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            bool status = Repository.DeletePortfolioItem(id);
+            bool status = Repository.delete(id);
             if (status)
             {
                 return NoContent();
@@ -106,7 +106,7 @@ namespace App.API.Controllers
         [HttpGet("summary/{portfolioId}")]
         public async Task<IActionResult> GetPortfolioSummary(int portfolioId)
         {
-            var items = Repository.GetPortfolioItemsByPortfolio(portfolioId);
+            var items = Repository.getByPortfolio(portfolioId);
             if (items == null || !items.Any())
             {
                 return NotFound("No portfolio items found for this portfolio.");

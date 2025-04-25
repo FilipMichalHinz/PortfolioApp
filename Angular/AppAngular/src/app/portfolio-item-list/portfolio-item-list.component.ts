@@ -1,103 +1,128 @@
-import { Component, OnInit } from '@angular/core';
+
+
+import { Component, OnInit }  from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+
+import { Portfolio } from '../model/portfolio';
+import { PortfolioService } from '../services/portfolio.service';
+
 import { PortfolioItem } from '../model/portfolio-item';
 import { PortfolioItemService } from '../services/portfolio-item.service';
 import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-item-form.component';
-import { AssetType } from '../model/asset-type';
+
+import { AssetType }  from '../model/asset-type';
 import { AssetTypeService } from '../services/asset-type.service';
-import { Portfolio } from '../model/portfolio';
-import { PortfolioService } from '../services/portfolio.service';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-portfolio-item-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, PortfolioItemFormComponent],
+  imports: [
+    CommonModule,
+    FormsModule,            // for ngModel on the dropdown
+    RouterModule,            // for ActivatedRoute & Router
+    PortfolioItemFormComponent // for the child form
+  ],
   templateUrl: './portfolio-item-list.component.html',
   styleUrls: ['./portfolio-item-list.component.css']
 })
 export class PortfolioItemListComponent implements OnInit {
-
-  portfolioItems: PortfolioItem[] = [];
-  assetTypes: AssetType[] = [];
+  // drop down paramters
   portfolios: Portfolio[] = [];
-  selectedPortfolioId: number | null = null;
+  selectedPortfolioId!: number;
 
+  // Data to display
+  portfolioItems: PortfolioItem[] = [];
+  assetTypes:    AssetType[]      = [];
+
+  // UI state
   isLoading = true;
-  showForm = false;
+  showForm   = false;
 
   constructor(
-    private portfolioItemService: PortfolioItemService,
-    private assetTypeService: AssetTypeService,
-    private portfolioService: PortfolioService
+    private route: ActivatedRoute,
+    private router: Router,
+    private portfolioService: PortfolioService,
+    private itemService: PortfolioItemService,
+    private assetTypeService: AssetTypeService
   ) {}
 
   ngOnInit(): void {
-    this.loadPortfolios();
-    this.loadAssetTypes();
-  }
-
-  loadPortfolios(): void {
+    //  Load all portfolios for the dropdown
     this.portfolioService.getPortfolios().subscribe({
-      next: portfolios => {
-        this.portfolios = portfolios;
-        if (portfolios.length > 0) {
-          this.selectedPortfolioId = portfolios[0].id;
-          this.loadPortfolioItems(this.selectedPortfolioId);
-        }
+      next: list => {
+        this.portfolios = list;
+
+        //  Pick initial ID: from URL if present, otherwise first portfolio
+        const idParam = this.route.snapshot.paramMap.get('id');
+        this.selectedPortfolioId = idParam
+          ? Number(idParam)
+          : (list.length > 0 ? list[0].id : 0);
+
+        // Reflect that in the URL (so refresh/bookmark works)
+        this.router.navigate(
+          ['/portfolio', this.selectedPortfolioId],
+          { replaceUrl: true }
+        );
+
+        // Load items and types
+        this.loadPortfolioItems();
+        this.loadAssetTypes();
       },
-      error: err => {
-        console.error('Error loading portfolios', err);
-        this.isLoading = false;
-      }
+      error: err => console.error('Error loading portfolios', err)
     });
   }
 
-  loadAssetTypes(): void {
+  /** Called by (change) on the dropdown */
+  onPortfolioChange(): void {
+    // Keep URL & UI in sync
+    this.router.navigate(['/portfolio', this.selectedPortfolioId]);
+    this.loadPortfolioItems();
+  }
+
+  private loadAssetTypes(): void {
     this.assetTypeService.getAssetTypes().subscribe({
-      next: types => this.assetTypes = types,
+      next: types => (this.assetTypes = types),
       error: err => console.error('Error loading asset types', err)
     });
   }
 
-  loadPortfolioItems(portfolioId: number): void {
+  private loadPortfolioItems(): void {
     this.isLoading = true;
-    this.portfolioItemService.getPortfolioItemsByPortfolio(portfolioId).subscribe({
-      next: items => {
-        this.portfolioItems = items;
-        this.isLoading = false;
-      },
-      error: err => {
-        console.error('Error loading items', err);
-        this.isLoading = false;
-      }
-    });
+    this.itemService
+      .getByPortfolio(this.selectedPortfolioId)
+      .subscribe({
+        next: items => {
+          this.portfolioItems = items;
+          this.isLoading = false;
+        },
+        error: err => {
+          console.error('Error loading items', err);
+          this.isLoading = false;
+        }
+      });
   }
 
+  // Template helper to show asset type names
   getAssetTypeName(id: number): string {
-    const type = this.assetTypes.find(t => t.id === id);
-    return type ? type.name : 'Unknown';
+    const t = this.assetTypes.find(x => x.id === id);
+    return t ? t.name : 'Unknown';
   }
 
-  onPortfolioChange(): void {
-    if (this.selectedPortfolioId !== null) {
-      this.loadPortfolioItems(this.selectedPortfolioId);
-    }
-  }
-
+  // Handle creation from the child form 
   onItemCreated(item: PortfolioItem): void {
     this.portfolioItems.push(item);
     this.showForm = false;
   }
 
-  deletePortfolioItem(id: number): void {
-    this.portfolioItemService.deletePortfolioItem(id).subscribe({
+  // Delete an item locally + on server 
+  delete(id: number): void {
+    this.itemService.delete(id).subscribe({
       next: () => {
-        this.portfolioItems = this.portfolioItems.filter(item => item.id !== id);
+        this.portfolioItems = this.portfolioItems.filter(i => i.id !== id);
       },
-      error: err => {
-        console.error('Error deleting item', err);
-      }
+      error: err => console.error('Error deleting item', err)
     });
   }
 
@@ -107,5 +132,5 @@ export class PortfolioItemListComponent implements OnInit {
 
   onCancel(): void {
     this.showForm = false;
-  }  
+  }
 }

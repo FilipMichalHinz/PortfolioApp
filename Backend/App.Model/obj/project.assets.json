@@ -325,19 +325,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/filiphinz/.nuget/packages/": {}
+    "/Users/nilasmyler/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj",
+      "projectUniqueName": "/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/App.Model.csproj",
       "projectName": "App.Model",
-      "projectPath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj",
-      "packagesPath": "/Users/filiphinz/.nuget/packages/",
-      "outputPath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/",
+      "projectPath": "/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/App.Model.csproj",
+      "packagesPath": "/Users/nilasmyler/.nuget/packages/",
+      "outputPath": "/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/filiphinz/.nuget/NuGet/NuGet.Config"
+        "/Users/nilasmyler/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -392,7 +392,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

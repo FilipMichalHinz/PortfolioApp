@@ -2,32 +2,46 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PortfolioItem } from '../model/portfolio-item';
 import { Observable } from 'rxjs';
+import { PortfolioSummary } from '../model/portfolio-summary';
+
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class PortfolioItemService {
-  baseUrl: string = 'http://localhost:5215/api';
+  baseUrl: string = 'http://localhost:5215/api/portfolioitem';
 
   constructor(private http: HttpClient) {}
 
-  getPortfolioItems(): Observable<PortfolioItem[]> {
+  // We're not gonna need this
+  /* getPortfolioItems(): Observable<PortfolioItem[]> {
     return this.http.get<PortfolioItem[]>(`${this.baseUrl}/portfolioitem`);
+  } */ 
+
+  getByPortfolio(portfolioId: number): Observable<PortfolioItem[]> {
+    return this.http.get<PortfolioItem[]>(`${this.baseUrl}/portfolios/${portfolioId}`);
   }
 
-  getPortfolioItemsByPortfolio(portfolioId: number): Observable<PortfolioItem[]> {
-    return this.http.get<PortfolioItem[]>(`${this.baseUrl}/portfolioitem/user/${portfolioId}`);
-  }
-
-  getPortfolioItem(id: number): Observable<PortfolioItem> {
+  /* getPortfolioItem(id: number): Observable<PortfolioItem> {
     return this.http.get<PortfolioItem>(`${this.baseUrl}/portfolioitem/${id}`);
+  } */ 
+
+  create(item: PortfolioItem): Observable<PortfolioItem> {
+    return this.http.post<PortfolioItem>(this.baseUrl, item);
   }
 
-  createPortfolioItem(item: PortfolioItem): Observable<PortfolioItem> {
-    return this.http.post<PortfolioItem>(`${this.baseUrl}/portfolioitem`, item);
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  deletePortfolioItem(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/portfolioitem/${id}`);
+  // For individual item/asset "performance"
+  getSummary(portfolioId: number): Observable<PortfolioSummary> {
+    return this.http.get<PortfolioSummary>(
+      `${this.baseUrl}/summary/${portfolioId}`
+    );
   }
 }
+
+

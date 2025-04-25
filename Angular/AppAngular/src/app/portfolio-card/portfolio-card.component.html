@@ -1,0 +1,52 @@
+<div class="portfolio-card">
+    <div class="header">{{ portfolio.portfolioName }}</div>
+  
+    <div class="metrics">
+      <!-- Total value (current value) -->
+      <div class="metric">
+        <span class="icon">💰</span>
+        <div>
+          <div class="label">Total value</div>
+          <div class="value">
+            {{ portfolio.currentValue | currency }}
+          </div>
+        </div>
+      </div>
+  
+      <!-- Asset count -->
+      <div class="metric">
+        <span class="icon">🏦</span>
+        <div>
+          <div class="label">Assets</div>
+          <div class="value">
+            {{ portfolio.assetCount }}
+          </div>
+        </div>
+      </div>
+  
+      <!-- Profit/Loss -->
+      <div class="metric">
+        <span class="icon">📈</span>
+        <div>
+          <div class="label">Profit/Loss</div>
+          <div
+            class="value"
+            [class.negative]="portfolio.totalProfitLoss < 0"
+            [class.positive]="portfolio.totalProfitLoss >= 0"
+          >
+            {{ portfolio.totalProfitLoss | currency }}
+            <span class="percent">
+              ({{ portfolio.changePercent | number:'1.0-0' }}%)
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="actions">
+      <button class="btn delete" (click)="deletePortfolio()">
+        Delete
+      </button>
+    </div>
+  </div>
+  
