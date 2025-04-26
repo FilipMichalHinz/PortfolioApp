@@ -87,6 +87,7 @@
   .assets-panel table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 1rem;
   }
   
   .assets-panel th,
@@ -104,4 +105,21 @@
   .assets-panel tr:hover {
     background: #fafafa;
   }
+
+  
+.assets-panel h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .add-btn {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
   

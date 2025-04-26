@@ -54,17 +54,11 @@ export class PortfolioItemListComponent implements OnInit {
       next: list => {
         this.portfolios = list;
 
-        //  Pick initial ID: from URL if present, otherwise first portfolio
-        const idParam = this.route.snapshot.paramMap.get('id');
-        this.selectedPortfolioId = idParam
-          ? Number(idParam)
-          : (list.length > 0 ? list[0].id : 0);
-
-        // Reflect that in the URL (so refresh/bookmark works)
-        this.router.navigate(
-          ['/portfolio', this.selectedPortfolioId],
-          { replaceUrl: true }
-        );
+          //  read the :id and default to the first if missing
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.selectedPortfolioId = idParam
+     ? Number(idParam)
+     : (list.length > 0 ? list[0].id : 0);
 
         // Load items and types
         this.loadPortfolioItems();

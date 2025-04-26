@@ -7,6 +7,6 @@ import { PortfolioDetailComponent } from './portfolio-detail/portfolio-detail.co
 export const routes: Routes = [
   { path: 'portfolio-list', component: PortfolioListComponent },
   { path: '', redirectTo: 'portfolio-list', pathMatch: 'full' },
-  { path: 'portfolio', component: PortfolioItemListComponent },
+ // { path: 'portfolio', component: PortfolioItemListComponent },
   { path: 'portfolio/:id', component: PortfolioDetailComponent }
 ];

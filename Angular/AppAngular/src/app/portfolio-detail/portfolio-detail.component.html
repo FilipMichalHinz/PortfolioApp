@@ -49,6 +49,8 @@
    
     <section class="assets-panel">
       <h2>Assets Breakdown</h2>
+   
+
       <table>
         <thead>
           <tr>
@@ -78,6 +80,27 @@
           </tr>
         </tbody>
       </table>
+
+      <button
+      magintop="20px"
+      class="add-btn"
+      *ngIf="!showForm"
+      (click)="showForm = true"
+    >
+      + Add Item
+    </button>
+
+     <app-portfolio-item-form
+       *ngIf="showForm"
+      [portfolioId]="portfolio.id"
+       (created)="onItemCreated($event)"
+       (cancel)="onCancel()"
+     ></app-portfolio-item-form>
     </section>
   </div>
+
+
+
+
+
   
