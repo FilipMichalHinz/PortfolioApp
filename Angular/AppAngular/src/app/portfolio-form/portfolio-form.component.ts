@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Portfolio } from '../model/portfolio';
+import { PortfolioService } from '../services/portfolio.service';
 
 @Component({
   selector: 'app-portfolio-form',
@@ -22,19 +23,22 @@ export class PortfolioFormComponent {
     createdAt: new Date()
   };
 
+  constructor(private portfolioService: PortfolioService) {}
   // Show the form
   toggleForm() {
     this.showForm = !this.showForm;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.isValid()) {
       this.newPortfolio.createdAt = new Date();
-      this.created.emit(this.newPortfolio);
-      this.resetForm();
-      this.showForm = false;
+      this.portfolioService.createPortfolio(this.newPortfolio).subscribe({
+        next: created => {
+          this.created.emit(created);
+          this.resetForm();
+          this.showForm = false;
     }
-  }
+  });}}
 
   resetForm() {
     this.newPortfolio = {
