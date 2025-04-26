@@ -5,6 +5,7 @@ import { PortfolioItem } from '../model/portfolio-item';
 import { PortfolioItemService } from '../services/portfolio-item.service';
 import { AssetTypeService } from '../services/asset-type.service';
 import { AssetType } from '../model/asset-type';
+import { YahooFinanceService } from '../services/yahoo-finance.service'; // 🆕 Import YahooFinanceService
 
 @Component({
   selector: 'app-portfolio-item-form',
@@ -16,7 +17,7 @@ import { AssetType } from '../model/asset-type';
 export class PortfolioItemFormComponent implements OnInit {
   @Input() portfolioId!: number; // required to associate item with portfolio
   @Output() created = new EventEmitter<PortfolioItem>(); // emit after creation
-  @Output() cancel = new EventEmitter<void>(); // emit when portfolio cancels
+  @Output() cancel = new EventEmitter<void>(); // emit when cancel button clicked
 
   assetTypes: AssetType[] = [];
 
@@ -28,12 +29,13 @@ export class PortfolioItemFormComponent implements OnInit {
     ticker: '',
     purchasePrice: 0,
     quantity: 0,
-    purchaseDate: '' //new Date()
+    purchaseDate: '' // e.g., '2024-04-26'
   };
 
   constructor(
     private portfolioItemService: PortfolioItemService,
-    private assetTypeService: AssetTypeService
+    private assetTypeService: AssetTypeService,
+    private yahooService: YahooFinanceService // 🆕 Inject YahooFinanceService
   ) {}
 
   ngOnInit(): void {
@@ -41,7 +43,7 @@ export class PortfolioItemFormComponent implements OnInit {
     this.item.portfolioId = this.portfolioId;
   }
 
-  // Fetches available asset types from API
+  // 🔹 Fetches available asset types from API
   loadAssetTypes(): void {
     this.assetTypeService.getAssetTypes().subscribe({
       next: types => this.assetTypes = types,
@@ -49,14 +51,36 @@ export class PortfolioItemFormComponent implements OnInit {
     });
   }
 
-  // Called when the form is submitted
+  // 🔹 Called when user finishes typing Ticker
+  onTickerEntered(): void {
+    const ticker = this.item.ticker;
+  
+    if (!ticker) {
+      // 🧠 If user deleted the ticker, clear the name immediately
+      this.item.name = '';
+      return;
+    }
+  
+    // 🧠 If ticker exists, fetch name normally
+    this.yahooService.getTickerInfo(ticker).subscribe({
+      next: (data) => {
+        this.item.name = data.name;
+      },
+      error: (err) => {
+        console.error('Failed to fetch ticker info', err);
+        this.item.name = 'Unknown'; // fallback if error
+      }
+    });
+  }
+  
+
+  // 🔹 Called when the form is submitted
   create(): void {
-    if (!this.item.name || this.item.assetTypeId === 0 || this.item.purchasePrice <= 0 || this.item.quantity <= 0 || !this.item.purchaseDate) {
+    if (!this.item.ticker || !this.item.name || this.item.assetTypeId === 0 || 
+        this.item.purchasePrice <= 0 || this.item.quantity <= 0 || !this.item.purchaseDate) {
       alert('Please fill in all required fields correctly.');
       return;
     }
-
-   
 
     this.portfolioItemService.create(this.item).subscribe({
       next: (createdItem: PortfolioItem) => {
@@ -67,13 +91,13 @@ export class PortfolioItemFormComponent implements OnInit {
     });
   }
 
-  // Called when the cancel button is clicked
+  // 🔹 Called when the cancel button is clicked
   onCancel(): void {
     this.cancel.emit();
     this.resetForm();
   }
 
-  // Clears the form for re-use
+  // 🔹 Clears the form for re-use
   private resetForm(): void {
     this.item = {
       id: 0,
@@ -83,7 +107,7 @@ export class PortfolioItemFormComponent implements OnInit {
       ticker: '',
       purchasePrice: 0,
       quantity: 0,
-      purchaseDate: '' //new Date()
+      purchaseDate: ''
     };
   }
 }

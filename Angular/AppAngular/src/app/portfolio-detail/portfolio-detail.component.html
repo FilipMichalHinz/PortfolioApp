@@ -1,30 +1,28 @@
-
-
 <div class="detail-container">
-   
-    <header class="detail-header">
-      <button class="back-btn" routerLink="/portfolio-list">
-        ← Back
-      </button>
-       <h1 class="title">
-           
-           {{ portfolio?.portfolioName || ('Portfolio ' + summary.portfolioId) }}
-        </h1>
-    </header>
-  
 
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    Loading portfolio...
+  </div>
+
+  <!-- 🧠 Full page only shown when loading is finished -->
+  <ng-container *ngIf="!isLoading">
+
+    <!-- 🔹 Header -->
+    <header class="detail-header">
+      <button class="back-btn" routerLink="/portfolio-list">← Back</button>
+      <h1 class="title">
+        {{ portfolio.portfolioName || ('Portfolio ' + summary.portfolioId) }}
+      </h1>
+    </header>
+
+    <!-- 🔹 Charts -->
     <section class="charts-panel">
-      <div class="chart-placeholder line-chart">
-        
-        Performance Chart
-      </div>
-      <div class="chart-placeholder pie-chart">
-        
-        Allocation Pie
-      </div>
+      <div class="chart-placeholder line-chart">Performance Chart</div>
+      <div class="chart-placeholder pie-chart">Allocation Pie</div>
     </section>
-  
-    
+
+    <!-- 🔹 Metrics -->
     <section class="metrics-panel">
       <div class="metric-card">
         <div class="label">Invested</div>
@@ -36,25 +34,39 @@
       </div>
       <div class="metric-card">
         <div class="label">Total P/L</div>
-        <div
-          class="value"
-          [class.positive]="summary.totalProfitLoss >= 0"
-          [class.negative]="summary.totalProfitLoss < 0"
-        >
+        <div class="value" [class.positive]="summary.totalProfitLoss >= 0"
+          [class.negative]="summary.totalProfitLoss < 0">
           {{ summary.totalProfitLoss | currency }}
           <span class="pct">({{ summary.changePercent | number:'1.0-0' }}%)</span>
         </div>
       </div>
     </section>
-   
-    <section class="assets-panel">
-      <h2>Assets Breakdown</h2>
-   
 
-      <table>
+    <!-- 🔹 Assets Breakdown -->
+    <section class="assets-panel">
+      <h2 class="assets-header">Assets Breakdown</h2>
+
+      <div class="add-item-wrapper">
+        <button class="add-btn" *ngIf="!showForm" (click)="showForm = true">+ Add Item</button>
+      </div>
+
+      <div *ngIf="showForm">
+        <app-portfolio-item-form 
+          [portfolioId]="portfolio.id"
+          (created)="onItemCreated($event)"
+          (cancel)="onCancel()">
+        </app-portfolio-item-form>
+      </div>
+
+      <div *ngIf="summary.byAsset.length === 0 && !showForm" class="no-assets-placeholder">
+        No assets yet — start by adding your first item!
+      </div>
+
+      <table *ngIf="summary.byAsset.length > 0">
         <thead>
           <tr>
-            <th>Ticker</th>
+            <th>Name</th> <!-- 🧠 First column is now Name -->
+            <th>Ticker</th> <!-- 🧠 Then Ticker -->
             <th>Qty</th>
             <th>Buy Price</th>
             <th>Current Price</th>
@@ -65,42 +77,21 @@
         </thead>
         <tbody>
           <tr *ngFor="let a of summary.byAsset">
-            <td>{{ a.ticker }}</td>
+            <td>{{ a.name ? a.name : 'Loading...' }}</td> <!-- 🧠 Show Name first -->
+            <td>{{ a.ticker }}</td> <!-- 🧠 Ticker second -->
             <td>{{ a.quantity }}</td>
             <td>{{ a.purchasePrice | currency }}</td>
             <td>{{ a.currentPrice | currency }}</td>
             <td>{{ a.currentValue | currency }}</td>
-            <td
-              [class.positive]="a.profitLoss >= 0"
-              [class.negative]="a.profitLoss < 0"
-            >
+            <td [class.positive]="a.profitLoss >= 0" [class.negative]="a.profitLoss < 0">
               {{ a.profitLoss | currency }}
             </td>
             <td>{{ a.changePercent | number:'1.0-0' }}%</td>
           </tr>
         </tbody>
-      </table>
-
-      <button
-      magintop="20px"
-      class="add-btn"
-      *ngIf="!showForm"
-      (click)="showForm = true"
-    >
-      + Add Item
-    </button>
-
-     <app-portfolio-item-form
-       *ngIf="showForm"
-      [portfolioId]="portfolio.id"
-       (created)="onItemCreated($event)"
-       (cancel)="onCancel()"
-     ></app-portfolio-item-form>
+      </table>          
     </section>
-  </div>
 
+  </ng-container>
 
-
-
-
-  
+</div>

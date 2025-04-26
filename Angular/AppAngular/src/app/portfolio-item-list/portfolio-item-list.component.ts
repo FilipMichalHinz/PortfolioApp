@@ -1,5 +1,3 @@
-
-
 import { Component, OnInit }  from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,29 +12,30 @@ import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-ite
 
 import { AssetType }  from '../model/asset-type';
 import { AssetTypeService } from '../services/asset-type.service';
+import { YahooFinanceService } from '../services/yahoo-finance.service'; // 🆕 Service to fetch Name based on Ticker
 
 @Component({
   selector: 'app-portfolio-item-list',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,            // for ngModel on the dropdown
-    RouterModule,            // for ActivatedRoute & Router
-    PortfolioItemFormComponent // for the child form
+    FormsModule,            // 🔹 Needed for ngModel in dropdown
+    RouterModule,           // 🔹 For navigation between portfolios
+    PortfolioItemFormComponent // 🔹 Include child form component
   ],
   templateUrl: './portfolio-item-list.component.html',
   styleUrls: ['./portfolio-item-list.component.css']
 })
 export class PortfolioItemListComponent implements OnInit {
-  // drop down paramters
+  // 🔹 Data for the dropdown
   portfolios: Portfolio[] = [];
   selectedPortfolioId!: number;
 
-  // Data to display
+  // 🔹 Data for table display
   portfolioItems: PortfolioItem[] = [];
   assetTypes:    AssetType[]      = [];
 
-  // UI state
+  // 🔹 UI State flags
   isLoading = true;
   showForm   = false;
 
@@ -45,22 +44,23 @@ export class PortfolioItemListComponent implements OnInit {
     private router: Router,
     private portfolioService: PortfolioService,
     private itemService: PortfolioItemService,
-    private assetTypeService: AssetTypeService
+    private assetTypeService: AssetTypeService,
+    private yahooService: YahooFinanceService // 🆕 Inject Yahoo Finance service
   ) {}
 
   ngOnInit(): void {
-    //  Load all portfolios for the dropdown
+    // 🔹 First load portfolios
     this.portfolioService.getPortfolios().subscribe({
       next: list => {
         this.portfolios = list;
 
-          //  read the :id and default to the first if missing
-    const idParam = this.route.snapshot.paramMap.get('id');
-    this.selectedPortfolioId = idParam
-     ? Number(idParam)
-     : (list.length > 0 ? list[0].id : 0);
+        // 🔹 Set selected portfolio ID from URL or default to first
+        const idParam = this.route.snapshot.paramMap.get('id');
+        this.selectedPortfolioId = idParam
+          ? Number(idParam)
+          : (list.length > 0 ? list[0].id : 0);
 
-        // Load items and types
+        // 🔹 Load portfolio items and asset types
         this.loadPortfolioItems();
         this.loadAssetTypes();
       },
@@ -68,13 +68,13 @@ export class PortfolioItemListComponent implements OnInit {
     });
   }
 
-  /** Called by (change) on the dropdown */
+  /** 🔹 Called when user selects different portfolio in dropdown */
   onPortfolioChange(): void {
-    // Keep URL & UI in sync
     this.router.navigate(['/portfolio', this.selectedPortfolioId]);
     this.loadPortfolioItems();
   }
 
+  /** 🔹 Load Asset Types for showing asset type names */
   private loadAssetTypes(): void {
     this.assetTypeService.getAssetTypes().subscribe({
       next: types => (this.assetTypes = types),
@@ -82,35 +82,63 @@ export class PortfolioItemListComponent implements OnInit {
     });
   }
 
+  /** 🔹 Load all portfolio items for selected portfolio */
   private loadPortfolioItems(): void {
     this.isLoading = true;
-    this.itemService
-      .getByPortfolio(this.selectedPortfolioId)
-      .subscribe({
-        next: items => {
-          this.portfolioItems = items;
-          this.isLoading = false;
-        },
-        error: err => {
-          console.error('Error loading items', err);
-          this.isLoading = false;
-        }
-      });
+    this.itemService.getByPortfolio(this.selectedPortfolioId).subscribe({
+      next: items => {
+        this.portfolioItems = items;
+        this.isLoading = false;
+        this.updateNames(); // 🧠 Fetch full Name for each item based on Ticker
+      },
+      error: err => {
+        console.error('Error loading items', err);
+        this.isLoading = false;
+      }
+    });
   }
 
-  // Template helper to show asset type names
+  /** 🔹 Update each item's Name by fetching from YahooFinanceService */
+  private updateNames(): void {
+    if (!this.portfolioItems || this.portfolioItems.length === 0) {
+      console.warn('No portfolio items to update names for.');
+      return;
+    }
+  
+    for (const item of this.portfolioItems) {
+      if (item.ticker) {
+        console.log('Fetching name for ticker:', item.ticker); // 🧠 Debug output
+        this.yahooService.getTickerInfo(item.ticker).subscribe({
+          next: (data) => {
+            console.log('Fetched Yahoo Data:', data); // 🧠 See the response
+            item.name = data.name;
+          },
+          error: (err) => {
+            console.error(`Failed to fetch name for ${item.ticker}`, err);
+            item.name = 'Unknown';
+          }
+        });
+      } else {
+        console.warn('Portfolio item missing ticker:', item); // 🧠 Warn if ticker missing
+      }
+    }
+  }
+  
+  
+
+  /** 🔹 Helper to show asset type name from ID */
   getAssetTypeName(id: number): string {
     const t = this.assetTypes.find(x => x.id === id);
     return t ? t.name : 'Unknown';
   }
 
-  // Handle creation from the child form 
+  /** 🔹 Handle event from child form when new item created */
   onItemCreated(item: PortfolioItem): void {
     this.portfolioItems.push(item);
     this.showForm = false;
   }
 
-  // Delete an item locally + on server 
+  /** 🔹 Delete item locally and from backend */
   delete(id: number): void {
     this.itemService.delete(id).subscribe({
       next: () => {
@@ -120,10 +148,12 @@ export class PortfolioItemListComponent implements OnInit {
     });
   }
 
+  /** 🔹 Toggle the form visibility */
   toggleForm(): void {
     this.showForm = !this.showForm;
   }
 
+  /** 🔹 Close the form when canceled */
   onCancel(): void {
     this.showForm = false;
   }

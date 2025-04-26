@@ -1,7 +1,10 @@
 <div class="form-wrapper">
   <h3>Add Portfolio Item</h3>
+
+  <!-- 🔹 The form -->
   <form (ngSubmit)="create()" #portfolioForm="ngForm" class="form-grid">
 
+    <!-- 🔹 Ticker Input (User types manually) -->
     <label for="ticker">Ticker symbol</label>
     <input
       id="ticker"
@@ -9,8 +12,11 @@
       type="text"
       [(ngModel)]="item.ticker"
       required
-    />
-    
+      placeholder="e.g., TSLA"
+      (blur)="onTickerEntered()" /> <!-- 🧠 When user finishes typing Ticker, auto-fetch Name -->
+  
+
+    <!-- 🔹 Asset Name Input (Auto-filled, Readonly) -->
     <label for="name">Asset Name</label>
     <input
       type="text"
@@ -18,9 +24,10 @@
       [(ngModel)]="item.name"
       name="name"
       required
-      placeholder="e.g., Tesla"
-    />
+      readonly /> <!-- 🧠 Name is fetched automatically; user cannot edit manually -->
+    
 
+    <!-- 🔹 Asset Type Selection (User selects manually) -->
     <label for="assetType">Asset Type</label>
     <select
       id="assetType"
@@ -34,6 +41,7 @@
       </option>
     </select>
 
+    <!-- 🔹 Purchase Price Input (User types manually) -->
     <label for="price">Purchase Price</label>
     <input
       type="number"
@@ -45,6 +53,7 @@
       placeholder="e.g., 250.00"
     />
 
+    <!-- 🔹 Quantity Input (User types manually) -->
     <label for="quantity">Quantity</label>
     <input
       type="number"
@@ -56,6 +65,7 @@
       placeholder="e.g., 5"
     />
 
+    <!-- 🔹 Purchase Date Input (User selects manually) -->
     <label for="date">Purchase Date</label>
     <input
       type="date"
@@ -65,6 +75,7 @@
       required
     />
 
+    <!-- 🔹 Action Buttons -->
     <div class="button-row">
       <button type="submit" [disabled]="portfolioForm.invalid">Create</button>
       <button type="button" class="cancel" (click)="onCancel()">Cancel</button>

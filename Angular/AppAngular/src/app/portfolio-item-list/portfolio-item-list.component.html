@@ -28,30 +28,30 @@
   *ngIf="!isLoading && portfolioItems.length > 0"
   class="portfolio-table"
 >
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Ticker</th>
-      <th>Type</th>
-      <th>Purchase Price</th>
-      <th>Quantity</th>
-      <th>Purchase Date</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of portfolioItems; let i = index">
-      <td>{{ item.name }}</td>
-      <td>{{ item.ticker }}</td>
-      <td>{{ getAssetTypeName(item.assetTypeId) }}</td>
-      <td>{{ item.purchasePrice | currency }}</td>
-      <td>{{ item.quantity }}</td>
-      <td>{{ item.purchaseDate | date }}</td>
-      <td>
-        <button (click)="delete(item.id)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Ticker</th>
+    <th>Type</th>
+    <th>Purchase Price</th>
+    <th>Quantity</th>
+    <th>Purchase Date</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let item of portfolioItems; let i = index">
+    <td>{{ item.name || 'Loading...' }}</td>
+    <td>{{ item.ticker }}</td>
+    <td>{{ getAssetTypeName(item.assetTypeId) }}</td>
+    <td>{{ item.purchasePrice | currency }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.purchaseDate | date }}</td>
+    <td>
+      <button (click)="delete(item.id)">Delete</button>
+    </td>
+  </tr>
+</tbody>
 </table>
 
 <!-- Button to toggle form -->

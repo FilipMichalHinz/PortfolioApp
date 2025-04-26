@@ -1086,19 +1086,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/nilasmyler/.nuget/packages/": {}
+    "/Users/filiphinz/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/nilasmyler/PortfolioApp-main/Backend/App.API/App.API.csproj",
+      "projectUniqueName": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.API/App.API.csproj",
       "projectName": "App.API",
-      "projectPath": "/Users/nilasmyler/PortfolioApp-main/Backend/App.API/App.API.csproj",
-      "packagesPath": "/Users/nilasmyler/.nuget/packages/",
-      "outputPath": "/Users/nilasmyler/PortfolioApp-main/Backend/App.API/obj/",
+      "projectPath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.API/App.API.csproj",
+      "packagesPath": "/Users/filiphinz/.nuget/packages/",
+      "outputPath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/nilasmyler/.nuget/NuGet/NuGet.Config"
+        "/Users/filiphinz/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1110,8 +1110,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/App.Model.csproj": {
-              "projectPath": "/Users/nilasmyler/PortfolioApp-main/Backend/App.Model/App.Model.csproj"
+            "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj": {
+              "projectPath": "/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/App.Model.csproj"
             }
           }
         }
@@ -1164,7 +1164,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

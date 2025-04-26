@@ -46,3 +46,16 @@
 /Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/refint/App.Model.dll
 /Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/App.Model.pdb
 /Users/nilasmyler/PortfolioApp-main/Backend/App.Model/obj/Debug/net9.0/ref/App.Model.dll
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/bin/Debug/net9.0/App.Model.deps.json
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/bin/Debug/net9.0/App.Model.dll
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/bin/Debug/net9.0/App.Model.pdb
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.csproj.AssemblyReference.cache
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.GeneratedMSBuildEditorConfig.editorconfig
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.AssemblyInfoInputs.cache
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.AssemblyInfo.cs
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.csproj.CoreCompileInputs.cache
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.sourcelink.json
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.dll
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/refint/App.Model.dll
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/App.Model.pdb
+/Users/filiphinz/PortfolioApp16042025_20.55/PortfolioApp/Backend/App.Model/obj/Debug/net9.0/ref/App.Model.dll
