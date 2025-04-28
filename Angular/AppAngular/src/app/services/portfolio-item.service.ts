@@ -42,6 +42,9 @@ export class PortfolioItemService {
       `${this.baseUrl}/summary/${portfolioId}`
     );
   }
+  sellPortfolioItem(sellRequest: { id: number; exitPrice: number; exitDate: string }) {
+    return this.http.put(`${this.baseUrl}/sell`, sellRequest);
+  }
 }
 
 

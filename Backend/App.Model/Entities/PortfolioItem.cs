@@ -15,7 +15,7 @@ namespace App.Model.Entities
 
         public int AssetTypeId { get; set; }
 
-        public string Name {get; set; } // Example: "Tesla", "Apple", "Google"
+        public string Name { get; set; } // Example: "Tesla", "Apple", "Google"
 
         public string Ticker { get; set; } // Example: "TSLA", "AAPL", "GOOGL"
 
@@ -24,5 +24,12 @@ namespace App.Model.Entities
         public decimal Quantity { get; set; }
 
         public DateTime PurchaseDate { get; set; }
+
+        // Price at which the asset was sold (if sold)
+        public decimal? ExitPrice { get; set; }
+        // Date when the asset was sold
+        public DateTime? ExitDate { get; set; }
+        // Whether the asset has been sold
+        public bool IsSold { get; set; } = false;
     }
 }

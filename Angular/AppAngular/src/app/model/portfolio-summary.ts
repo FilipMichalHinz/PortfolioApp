@@ -8,6 +8,9 @@ export interface AssetPerformance {
   currentValue: number;
   profitLoss: number;
   changePercent: number;
+  exitPrice?: number;
+  exitDate?: string;
+  isSold?: boolean;
 }
 
 export interface PortfolioSummary {

@@ -5,7 +5,6 @@
     Loading portfolio...
   </div>
 
-  <!-- 🧠 Full page only shown when loading is finished -->
   <ng-container *ngIf="!isLoading">
 
     <!-- 🔹 Header -->
@@ -18,8 +17,21 @@
 
     <!-- 🔹 Charts -->
     <section class="charts-panel">
-      <div class="chart-placeholder line-chart">Performance Chart</div>
-      <div class="chart-placeholder pie-chart">Allocation Pie</div>
+      <div class="chart-placeholder line-chart">
+        Performance Chart
+      </div>
+
+      <div class="chart-placeholder pie-chart">
+        <ngx-charts-pie-chart
+          [results]="allocationPieData"
+          [legend]="true"
+          [doughnut]="true"
+          [labels]="true"
+          [explodeSlices]="false"
+          [gradient]="false"
+          [view]="[400,300]">
+        </ngx-charts-pie-chart>
+      </div>
     </section>
 
     <!-- 🔹 Metrics -->
@@ -28,10 +40,12 @@
         <div class="label">Invested</div>
         <div class="value">{{ summary.initialInvestment | currency }}</div>
       </div>
+
       <div class="metric-card">
         <div class="label">Current Value</div>
         <div class="value">{{ summary.currentValue | currency }}</div>
       </div>
+
       <div class="metric-card">
         <div class="label">Total P/L</div>
         <div class="value" [class.positive]="summary.totalProfitLoss >= 0"
@@ -40,33 +54,51 @@
           <span class="pct">({{ summary.changePercent | number:'1.0-0' }}%)</span>
         </div>
       </div>
+
+      <div class="metric-card">
+        <div class="label">Finalized P/L</div>
+        <div class="value" [class.positive]="totalFinalizedProfit >= 0" [class.negative]="totalFinalizedProfit < 0">
+          {{ totalFinalizedProfit | currency }}
+          <span class="pct">({{ totalFinalizedReturnPercent | number:'1.0-0' }}%)</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="label">Open P/L</div>
+        <div class="value" [class.positive]="totalOpenProfit >= 0" [class.negative]="totalOpenProfit < 0">
+          {{ totalOpenProfit | currency }}
+          <span class="pct">({{ totalOpenReturnPercent | number:'1.0-0' }}%)</span>
+        </div>
+      </div>
     </section>
 
-    <!-- 🔹 Assets Breakdown -->
+    <!-- 🔹 Assets Panel -->
     <section class="assets-panel">
-      <h2 class="assets-header">Assets Breakdown</h2>
 
-      <div class="add-item-wrapper">
+      <!-- 🔹 Open Positions Header -->
+      <div class="assets-header" (click)="openPositionsExpanded = !openPositionsExpanded"
+        style="display: flex; align-items: center; cursor: pointer; gap: 8px;">
+        <span>{{ openPositionsExpanded ? '▲' : '▼' }}</span>
+        <h2>Open Positions</h2>
+      </div>
+
+      <!-- Add Item Button -->
+      <div class="add-item-wrapper" *ngIf="openPositionsExpanded">
         <button class="add-btn" *ngIf="!showForm" (click)="showForm = true">+ Add Item</button>
       </div>
 
-      <div *ngIf="showForm">
-        <app-portfolio-item-form 
-          [portfolioId]="portfolio.id"
-          (created)="onItemCreated($event)"
-          (cancel)="onCancel()">
+      <div *ngIf="showForm && openPositionsExpanded">
+        <app-portfolio-item-form [portfolioId]="portfolio.id" (created)="onItemCreated($event)" (cancel)="onCancel()">
         </app-portfolio-item-form>
       </div>
 
-      <div *ngIf="summary.byAsset.length === 0 && !showForm" class="no-assets-placeholder">
-        No assets yet — start by adding your first item!
-      </div>
-
-      <table *ngIf="summary.byAsset.length > 0">
+      <!-- Table for Open Assets -->
+      <table *ngIf="summary.byAsset.length > 0 && openPositionsExpanded">
         <thead>
           <tr>
-            <th>Name</th> <!-- 🧠 First column is now Name -->
-            <th>Ticker</th> <!-- 🧠 Then Ticker -->
+            <th>Sell</th>
+            <th>Name</th>
+            <th>Ticker</th>
             <th>Qty</th>
             <th>Buy Price</th>
             <th>Current Price</th>
@@ -76,20 +108,81 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let a of summary.byAsset">
-            <td>{{ a.name ? a.name : 'Loading...' }}</td> <!-- 🧠 Show Name first -->
-            <td>{{ a.ticker }}</td> <!-- 🧠 Ticker second -->
-            <td>{{ a.quantity }}</td>
-            <td>{{ a.purchasePrice | currency }}</td>
-            <td>{{ a.currentPrice | currency }}</td>
-            <td>{{ a.currentValue | currency }}</td>
-            <td [class.positive]="a.profitLoss >= 0" [class.negative]="a.profitLoss < 0">
-              {{ a.profitLoss | currency }}
-            </td>
-            <td>{{ a.changePercent | number:'1.0-0' }}%</td>
-          </tr>
+          <ng-container *ngFor="let a of summary.byAsset">
+            <tr *ngIf="!a.isSold">
+              <td><button (click)="startSell(a)">Sell</button></td>
+              <td>{{ a.name ? a.name : 'Loading...' }}</td>
+              <td>{{ a.ticker }}</td>
+              <td>{{ a.quantity }}</td>
+              <td>{{ a.purchasePrice | currency }}</td>
+              <td>{{ a.currentPrice | currency }}</td>
+              <td>{{ a.currentValue | currency }}</td>
+              <td [class.positive]="a.profitLoss >= 0" [class.negative]="a.profitLoss < 0">
+                {{ a.profitLoss | currency }}
+              </td>
+              <td>{{ a.changePercent | number:'1.0-0' }}%</td>
+            </tr>
+          </ng-container>
         </tbody>
-      </table>          
+      </table>
+
+      <!-- 🔹 Completed Trades Header -->
+      <div class="assets-header" (click)="completedTradesExpanded = !completedTradesExpanded"
+        style="display: flex; align-items: center; cursor: pointer; gap: 8px;">
+        <span>{{ completedTradesExpanded ? '▲' : '▼' }}</span>
+        <h2>Completed Trades</h2>
+      </div>
+
+      <!-- Table for Sold Assets -->
+      <table *ngIf="summary.byAsset.length > 0 && completedTradesExpanded">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Ticker</th>
+            <th>Qty</th>
+            <th>Buy Price</th>
+            <th>Sell Price</th>
+            <th>Sold Date</th>
+            <th>Profit/Loss</th>
+            <th>Return %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let a of summary.byAsset">
+            <tr *ngIf="a.isSold">
+              <td>{{ a.name ? a.name : 'Loading...' }}</td>
+              <td>{{ a.ticker }}</td>
+              <td>{{ a.quantity }}</td>
+              <td>{{ a.purchasePrice | currency }}</td>
+              <td>{{ a.exitPrice | currency }}</td>
+              <td>{{ a.exitDate | date }}</td>
+              <td>{{ (a.exitPrice! - a.purchasePrice) * a.quantity | currency }}</td>
+              <td>{{ ((a.exitPrice! - a.purchasePrice) / a.purchasePrice) * 100 | number:'1.0-0' }}%</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+
+      <!-- 🔥 Modal Sell Form -->
+      <div *ngIf="sellMode" class="modal-overlay">
+        <div class="modal-content">
+          <h3>Sell {{ itemToSell.ticker }}</h3>
+
+          <label for="exitPrice">Exit Price:</label>
+          <input id="exitPrice" type="number" [(ngModel)]="itemToSell.exitPrice" name="exitPrice">
+
+          <label for="exitDate">Exit Date:</label>
+          <input id="exitDate" type="date" [(ngModel)]="itemToSell.exitDate" name="exitDate">
+
+          <div class="button-row">
+            <button (click)="confirmSell()" [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
+              Confirm Sell
+            </button>
+            <button (click)="cancelSell()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
     </section>
 
   </ng-container>

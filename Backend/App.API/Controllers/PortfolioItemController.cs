@@ -29,9 +29,9 @@ namespace App.API.Controllers
         public ActionResult Post([FromBody] PortfolioItem item)
         {
             if (item == null)
-            
+
                 return BadRequest("PortfolioItem info not correct");
-            
+
 
             bool ok = Repository.InsertPortfolioItem(item);
             if (ok)
@@ -126,19 +126,37 @@ namespace App.API.Controllers
 
             foreach (var item in items)
             {
-                if (!prices.ContainsKey(item.Ticker)) continue;
-
-                decimal currentPrice = (decimal)prices[item.Ticker][Field.RegularMarketPrice];
                 decimal initialInvestment = item.PurchasePrice * item.Quantity;
-                decimal currentValue = currentPrice * item.Quantity;
-                decimal profitLoss = currentValue - initialInvestment;
-                decimal changePercent = initialInvestment == 0 ? 0 : (profitLoss / initialInvestment) * 100;
+                decimal currentValue;
+                decimal profitLoss;
+                decimal changePercent;
+                decimal currentPrice;
+
+                if (item.IsSold)
+                {
+                    // 🔥 Sold asset → lock values
+                    currentPrice = item.ExitPrice ?? 0;
+                    currentValue = (item.ExitPrice ?? 0) * item.Quantity;
+                    profitLoss = currentValue - initialInvestment;
+                    changePercent = initialInvestment == 0 ? 0 : (profitLoss / initialInvestment) * 100;
+                }
+                else
+                {
+                    // 🔥 Open asset → live price
+                    if (!prices.ContainsKey(item.Ticker)) continue;
+
+                    currentPrice = (decimal)prices[item.Ticker][Field.RegularMarketPrice];
+                    currentValue = currentPrice * item.Quantity;
+                    profitLoss = currentValue - initialInvestment;
+                    changePercent = initialInvestment == 0 ? 0 : (profitLoss / initialInvestment) * 100;
+                }
 
                 totalInvestment += initialInvestment;
                 totalCurrentValue += currentValue;
 
                 summaryList.Add(new
                 {
+                    Id = item.Id,
                     Ticker = item.Ticker,
                     Quantity = item.Quantity,
                     PurchasePrice = item.PurchasePrice,
@@ -146,7 +164,10 @@ namespace App.API.Controllers
                     InitialInvestment = initialInvestment,
                     CurrentValue = currentValue,
                     ProfitLoss = profitLoss,
-                    ChangePercent = Math.Round(changePercent, 2)
+                    ChangePercent = Math.Round(changePercent, 2),
+                    IsSold = item.IsSold,
+                    ExitPrice = item.ExitPrice,
+                    ExitDate = item.ExitDate
                 });
             }
 
@@ -163,5 +184,34 @@ namespace App.API.Controllers
                 ByAsset = summaryList
             });
         }
+        // 🔹 Sell a portfolio item
+        [HttpPut("sell")]
+        public ActionResult SellPortfolioItem([FromBody] SellAssetRequest request)
+        {
+            if (request == null)
+                return BadRequest("Invalid sell request.");
+
+            var item = Repository.GetById(request.Id);
+            if (item == null)
+                return NotFound($"Portfolio item with ID {request.Id} not found.");
+
+            item.ExitPrice = request.ExitPrice;
+            item.ExitDate = request.ExitDate;
+            item.IsSold = true;
+
+            bool updated = Repository.UpdatePortfolioItem(item);
+            if (updated)
+                return Ok(item); // Return updated item
+            else
+                return BadRequest("Failed to mark portfolio item as sold.");
+        }
     }
+    // 🔹 New helper class outside of controller
+    public class SellAssetRequest
+    {
+        public int Id { get; set; }
+        public decimal ExitPrice { get; set; }
+        public DateTime ExitDate { get; set; }
+    }
+
 }
