@@ -1,26 +1,44 @@
 
-
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule }   from '@angular/common';
+import { RouterModule }   from '@angular/router';
 import { PortfolioOverview }  from '../model/portfolio-overview';
+import { PortfolioService }   from '../services/portfolio.service';
 
 @Component({
   selector: 'app-portfolio-card',
   standalone: true,
-  imports: [CommonModule],   // for currency pipe, etc.
+  imports: [CommonModule, RouterModule],
   templateUrl: './portfolio-card.component.html',
   styleUrls: ['./portfolio-card.component.scss']
 })
 export class PortfolioCardComponent {
-  // Tell Angular this component accepts a "portfolio" property:
   @Input() portfolio!: PortfolioOverview;
-
-  //  Tell Angular this component emits "deleted" events of type number:
   @Output() deleted = new EventEmitter<number>();
 
-  deletePortfolio(): void {
-    // Emit the portfolio's id (a number)
-    this.deleted.emit(this.portfolio.id);
+  constructor(private portfolioService: PortfolioService) {}
+
+  confirmDelete(event: Event): void {
+    // Prevent link navigation. See portfolio-list for more details
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Simple confirmation dialog
+    if (!confirm(`Are you sure you want to delete "${this.portfolio.portfolioName}"?`)) {
+      return;
+    }
+
+    // Call backend to delete
+    this.portfolioService.deletePortfolio(this.portfolio.id).subscribe({ // we use deletePortfolio from portfolio.service
+      next: () => {
+        console.log(`Deleted portfolio ${this.portfolio.id}`);
+        this.deleted.emit(this.portfolio.id);
+      },
+      error: err => {
+        console.error('Error deleting portfolio:', err);
+        alert('Delete failed: ' + (err.message || 'Unknown error'));
+      }
+    });
   }
 }
 
