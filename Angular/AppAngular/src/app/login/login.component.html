@@ -1,0 +1,14 @@
+<div>
+    <label>Username</label>
+    <input type="text" [(ngModel)]="username"/>
+</div>
+<div>
+    <label>Password</label>
+    <input type="password" [(ngModel)]="password" />
+</div>
+<div>
+    <button type="button" (click)="login()">Login</button>
+</div>
+@if(!this.authenticated) {
+    <span>Credentials invalid</span>
+}

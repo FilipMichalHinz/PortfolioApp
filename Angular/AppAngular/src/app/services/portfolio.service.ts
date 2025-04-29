@@ -10,6 +10,10 @@ import {PortfolioOverview} from '../model/portfolio-overview';
 export class PortfolioService {
   baseUrl: string = "http://localhost:5215/api";
 
+  get authHeader(): string {
+    return localStorage["headerValue"]; //"Basic am9obi5kb2U6VmVyeVNlY3JldCE=";
+  }
+
   constructor(private http: HttpClient) {}
 
   getPortfolios(): Observable<Portfolio[]> {

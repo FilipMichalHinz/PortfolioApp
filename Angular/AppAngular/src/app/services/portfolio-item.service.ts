@@ -13,6 +13,10 @@ import { PortfolioSummary } from '../model/portfolio-summary';
 export class PortfolioItemService {
   baseUrl: string = 'http://localhost:5215/api/portfolioitem';
 
+  get authHeader(): string {
+    return localStorage["headerValue"]; //"Basic am9obi5kb2U6VmVyeVNlY3JldCE=";
+  }
+
   constructor(private http: HttpClient) {}
 
   // We're not gonna need this

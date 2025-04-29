@@ -49,6 +49,10 @@ export class PortfolioItemListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.portfolioService.authHeader == null) {
+      this.router.navigate(["login"]);
+      return;
+    }
     // 🔹 First load portfolios
     this.portfolioService.getPortfolios().subscribe({
       next: list => {

@@ -2,7 +2,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // for ngIf and ngFor
-import { RouterModule } from '@angular/router'; // for routerLink
+import { Router, RouterModule } from '@angular/router'; // for routerLink
 
 import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioOverview } from '../model/portfolio-overview';
@@ -27,9 +27,13 @@ export class PortfolioListComponent implements OnInit {
   portfolios: PortfolioOverview[] = [];
   isLoading = false;
 
-  constructor(private portfolioService: PortfolioService) {}
+  constructor(private portfolioService: PortfolioService, private router: Router) {}
 
   ngOnInit(): void {
+    if (this.portfolioService.authHeader == null) {
+      this.router.navigate(["login"]);
+      return;
+    }
     this.loadOverviews();
   }
 
