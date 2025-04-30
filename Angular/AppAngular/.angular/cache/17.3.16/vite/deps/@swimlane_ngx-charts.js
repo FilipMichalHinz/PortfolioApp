@@ -1,4 +1,10 @@
 import {
+  animate,
+  style,
+  transition,
+  trigger
+} from "./chunk-2UUGW7K6.js";
+import {
   CommonModule,
   DOCUMENT,
   NgForOf,
@@ -8,7 +14,6 @@ import {
   isPlatformServer
 } from "./chunk-RX3CBEJQ.js";
 import {
-  ANIMATION_MODULE_TYPE,
   ApplicationRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -30,8 +35,6 @@ import {
   Output,
   PLATFORM_ID,
   Renderer2,
-  RendererFactory2,
-  RuntimeError,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
@@ -43,7 +46,6 @@ import {
   __toESM,
   debounceTime,
   fromEvent,
-  inject,
   setClassMetadata,
   ɵɵInheritDefinitionFeature,
   ɵɵNgOnChangesFeature,
@@ -61,6 +63,9 @@ import {
   ɵɵdefineNgModule,
   ɵɵdirectiveInject,
   ɵɵelement,
+  ɵɵelementContainer,
+  ɵɵelementContainerEnd,
+  ɵɵelementContainerStart,
   ɵɵelementEnd,
   ɵɵelementStart,
   ɵɵgetCurrentView,
@@ -94,264 +99,192 @@ import {
   ɵɵviewQuery
 } from "./chunk-46V3PSC3.js";
 
-// node_modules/kind-of/index.js
-var require_kind_of = __commonJS({
-  "node_modules/kind-of/index.js"(exports, module) {
-    var toString2 = Object.prototype.toString;
-    module.exports = function kindOf(val) {
-      if (val === void 0) return "undefined";
-      if (val === null) return "null";
-      var type2 = typeof val;
-      if (type2 === "boolean") return "boolean";
-      if (type2 === "string") return "string";
-      if (type2 === "number") return "number";
-      if (type2 === "symbol") return "symbol";
-      if (type2 === "function") {
-        return isGeneratorFn(val) ? "generatorfunction" : "function";
-      }
-      if (isArray(val)) return "array";
-      if (isBuffer(val)) return "buffer";
-      if (isArguments(val)) return "arguments";
-      if (isDate2(val)) return "date";
-      if (isError(val)) return "error";
-      if (isRegexp(val)) return "regexp";
-      switch (ctorName(val)) {
-        case "Symbol":
-          return "symbol";
-        case "Promise":
-          return "promise";
-        case "WeakMap":
-          return "weakmap";
-        case "WeakSet":
-          return "weakset";
-        case "Map":
-          return "map";
-        case "Set":
-          return "set";
-        case "Int8Array":
-          return "int8array";
-        case "Uint8Array":
-          return "uint8array";
-        case "Uint8ClampedArray":
-          return "uint8clampedarray";
-        case "Int16Array":
-          return "int16array";
-        case "Uint16Array":
-          return "uint16array";
-        case "Int32Array":
-          return "int32array";
-        case "Uint32Array":
-          return "uint32array";
-        case "Float32Array":
-          return "float32array";
-        case "Float64Array":
-          return "float64array";
-      }
-      if (isGeneratorObj(val)) {
-        return "generator";
-      }
-      type2 = toString2.call(val);
-      switch (type2) {
-        case "[object Object]":
-          return "object";
-        case "[object Map Iterator]":
-          return "mapiterator";
-        case "[object Set Iterator]":
-          return "setiterator";
-        case "[object String Iterator]":
-          return "stringiterator";
-        case "[object Array Iterator]":
-          return "arrayiterator";
-      }
-      return type2.slice(8, -1).toLowerCase().replace(/\s/g, "");
-    };
-    function ctorName(val) {
-      return typeof val.constructor === "function" ? val.constructor.name : null;
-    }
-    function isArray(val) {
-      if (Array.isArray) return Array.isArray(val);
-      return val instanceof Array;
-    }
-    function isError(val) {
-      return val instanceof Error || typeof val.message === "string" && val.constructor && typeof val.constructor.stackTraceLimit === "number";
-    }
-    function isDate2(val) {
-      if (val instanceof Date) return true;
-      return typeof val.toDateString === "function" && typeof val.getDate === "function" && typeof val.setDate === "function";
-    }
-    function isRegexp(val) {
-      if (val instanceof RegExp) return true;
-      return typeof val.flags === "string" && typeof val.ignoreCase === "boolean" && typeof val.multiline === "boolean" && typeof val.global === "boolean";
-    }
-    function isGeneratorFn(name, val) {
-      return ctorName(name) === "GeneratorFunction";
-    }
-    function isGeneratorObj(val) {
-      return typeof val.throw === "function" && typeof val.return === "function" && typeof val.next === "function";
-    }
-    function isArguments(val) {
-      try {
-        if (typeof val.length === "number" && typeof val.callee === "function") {
-          return true;
-        }
-      } catch (err) {
-        if (err.message.indexOf("callee") !== -1) {
-          return true;
-        }
-      }
-      return false;
-    }
-    function isBuffer(val) {
-      if (val.constructor && typeof val.constructor.isBuffer === "function") {
-        return val.constructor.isBuffer(val);
-      }
-      return false;
-    }
-  }
-});
-
-// node_modules/shallow-clone/index.js
-var require_shallow_clone = __commonJS({
-  "node_modules/shallow-clone/index.js"(exports, module) {
+// node_modules/rfdc/index.js
+var require_rfdc = __commonJS({
+  "node_modules/rfdc/index.js"(exports, module) {
     "use strict";
-    var valueOf = Symbol.prototype.valueOf;
-    var typeOf = require_kind_of();
-    function clone(val, deep) {
-      switch (typeOf(val)) {
-        case "array":
-          return val.slice();
-        case "object":
-          return Object.assign({}, val);
-        case "date":
-          return new val.constructor(Number(val));
-        case "map":
-          return new Map(val);
-        case "set":
-          return new Set(val);
-        case "buffer":
-          return cloneBuffer(val);
-        case "symbol":
-          return cloneSymbol(val);
-        case "arraybuffer":
-          return cloneArrayBuffer(val);
-        case "float32array":
-        case "float64array":
-        case "int16array":
-        case "int32array":
-        case "int8array":
-        case "uint16array":
-        case "uint32array":
-        case "uint8clampedarray":
-        case "uint8array":
-          return cloneTypedArray(val);
-        case "regexp":
-          return cloneRegExp(val);
-        case "error":
-          return Object.create(val);
-        default: {
-          return val;
+    module.exports = rfdc2;
+    function copyBuffer(cur) {
+      if (cur instanceof Buffer) {
+        return Buffer.from(cur);
+      }
+      return new cur.constructor(cur.buffer.slice(), cur.byteOffset, cur.length);
+    }
+    function rfdc2(opts) {
+      opts = opts || {};
+      if (opts.circles) return rfdcCircles(opts);
+      const constructorHandlers = /* @__PURE__ */ new Map();
+      constructorHandlers.set(Date, (o) => new Date(o));
+      constructorHandlers.set(Map, (o, fn) => new Map(cloneArray(Array.from(o), fn)));
+      constructorHandlers.set(Set, (o, fn) => new Set(cloneArray(Array.from(o), fn)));
+      if (opts.constructorHandlers) {
+        for (const handler2 of opts.constructorHandlers) {
+          constructorHandlers.set(handler2[0], handler2[1]);
         }
       }
-    }
-    function cloneRegExp(val) {
-      const flags = val.flags !== void 0 ? val.flags : /\w+$/.exec(val) || void 0;
-      const re2 = new val.constructor(val.source, flags);
-      re2.lastIndex = val.lastIndex;
-      return re2;
-    }
-    function cloneArrayBuffer(val) {
-      const res = new val.constructor(val.byteLength);
-      new Uint8Array(res).set(new Uint8Array(val));
-      return res;
-    }
-    function cloneTypedArray(val, deep) {
-      return new val.constructor(val.buffer, val.byteOffset, val.length);
-    }
-    function cloneBuffer(val) {
-      const len = val.length;
-      const buf = Buffer.allocUnsafe ? Buffer.allocUnsafe(len) : Buffer.from(len);
-      val.copy(buf);
-      return buf;
-    }
-    function cloneSymbol(val) {
-      return valueOf ? Object(valueOf.call(val)) : {};
-    }
-    module.exports = clone;
-  }
-});
-
-// node_modules/isobject/index.js
-var require_isobject = __commonJS({
-  "node_modules/isobject/index.js"(exports, module) {
-    "use strict";
-    module.exports = function isObject(val) {
-      return val != null && typeof val === "object" && Array.isArray(val) === false;
-    };
-  }
-});
-
-// node_modules/is-plain-object/index.js
-var require_is_plain_object = __commonJS({
-  "node_modules/is-plain-object/index.js"(exports, module) {
-    "use strict";
-    var isObject = require_isobject();
-    function isObjectObject(o) {
-      return isObject(o) === true && Object.prototype.toString.call(o) === "[object Object]";
-    }
-    module.exports = function isPlainObject(o) {
-      var ctor, prot;
-      if (isObjectObject(o) === false) return false;
-      ctor = o.constructor;
-      if (typeof ctor !== "function") return false;
-      prot = ctor.prototype;
-      if (isObjectObject(prot) === false) return false;
-      if (prot.hasOwnProperty("isPrototypeOf") === false) {
-        return false;
+      let handler = null;
+      return opts.proto ? cloneProto : clone;
+      function cloneArray(a3, fn) {
+        const keys = Object.keys(a3);
+        const a22 = new Array(keys.length);
+        for (let i = 0; i < keys.length; i++) {
+          const k3 = keys[i];
+          const cur = a3[k3];
+          if (typeof cur !== "object" || cur === null) {
+            a22[k3] = cur;
+          } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+            a22[k3] = handler(cur, fn);
+          } else if (ArrayBuffer.isView(cur)) {
+            a22[k3] = copyBuffer(cur);
+          } else {
+            a22[k3] = fn(cur);
+          }
+        }
+        return a22;
       }
-      return true;
-    };
-  }
-});
-
-// node_modules/clone-deep/index.js
-var require_clone_deep = __commonJS({
-  "node_modules/clone-deep/index.js"(exports, module) {
-    "use strict";
-    var clone = require_shallow_clone();
-    var typeOf = require_kind_of();
-    var isPlainObject = require_is_plain_object();
-    function cloneDeep2(val, instanceClone) {
-      switch (typeOf(val)) {
-        case "object":
-          return cloneObjectDeep(val, instanceClone);
-        case "array":
-          return cloneArrayDeep(val, instanceClone);
-        default: {
-          return clone(val);
+      function clone(o) {
+        if (typeof o !== "object" || o === null) return o;
+        if (Array.isArray(o)) return cloneArray(o, clone);
+        if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+          return handler(o, clone);
+        }
+        const o2 = {};
+        for (const k3 in o) {
+          if (Object.hasOwnProperty.call(o, k3) === false) continue;
+          const cur = o[k3];
+          if (typeof cur !== "object" || cur === null) {
+            o2[k3] = cur;
+          } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+            o2[k3] = handler(cur, clone);
+          } else if (ArrayBuffer.isView(cur)) {
+            o2[k3] = copyBuffer(cur);
+          } else {
+            o2[k3] = clone(cur);
+          }
+        }
+        return o2;
+      }
+      function cloneProto(o) {
+        if (typeof o !== "object" || o === null) return o;
+        if (Array.isArray(o)) return cloneArray(o, cloneProto);
+        if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+          return handler(o, cloneProto);
+        }
+        const o2 = {};
+        for (const k3 in o) {
+          const cur = o[k3];
+          if (typeof cur !== "object" || cur === null) {
+            o2[k3] = cur;
+          } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+            o2[k3] = handler(cur, cloneProto);
+          } else if (ArrayBuffer.isView(cur)) {
+            o2[k3] = copyBuffer(cur);
+          } else {
+            o2[k3] = cloneProto(cur);
+          }
+        }
+        return o2;
+      }
+    }
+    function rfdcCircles(opts) {
+      const refs = [];
+      const refsNew = [];
+      const constructorHandlers = /* @__PURE__ */ new Map();
+      constructorHandlers.set(Date, (o) => new Date(o));
+      constructorHandlers.set(Map, (o, fn) => new Map(cloneArray(Array.from(o), fn)));
+      constructorHandlers.set(Set, (o, fn) => new Set(cloneArray(Array.from(o), fn)));
+      if (opts.constructorHandlers) {
+        for (const handler2 of opts.constructorHandlers) {
+          constructorHandlers.set(handler2[0], handler2[1]);
         }
       }
-    }
-    function cloneObjectDeep(val, instanceClone) {
-      if (typeof instanceClone === "function") {
-        return instanceClone(val);
-      }
-      if (instanceClone || isPlainObject(val)) {
-        const res = new val.constructor();
-        for (let key in val) {
-          res[key] = cloneDeep2(val[key], instanceClone);
+      let handler = null;
+      return opts.proto ? cloneProto : clone;
+      function cloneArray(a3, fn) {
+        const keys = Object.keys(a3);
+        const a22 = new Array(keys.length);
+        for (let i = 0; i < keys.length; i++) {
+          const k3 = keys[i];
+          const cur = a3[k3];
+          if (typeof cur !== "object" || cur === null) {
+            a22[k3] = cur;
+          } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+            a22[k3] = handler(cur, fn);
+          } else if (ArrayBuffer.isView(cur)) {
+            a22[k3] = copyBuffer(cur);
+          } else {
+            const index4 = refs.indexOf(cur);
+            if (index4 !== -1) {
+              a22[k3] = refsNew[index4];
+            } else {
+              a22[k3] = fn(cur);
+            }
+          }
         }
-        return res;
+        return a22;
       }
-      return val;
-    }
-    function cloneArrayDeep(val, instanceClone) {
-      const res = new val.constructor(val.length);
-      for (let i = 0; i < val.length; i++) {
-        res[i] = cloneDeep2(val[i], instanceClone);
+      function clone(o) {
+        if (typeof o !== "object" || o === null) return o;
+        if (Array.isArray(o)) return cloneArray(o, clone);
+        if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+          return handler(o, clone);
+        }
+        const o2 = {};
+        refs.push(o);
+        refsNew.push(o2);
+        for (const k3 in o) {
+          if (Object.hasOwnProperty.call(o, k3) === false) continue;
+          const cur = o[k3];
+          if (typeof cur !== "object" || cur === null) {
+            o2[k3] = cur;
+          } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+            o2[k3] = handler(cur, clone);
+          } else if (ArrayBuffer.isView(cur)) {
+            o2[k3] = copyBuffer(cur);
+          } else {
+            const i = refs.indexOf(cur);
+            if (i !== -1) {
+              o2[k3] = refsNew[i];
+            } else {
+              o2[k3] = clone(cur);
+            }
+          }
+        }
+        refs.pop();
+        refsNew.pop();
+        return o2;
       }
-      return res;
+      function cloneProto(o) {
+        if (typeof o !== "object" || o === null) return o;
+        if (Array.isArray(o)) return cloneArray(o, cloneProto);
+        if (o.constructor !== Object && (handler = constructorHandlers.get(o.constructor))) {
+          return handler(o, cloneProto);
+        }
+        const o2 = {};
+        refs.push(o);
+        refsNew.push(o2);
+        for (const k3 in o) {
+          const cur = o[k3];
+          if (typeof cur !== "object" || cur === null) {
+            o2[k3] = cur;
+          } else if (cur.constructor !== Object && (handler = constructorHandlers.get(cur.constructor))) {
+            o2[k3] = handler(cur, cloneProto);
+          } else if (ArrayBuffer.isView(cur)) {
+            o2[k3] = copyBuffer(cur);
+          } else {
+            const i = refs.indexOf(cur);
+            if (i !== -1) {
+              o2[k3] = refsNew[i];
+            } else {
+              o2[k3] = cloneProto(cur);
+            }
+          }
+        }
+        refs.pop();
+        refsNew.pop();
+        return o2;
+      }
     }
-    module.exports = cloneDeep2;
   }
 });
 
@@ -597,9 +530,9 @@ var DomPortalOutlet = class extends BasePortalOutlet {
     viewRef.rootNodes.forEach((rootNode) => this.outletElement.appendChild(rootNode));
     viewRef.detectChanges();
     this.setDisposeFn(() => {
-      let index2 = viewContainer.indexOf(viewRef);
-      if (index2 !== -1) {
-        viewContainer.remove(index2);
+      let index4 = viewContainer.indexOf(viewRef);
+      if (index4 !== -1) {
+        viewContainer.remove(index4);
       }
     });
     this._attachedPortal = portal;
@@ -902,226 +835,6 @@ var PortalModule = class _PortalModule {
   }], null, null);
 })();
 
-// node_modules/@angular/animations/fesm2022/animations.mjs
-var AnimationMetadataType;
-(function(AnimationMetadataType2) {
-  AnimationMetadataType2[AnimationMetadataType2["State"] = 0] = "State";
-  AnimationMetadataType2[AnimationMetadataType2["Transition"] = 1] = "Transition";
-  AnimationMetadataType2[AnimationMetadataType2["Sequence"] = 2] = "Sequence";
-  AnimationMetadataType2[AnimationMetadataType2["Group"] = 3] = "Group";
-  AnimationMetadataType2[AnimationMetadataType2["Animate"] = 4] = "Animate";
-  AnimationMetadataType2[AnimationMetadataType2["Keyframes"] = 5] = "Keyframes";
-  AnimationMetadataType2[AnimationMetadataType2["Style"] = 6] = "Style";
-  AnimationMetadataType2[AnimationMetadataType2["Trigger"] = 7] = "Trigger";
-  AnimationMetadataType2[AnimationMetadataType2["Reference"] = 8] = "Reference";
-  AnimationMetadataType2[AnimationMetadataType2["AnimateChild"] = 9] = "AnimateChild";
-  AnimationMetadataType2[AnimationMetadataType2["AnimateRef"] = 10] = "AnimateRef";
-  AnimationMetadataType2[AnimationMetadataType2["Query"] = 11] = "Query";
-  AnimationMetadataType2[AnimationMetadataType2["Stagger"] = 12] = "Stagger";
-})(AnimationMetadataType || (AnimationMetadataType = {}));
-function trigger(name, definitions) {
-  return {
-    type: AnimationMetadataType.Trigger,
-    name,
-    definitions,
-    options: {}
-  };
-}
-function animate(timings, styles = null) {
-  return {
-    type: AnimationMetadataType.Animate,
-    styles,
-    timings
-  };
-}
-function sequence(steps, options = null) {
-  return {
-    type: AnimationMetadataType.Sequence,
-    steps,
-    options
-  };
-}
-function style(tokens) {
-  return {
-    type: AnimationMetadataType.Style,
-    styles: tokens,
-    offset: null
-  };
-}
-function transition(stateChangeExpr, steps, options = null) {
-  return {
-    type: AnimationMetadataType.Transition,
-    expr: stateChangeExpr,
-    animation: steps,
-    options
-  };
-}
-var AnimationBuilder = class _AnimationBuilder {
-  static {
-    this.ɵfac = function AnimationBuilder_Factory(t) {
-      return new (t || _AnimationBuilder)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _AnimationBuilder,
-      factory: () => (() => inject(BrowserAnimationBuilder))(),
-      providedIn: "root"
-    });
-  }
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AnimationBuilder, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root",
-      useFactory: () => inject(BrowserAnimationBuilder)
-    }]
-  }], null, null);
-})();
-var AnimationFactory = class {
-};
-var BrowserAnimationBuilder = class _BrowserAnimationBuilder extends AnimationBuilder {
-  constructor(rootRenderer, doc) {
-    super();
-    this.animationModuleType = inject(ANIMATION_MODULE_TYPE, {
-      optional: true
-    });
-    this._nextAnimationId = 0;
-    const typeData = {
-      id: "0",
-      encapsulation: ViewEncapsulation$1.None,
-      styles: [],
-      data: {
-        animation: []
-      }
-    };
-    this._renderer = rootRenderer.createRenderer(doc.body, typeData);
-    if (this.animationModuleType === null && !isAnimationRenderer(this._renderer)) {
-      throw new RuntimeError(3600, (typeof ngDevMode === "undefined" || ngDevMode) && "Angular detected that the `AnimationBuilder` was injected, but animation support was not enabled. Please make sure that you enable animations in your application by calling `provideAnimations()` or `provideAnimationsAsync()` function.");
-    }
-  }
-  build(animation) {
-    const id3 = this._nextAnimationId;
-    this._nextAnimationId++;
-    const entry = Array.isArray(animation) ? sequence(animation) : animation;
-    issueAnimationCommand(this._renderer, null, id3, "register", [entry]);
-    return new BrowserAnimationFactory(id3, this._renderer);
-  }
-  static {
-    this.ɵfac = function BrowserAnimationBuilder_Factory(t) {
-      return new (t || _BrowserAnimationBuilder)(ɵɵinject(RendererFactory2), ɵɵinject(DOCUMENT));
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _BrowserAnimationBuilder,
-      factory: _BrowserAnimationBuilder.ɵfac,
-      providedIn: "root"
-    });
-  }
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(BrowserAnimationBuilder, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [{
-    type: RendererFactory2
-  }, {
-    type: Document,
-    decorators: [{
-      type: Inject,
-      args: [DOCUMENT]
-    }]
-  }], null);
-})();
-var BrowserAnimationFactory = class extends AnimationFactory {
-  constructor(_id, _renderer) {
-    super();
-    this._id = _id;
-    this._renderer = _renderer;
-  }
-  create(element, options) {
-    return new RendererAnimationPlayer(this._id, element, options || {}, this._renderer);
-  }
-};
-var RendererAnimationPlayer = class {
-  constructor(id3, element, options, _renderer) {
-    this.id = id3;
-    this.element = element;
-    this._renderer = _renderer;
-    this.parentPlayer = null;
-    this._started = false;
-    this.totalTime = 0;
-    this._command("create", options);
-  }
-  _listen(eventName, callback) {
-    return this._renderer.listen(this.element, `@@${this.id}:${eventName}`, callback);
-  }
-  _command(command, ...args) {
-    issueAnimationCommand(this._renderer, this.element, this.id, command, args);
-  }
-  onDone(fn) {
-    this._listen("done", fn);
-  }
-  onStart(fn) {
-    this._listen("start", fn);
-  }
-  onDestroy(fn) {
-    this._listen("destroy", fn);
-  }
-  init() {
-    this._command("init");
-  }
-  hasStarted() {
-    return this._started;
-  }
-  play() {
-    this._command("play");
-    this._started = true;
-  }
-  pause() {
-    this._command("pause");
-  }
-  restart() {
-    this._command("restart");
-  }
-  finish() {
-    this._command("finish");
-  }
-  destroy() {
-    this._command("destroy");
-  }
-  reset() {
-    this._command("reset");
-    this._started = false;
-  }
-  setPosition(p) {
-    this._command("setPosition", p);
-  }
-  getPosition() {
-    return unwrapAnimationRenderer(this._renderer)?.engine?.players[this.id]?.getPosition() ?? 0;
-  }
-};
-function issueAnimationCommand(renderer, element, id3, command, args) {
-  renderer.setProperty(element, `@@${id3}:${command}`, args);
-}
-function unwrapAnimationRenderer(renderer) {
-  const type2 = renderer.ɵtype;
-  if (type2 === 0) {
-    return renderer;
-  } else if (type2 === 1) {
-    return renderer.animationRenderer;
-  }
-  return null;
-}
-function isAnimationRenderer(renderer) {
-  const type2 = renderer.ɵtype;
-  return type2 === 0 || type2 === 1;
-}
-
 // node_modules/d3-selection/src/namespaces.js
 var xhtml = "http://www.w3.org/1999/xhtml";
 var namespaces_default = {
@@ -1168,9 +881,9 @@ function selector_default(selector) {
 // node_modules/d3-selection/src/selection/select.js
 function select_default(select) {
   if (typeof select !== "function") select = selector_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && (subnode = select.call(node, node.__data__, i, group2))) {
+  for (var groups4 = this._groups, m = groups4.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
+      if ((node = group4[i]) && (subnode = select.call(node, node.__data__, i, group4))) {
         if ("__data__" in node) subnode.__data__ = node.__data__;
         subgroup[i] = subnode;
       }
@@ -1180,8 +893,8 @@ function select_default(select) {
 }
 
 // node_modules/d3-selection/src/array.js
-function array_default(x2) {
-  return typeof x2 === "object" && "length" in x2 ? x2 : Array.from(x2);
+function array(x3) {
+  return x3 == null ? [] : Array.isArray(x3) ? x3 : Array.from(x3);
 }
 
 // node_modules/d3-selection/src/selectorAll.js
@@ -1197,17 +910,16 @@ function selectorAll_default(selector) {
 // node_modules/d3-selection/src/selection/selectAll.js
 function arrayAll(select) {
   return function() {
-    var group2 = select.apply(this, arguments);
-    return group2 == null ? [] : array_default(group2);
+    return array(select.apply(this, arguments));
   };
 }
 function selectAll_default(select) {
   if (typeof select === "function") select = arrayAll(select);
   else select = selectorAll_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        subgroups.push(select.call(node, node.__data__, i, group2));
+  for (var groups4 = this._groups, m = groups4.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, node, i = 0; i < n; ++i) {
+      if (node = group4[i]) {
+        subgroups.push(select.call(node, node.__data__, i, group4));
         parents.push(node);
       }
     }
@@ -1244,7 +956,7 @@ function selectChild_default(match) {
 // node_modules/d3-selection/src/selection/selectChildren.js
 var filter = Array.prototype.filter;
 function children() {
-  return this.children;
+  return Array.from(this.children);
 }
 function childrenFilter(match) {
   return function() {
@@ -1258,9 +970,9 @@ function selectChildren_default(match) {
 // node_modules/d3-selection/src/selection/filter.js
 function filter_default(match) {
   if (typeof match !== "function") match = matcher_default(match);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && match.call(node, node.__data__, i, group2)) {
+  for (var groups4 = this._groups, m = groups4.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
+      if ((node = group4[i]) && match.call(node, node.__data__, i, group4)) {
         subgroup.push(node);
       }
     }
@@ -1301,17 +1013,17 @@ EnterNode.prototype = {
 };
 
 // node_modules/d3-selection/src/constant.js
-function constant_default(x2) {
+function constant_default(x3) {
   return function() {
-    return x2;
+    return x3;
   };
 }
 
 // node_modules/d3-selection/src/selection/data.js
-function bindIndex(parent, group2, enter, update, exit, data) {
-  var i = 0, node, groupLength = group2.length, dataLength = data.length;
+function bindIndex(parent, group4, enter, update, exit, data) {
+  var i = 0, node, groupLength = group4.length, dataLength = data.length;
   for (; i < dataLength; ++i) {
-    if (node = group2[i]) {
+    if (node = group4[i]) {
       node.__data__ = data[i];
       update[i] = node;
     } else {
@@ -1319,16 +1031,16 @@ function bindIndex(parent, group2, enter, update, exit, data) {
     }
   }
   for (; i < groupLength; ++i) {
-    if (node = group2[i]) {
+    if (node = group4[i]) {
       exit[i] = node;
     }
   }
 }
-function bindKey(parent, group2, enter, update, exit, data, key) {
-  var i, node, nodeByKeyValue = /* @__PURE__ */ new Map(), groupLength = group2.length, dataLength = data.length, keyValues = new Array(groupLength), keyValue;
+function bindKey(parent, group4, enter, update, exit, data, key) {
+  var i, node, nodeByKeyValue = /* @__PURE__ */ new Map(), groupLength = group4.length, dataLength = data.length, keyValues = new Array(groupLength), keyValue;
   for (i = 0; i < groupLength; ++i) {
-    if (node = group2[i]) {
-      keyValues[i] = keyValue = key.call(node, node.__data__, i, group2) + "";
+    if (node = group4[i]) {
+      keyValues[i] = keyValue = key.call(node, node.__data__, i, group4) + "";
       if (nodeByKeyValue.has(keyValue)) {
         exit[i] = node;
       } else {
@@ -1347,7 +1059,7 @@ function bindKey(parent, group2, enter, update, exit, data, key) {
     }
   }
   for (i = 0; i < groupLength; ++i) {
-    if ((node = group2[i]) && nodeByKeyValue.get(keyValues[i]) === node) {
+    if ((node = group4[i]) && nodeByKeyValue.get(keyValues[i]) === node) {
       exit[i] = node;
     }
   }
@@ -1355,13 +1067,13 @@ function bindKey(parent, group2, enter, update, exit, data, key) {
 function datum(node) {
   return node.__data__;
 }
-function data_default(value, key) {
+function data_default(value2, key) {
   if (!arguments.length) return Array.from(this, datum);
-  var bind = key ? bindKey : bindIndex, parents = this._parents, groups2 = this._groups;
-  if (typeof value !== "function") value = constant_default(value);
-  for (var m = groups2.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
-    var parent = parents[j], group2 = groups2[j], groupLength = group2.length, data = array_default(value.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit[j] = new Array(groupLength);
-    bind(parent, group2, enterGroup, updateGroup, exitGroup, data, key);
+  var bind = key ? bindKey : bindIndex, parents = this._parents, groups4 = this._groups;
+  if (typeof value2 !== "function") value2 = constant_default(value2);
+  for (var m = groups4.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
+    var parent = parents[j], group4 = groups4[j], groupLength = group4.length, data = arraylike(value2.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit[j] = new Array(groupLength);
+    bind(parent, group4, enterGroup, updateGroup, exitGroup, data, key);
     for (var i0 = 0, i1 = 0, previous, next; i0 < dataLength; ++i0) {
       if (previous = enterGroup[i0]) {
         if (i0 >= i1) i1 = i0 + 1;
@@ -1375,6 +1087,9 @@ function data_default(value, key) {
   update._exit = exit;
   return update;
 }
+function arraylike(data) {
+  return typeof data === "object" && "length" in data ? data : Array.from(data);
+}
 
 // node_modules/d3-selection/src/selection/exit.js
 function exit_default() {
@@ -1384,20 +1099,28 @@ function exit_default() {
 // node_modules/d3-selection/src/selection/join.js
 function join_default(onenter, onupdate, onexit) {
   var enter = this.enter(), update = this, exit = this.exit();
-  enter = typeof onenter === "function" ? onenter(enter) : enter.append(onenter + "");
-  if (onupdate != null) update = onupdate(update);
+  if (typeof onenter === "function") {
+    enter = onenter(enter);
+    if (enter) enter = enter.selection();
+  } else {
+    enter = enter.append(onenter + "");
+  }
+  if (onupdate != null) {
+    update = onupdate(update);
+    if (update) update = update.selection();
+  }
   if (onexit == null) exit.remove();
   else onexit(exit);
   return enter && update ? enter.merge(update).order() : update;
 }
 
 // node_modules/d3-selection/src/selection/merge.js
-function merge_default(selection2) {
-  if (!(selection2 instanceof Selection)) throw new Error("invalid merge");
+function merge_default(context) {
+  var selection2 = context.selection ? context.selection() : context;
   for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
-    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge2 = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
+    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge4 = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
       if (node = group0[i] || group1[i]) {
-        merge2[i] = node;
+        merge4[i] = node;
       }
     }
   }
@@ -1409,9 +1132,9 @@ function merge_default(selection2) {
 
 // node_modules/d3-selection/src/selection/order.js
 function order_default() {
-  for (var groups2 = this._groups, j = -1, m = groups2.length; ++j < m; ) {
-    for (var group2 = groups2[j], i = group2.length - 1, next = group2[i], node; --i >= 0; ) {
-      if (node = group2[i]) {
+  for (var groups4 = this._groups, j = -1, m = groups4.length; ++j < m; ) {
+    for (var group4 = groups4[j], i = group4.length - 1, next = group4[i], node; --i >= 0; ) {
+      if (node = group4[i]) {
         if (next && node.compareDocumentPosition(next) ^ 4) next.parentNode.insertBefore(node, next);
         next = node;
       }
@@ -1423,12 +1146,12 @@ function order_default() {
 // node_modules/d3-selection/src/selection/sort.js
 function sort_default(compare) {
   if (!compare) compare = ascending;
-  function compareNode(a2, b) {
-    return a2 && b ? compare(a2.__data__, b.__data__) : !a2 - !b;
+  function compareNode(a3, b) {
+    return a3 && b ? compare(a3.__data__, b.__data__) : !a3 - !b;
   }
-  for (var groups2 = this._groups, m = groups2.length, sortgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, sortgroup = sortgroups[j] = new Array(n), node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
+  for (var groups4 = this._groups, m = groups4.length, sortgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, sortgroup = sortgroups[j] = new Array(n), node, i = 0; i < n; ++i) {
+      if (node = group4[i]) {
         sortgroup[i] = node;
       }
     }
@@ -1436,8 +1159,8 @@ function sort_default(compare) {
   }
   return new Selection(sortgroups, this._parents).order();
 }
-function ascending(a2, b) {
-  return a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
+function ascending(a3, b) {
+  return a3 < b ? -1 : a3 > b ? 1 : a3 >= b ? 0 : NaN;
 }
 
 // node_modules/d3-selection/src/selection/call.js
@@ -1455,9 +1178,9 @@ function nodes_default() {
 
 // node_modules/d3-selection/src/selection/node.js
 function node_default() {
-  for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
-    for (var group2 = groups2[j], i = 0, n = group2.length; i < n; ++i) {
-      var node = group2[i];
+  for (var groups4 = this._groups, j = 0, m = groups4.length; j < m; ++j) {
+    for (var group4 = groups4[j], i = 0, n = group4.length; i < n; ++i) {
+      var node = group4[i];
       if (node) return node;
     }
   }
@@ -1478,9 +1201,9 @@ function empty_default() {
 
 // node_modules/d3-selection/src/selection/each.js
 function each_default(callback) {
-  for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
-    for (var group2 = groups2[j], i = 0, n = group2.length, node; i < n; ++i) {
-      if (node = group2[i]) callback.call(node, node.__data__, i, group2);
+  for (var groups4 = this._groups, j = 0, m = groups4.length; j < m; ++j) {
+    for (var group4 = groups4[j], i = 0, n = group4.length, node; i < n; ++i) {
+      if (node = group4[i]) callback.call(node, node.__data__, i, group4);
     }
   }
   return this;
@@ -1497,37 +1220,37 @@ function attrRemoveNS(fullname) {
     this.removeAttributeNS(fullname.space, fullname.local);
   };
 }
-function attrConstant(name, value) {
+function attrConstant(name, value2) {
   return function() {
-    this.setAttribute(name, value);
+    this.setAttribute(name, value2);
   };
 }
-function attrConstantNS(fullname, value) {
+function attrConstantNS(fullname, value2) {
   return function() {
-    this.setAttributeNS(fullname.space, fullname.local, value);
+    this.setAttributeNS(fullname.space, fullname.local, value2);
   };
 }
-function attrFunction(name, value) {
+function attrFunction(name, value2) {
   return function() {
-    var v = value.apply(this, arguments);
+    var v = value2.apply(this, arguments);
     if (v == null) this.removeAttribute(name);
     else this.setAttribute(name, v);
   };
 }
-function attrFunctionNS(fullname, value) {
+function attrFunctionNS(fullname, value2) {
   return function() {
-    var v = value.apply(this, arguments);
+    var v = value2.apply(this, arguments);
     if (v == null) this.removeAttributeNS(fullname.space, fullname.local);
     else this.setAttributeNS(fullname.space, fullname.local, v);
   };
 }
-function attr_default(name, value) {
+function attr_default(name, value2) {
   var fullname = namespace_default(name);
   if (arguments.length < 2) {
     var node = this.node();
     return fullname.local ? node.getAttributeNS(fullname.space, fullname.local) : node.getAttribute(fullname);
   }
-  return this.each((value == null ? fullname.local ? attrRemoveNS : attrRemove : typeof value === "function" ? fullname.local ? attrFunctionNS : attrFunction : fullname.local ? attrConstantNS : attrConstant)(fullname, value));
+  return this.each((value2 == null ? fullname.local ? attrRemoveNS : attrRemove : typeof value2 === "function" ? fullname.local ? attrFunctionNS : attrFunction : fullname.local ? attrConstantNS : attrConstant)(fullname, value2));
 }
 
 // node_modules/d3-selection/src/window.js
@@ -1541,20 +1264,20 @@ function styleRemove(name) {
     this.style.removeProperty(name);
   };
 }
-function styleConstant(name, value, priority) {
+function styleConstant(name, value2, priority) {
   return function() {
-    this.style.setProperty(name, value, priority);
+    this.style.setProperty(name, value2, priority);
   };
 }
-function styleFunction(name, value, priority) {
+function styleFunction(name, value2, priority) {
   return function() {
-    var v = value.apply(this, arguments);
+    var v = value2.apply(this, arguments);
     if (v == null) this.style.removeProperty(name);
     else this.style.setProperty(name, v, priority);
   };
 }
-function style_default(name, value, priority) {
-  return arguments.length > 1 ? this.each((value == null ? styleRemove : typeof value === "function" ? styleFunction : styleConstant)(name, value, priority == null ? "" : priority)) : styleValue(this.node(), name);
+function style_default(name, value2, priority) {
+  return arguments.length > 1 ? this.each((value2 == null ? styleRemove : typeof value2 === "function" ? styleFunction : styleConstant)(name, value2, priority == null ? "" : priority)) : styleValue(this.node(), name);
 }
 function styleValue(node, name) {
   return node.style.getPropertyValue(name) || window_default(node).getComputedStyle(node, null).getPropertyValue(name);
@@ -1566,20 +1289,20 @@ function propertyRemove(name) {
     delete this[name];
   };
 }
-function propertyConstant(name, value) {
+function propertyConstant(name, value2) {
   return function() {
-    this[name] = value;
+    this[name] = value2;
   };
 }
-function propertyFunction(name, value) {
+function propertyFunction(name, value2) {
   return function() {
-    var v = value.apply(this, arguments);
+    var v = value2.apply(this, arguments);
     if (v == null) delete this[name];
     else this[name] = v;
   };
 }
-function property_default(name, value) {
-  return arguments.length > 1 ? this.each((value == null ? propertyRemove : typeof value === "function" ? propertyFunction : propertyConstant)(name, value)) : this.node()[name];
+function property_default(name, value2) {
+  return arguments.length > 1 ? this.each((value2 == null ? propertyRemove : typeof value2 === "function" ? propertyFunction : propertyConstant)(name, value2)) : this.node()[name];
 }
 
 // node_modules/d3-selection/src/selection/classed.js
@@ -1630,57 +1353,57 @@ function classedFalse(names) {
     classedRemove(this, names);
   };
 }
-function classedFunction(names, value) {
+function classedFunction(names, value2) {
   return function() {
-    (value.apply(this, arguments) ? classedAdd : classedRemove)(this, names);
+    (value2.apply(this, arguments) ? classedAdd : classedRemove)(this, names);
   };
 }
-function classed_default(name, value) {
+function classed_default(name, value2) {
   var names = classArray(name + "");
   if (arguments.length < 2) {
     var list = classList(this.node()), i = -1, n = names.length;
     while (++i < n) if (!list.contains(names[i])) return false;
     return true;
   }
-  return this.each((typeof value === "function" ? classedFunction : value ? classedTrue : classedFalse)(names, value));
+  return this.each((typeof value2 === "function" ? classedFunction : value2 ? classedTrue : classedFalse)(names, value2));
 }
 
 // node_modules/d3-selection/src/selection/text.js
 function textRemove() {
   this.textContent = "";
 }
-function textConstant(value) {
+function textConstant(value2) {
   return function() {
-    this.textContent = value;
+    this.textContent = value2;
   };
 }
-function textFunction(value) {
+function textFunction(value2) {
   return function() {
-    var v = value.apply(this, arguments);
+    var v = value2.apply(this, arguments);
     this.textContent = v == null ? "" : v;
   };
 }
-function text_default(value) {
-  return arguments.length ? this.each(value == null ? textRemove : (typeof value === "function" ? textFunction : textConstant)(value)) : this.node().textContent;
+function text_default(value2) {
+  return arguments.length ? this.each(value2 == null ? textRemove : (typeof value2 === "function" ? textFunction : textConstant)(value2)) : this.node().textContent;
 }
 
 // node_modules/d3-selection/src/selection/html.js
 function htmlRemove() {
   this.innerHTML = "";
 }
-function htmlConstant(value) {
+function htmlConstant(value2) {
   return function() {
-    this.innerHTML = value;
+    this.innerHTML = value2;
   };
 }
-function htmlFunction(value) {
+function htmlFunction(value2) {
   return function() {
-    var v = value.apply(this, arguments);
+    var v = value2.apply(this, arguments);
     this.innerHTML = v == null ? "" : v;
   };
 }
-function html_default(value) {
-  return arguments.length ? this.each(value == null ? htmlRemove : (typeof value === "function" ? htmlFunction : htmlConstant)(value)) : this.node().innerHTML;
+function html_default(value2) {
+  return arguments.length ? this.each(value2 == null ? htmlRemove : (typeof value2 === "function" ? htmlFunction : htmlConstant)(value2)) : this.node().innerHTML;
 }
 
 // node_modules/d3-selection/src/selection/raise.js
@@ -1741,8 +1464,8 @@ function clone_default(deep) {
 }
 
 // node_modules/d3-selection/src/selection/datum.js
-function datum_default(value) {
-  return arguments.length ? this.property("__data__", value) : this.node().__data__;
+function datum_default(value2) {
+  return arguments.length ? this.property("__data__", value2) : this.node().__data__;
 }
 
 // node_modules/d3-selection/src/selection/on.js
@@ -1773,24 +1496,24 @@ function onRemove(typename) {
     else delete this.__on;
   };
 }
-function onAdd(typename, value, options) {
+function onAdd(typename, value2, options) {
   return function() {
-    var on = this.__on, o, listener = contextListener(value);
+    var on = this.__on, o, listener = contextListener(value2);
     if (on) for (var j = 0, m = on.length; j < m; ++j) {
       if ((o = on[j]).type === typename.type && o.name === typename.name) {
         this.removeEventListener(o.type, o.listener, o.options);
         this.addEventListener(o.type, o.listener = listener, o.options = options);
-        o.value = value;
+        o.value = value2;
         return;
       }
     }
     this.addEventListener(typename.type, listener, options);
-    o = { type: typename.type, name: typename.name, value, listener, options };
+    o = { type: typename.type, name: typename.name, value: value2, listener, options };
     if (!on) this.__on = [o];
     else on.push(o);
   };
 }
-function on_default(typename, value, options) {
+function on_default(typename, value2, options) {
   var typenames = parseTypenames(typename + ""), i, n = typenames.length, t;
   if (arguments.length < 2) {
     var on = this.node().__on;
@@ -1803,8 +1526,8 @@ function on_default(typename, value, options) {
     }
     return;
   }
-  on = value ? onAdd : onRemove;
-  for (i = 0; i < n; ++i) this.each(on(typenames[i], value, options));
+  on = value2 ? onAdd : onRemove;
+  for (i = 0; i < n; ++i) this.each(on(typenames[i], value2, options));
   return this;
 }
 
@@ -1836,17 +1559,17 @@ function dispatch_default(type2, params) {
 
 // node_modules/d3-selection/src/selection/iterator.js
 function* iterator_default() {
-  for (var groups2 = this._groups, j = 0, m = groups2.length; j < m; ++j) {
-    for (var group2 = groups2[j], i = 0, n = group2.length, node; i < n; ++i) {
-      if (node = group2[i]) yield node;
+  for (var groups4 = this._groups, j = 0, m = groups4.length; j < m; ++j) {
+    for (var group4 = groups4[j], i = 0, n = group4.length, node; i < n; ++i) {
+      if (node = group4[i]) yield node;
     }
   }
 }
 
 // node_modules/d3-selection/src/selection/index.js
 var root = [null];
-function Selection(groups2, parents) {
-  this._groups = groups2;
+function Selection(groups4, parents) {
+  this._groups = groups4;
   this._parents = parents;
 }
 function selection() {
@@ -1915,8 +1638,8 @@ Local.prototype = local.prototype = {
     while (!(id3 in node)) if (!(node = node.parentNode)) return;
     return node[id3];
   },
-  set: function(node, value) {
-    return node[this._] = value;
+  set: function(node, value2) {
+    return node[this._] = value2;
   },
   remove: function(node) {
     return this._ in node && delete node[this._];
@@ -1940,10 +1663,10 @@ function pointer_default(event, node) {
   if (node) {
     var svg = node.ownerSVGElement || node;
     if (svg.createSVGPoint) {
-      var point6 = svg.createSVGPoint();
-      point6.x = event.clientX, point6.y = event.clientY;
-      point6 = point6.matrixTransform(node.getScreenCTM().inverse());
-      return [point6.x, point6.y];
+      var point10 = svg.createSVGPoint();
+      point10.x = event.clientX, point10.y = event.clientY;
+      point10 = point10.matrixTransform(node.getScreenCTM().inverse());
+      return [point10.x, point10.y];
     }
     if (node.getBoundingClientRect) {
       var rect = node.getBoundingClientRect();
@@ -1953,7 +1676,7 @@ function pointer_default(event, node) {
   return [event.pageX, event.pageY];
 }
 
-// node_modules/d3-brush/node_modules/d3-dispatch/src/dispatch.js
+// node_modules/d3-dispatch/src/dispatch.js
 var noop = { value: () => {
 } };
 function dispatch() {
@@ -2023,17 +1746,18 @@ function set(type2, name, callback) {
 }
 var dispatch_default2 = dispatch;
 
-// node_modules/d3-brush/node_modules/d3-drag/src/noevent.js
+// node_modules/d3-drag/src/noevent.js
+var nonpassivecapture = { capture: true, passive: false };
 function noevent_default(event) {
   event.preventDefault();
   event.stopImmediatePropagation();
 }
 
-// node_modules/d3-brush/node_modules/d3-drag/src/nodrag.js
+// node_modules/d3-drag/src/nodrag.js
 function nodrag_default(view) {
-  var root3 = view.document.documentElement, selection2 = select_default2(view).on("dragstart.drag", noevent_default, true);
+  var root3 = view.document.documentElement, selection2 = select_default2(view).on("dragstart.drag", noevent_default, nonpassivecapture);
   if ("onselectstart" in root3) {
-    selection2.on("selectstart.drag", noevent_default, true);
+    selection2.on("selectstart.drag", noevent_default, nonpassivecapture);
   } else {
     root3.__noselect = root3.style.MozUserSelect;
     root3.style.MozUserSelect = "none";
@@ -2042,7 +1766,7 @@ function nodrag_default(view) {
 function yesdrag(view, noclick) {
   var root3 = view.document.documentElement, selection2 = select_default2(view).on("dragstart.drag", null);
   if (noclick) {
-    selection2.on("click.drag", noevent_default, true);
+    selection2.on("click.drag", noevent_default, nonpassivecapture);
     setTimeout(function() {
       selection2.on("click.drag", null);
     }, 0);
@@ -2055,18 +1779,18 @@ function yesdrag(view, noclick) {
   }
 }
 
-// node_modules/d3-brush/node_modules/d3-drag/src/event.js
+// node_modules/d3-drag/src/event.js
 function DragEvent(type2, {
   sourceEvent,
   subject,
   target,
   identifier,
   active,
-  x: x2,
-  y: y2,
+  x: x3,
+  y: y3,
   dx,
   dy,
-  dispatch: dispatch3
+  dispatch: dispatch2
 }) {
   Object.defineProperties(this, {
     type: { value: type2, enumerable: true, configurable: true },
@@ -2075,16 +1799,16 @@ function DragEvent(type2, {
     target: { value: target, enumerable: true, configurable: true },
     identifier: { value: identifier, enumerable: true, configurable: true },
     active: { value: active, enumerable: true, configurable: true },
-    x: { value: x2, enumerable: true, configurable: true },
-    y: { value: y2, enumerable: true, configurable: true },
+    x: { value: x3, enumerable: true, configurable: true },
+    y: { value: y3, enumerable: true, configurable: true },
     dx: { value: dx, enumerable: true, configurable: true },
     dy: { value: dy, enumerable: true, configurable: true },
-    _: { value: dispatch3 }
+    _: { value: dispatch2 }
   });
 }
 DragEvent.prototype.on = function() {
-  var value = this._.on.apply(this._, arguments);
-  return value === this._ ? this : value;
+  var value2 = this._.on.apply(this._, arguments);
+  return value2 === this._ ? this : value2;
 };
 
 // node_modules/d3-color/src/define.js
@@ -2294,9 +2018,9 @@ function color(format2) {
 function rgbn(n) {
   return new Rgb(n >> 16 & 255, n >> 8 & 255, n & 255, 1);
 }
-function rgba(r, g, b, a2) {
-  if (a2 <= 0) r = g = b = NaN;
-  return new Rgb(r, g, b, a2);
+function rgba(r, g, b, a3) {
+  if (a3 <= 0) r = g = b = NaN;
+  return new Rgb(r, g, b, a3);
 }
 function rgbConvert(o) {
   if (!(o instanceof Color)) o = color(o);
@@ -2314,13 +2038,13 @@ function Rgb(r, g, b, opacity) {
   this.opacity = +opacity;
 }
 define_default(Rgb, rgb, extend(Color, {
-  brighter: function(k2) {
-    k2 = k2 == null ? brighter : Math.pow(brighter, k2);
-    return new Rgb(this.r * k2, this.g * k2, this.b * k2, this.opacity);
+  brighter: function(k3) {
+    k3 = k3 == null ? brighter : Math.pow(brighter, k3);
+    return new Rgb(this.r * k3, this.g * k3, this.b * k3, this.opacity);
   },
-  darker: function(k2) {
-    k2 = k2 == null ? darker : Math.pow(darker, k2);
-    return new Rgb(this.r * k2, this.g * k2, this.b * k2, this.opacity);
+  darker: function(k3) {
+    k3 = k3 == null ? darker : Math.pow(darker, k3);
+    return new Rgb(this.r * k3, this.g * k3, this.b * k3, this.opacity);
   },
   rgb: function() {
     return this;
@@ -2338,19 +2062,19 @@ function rgb_formatHex() {
   return "#" + hex(this.r) + hex(this.g) + hex(this.b);
 }
 function rgb_formatRgb() {
-  var a2 = this.opacity;
-  a2 = isNaN(a2) ? 1 : Math.max(0, Math.min(1, a2));
-  return (a2 === 1 ? "rgb(" : "rgba(") + Math.max(0, Math.min(255, Math.round(this.r) || 0)) + ", " + Math.max(0, Math.min(255, Math.round(this.g) || 0)) + ", " + Math.max(0, Math.min(255, Math.round(this.b) || 0)) + (a2 === 1 ? ")" : ", " + a2 + ")");
+  var a3 = this.opacity;
+  a3 = isNaN(a3) ? 1 : Math.max(0, Math.min(1, a3));
+  return (a3 === 1 ? "rgb(" : "rgba(") + Math.max(0, Math.min(255, Math.round(this.r) || 0)) + ", " + Math.max(0, Math.min(255, Math.round(this.g) || 0)) + ", " + Math.max(0, Math.min(255, Math.round(this.b) || 0)) + (a3 === 1 ? ")" : ", " + a3 + ")");
 }
-function hex(value) {
-  value = Math.max(0, Math.min(255, Math.round(value) || 0));
-  return (value < 16 ? "0" : "") + value.toString(16);
+function hex(value2) {
+  value2 = Math.max(0, Math.min(255, Math.round(value2) || 0));
+  return (value2 < 16 ? "0" : "") + value2.toString(16);
 }
-function hsla(h, s2, l, a2) {
-  if (a2 <= 0) h = s2 = l = NaN;
-  else if (l <= 0 || l >= 1) h = s2 = NaN;
-  else if (s2 <= 0) h = NaN;
-  return new Hsl(h, s2, l, a2);
+function hsla(h, s3, l, a3) {
+  if (a3 <= 0) h = s3 = l = NaN;
+  else if (l <= 0 || l >= 1) h = s3 = NaN;
+  else if (s3 <= 0) h = NaN;
+  return new Hsl(h, s3, l, a3);
 }
 function hslConvert(o) {
   if (o instanceof Hsl) return new Hsl(o.h, o.s, o.l, o.opacity);
@@ -2358,38 +2082,38 @@ function hslConvert(o) {
   if (!o) return new Hsl();
   if (o instanceof Hsl) return o;
   o = o.rgb();
-  var r = o.r / 255, g = o.g / 255, b = o.b / 255, min4 = Math.min(r, g, b), max4 = Math.max(r, g, b), h = NaN, s2 = max4 - min4, l = (max4 + min4) / 2;
-  if (s2) {
-    if (r === max4) h = (g - b) / s2 + (g < b) * 6;
-    else if (g === max4) h = (b - r) / s2 + 2;
-    else h = (r - g) / s2 + 4;
-    s2 /= l < 0.5 ? max4 + min4 : 2 - max4 - min4;
+  var r = o.r / 255, g = o.g / 255, b = o.b / 255, min7 = Math.min(r, g, b), max7 = Math.max(r, g, b), h = NaN, s3 = max7 - min7, l = (max7 + min7) / 2;
+  if (s3) {
+    if (r === max7) h = (g - b) / s3 + (g < b) * 6;
+    else if (g === max7) h = (b - r) / s3 + 2;
+    else h = (r - g) / s3 + 4;
+    s3 /= l < 0.5 ? max7 + min7 : 2 - max7 - min7;
     h *= 60;
   } else {
-    s2 = l > 0 && l < 1 ? 0 : h;
+    s3 = l > 0 && l < 1 ? 0 : h;
   }
-  return new Hsl(h, s2, l, o.opacity);
+  return new Hsl(h, s3, l, o.opacity);
 }
-function hsl(h, s2, l, opacity) {
-  return arguments.length === 1 ? hslConvert(h) : new Hsl(h, s2, l, opacity == null ? 1 : opacity);
+function hsl(h, s3, l, opacity) {
+  return arguments.length === 1 ? hslConvert(h) : new Hsl(h, s3, l, opacity == null ? 1 : opacity);
 }
-function Hsl(h, s2, l, opacity) {
+function Hsl(h, s3, l, opacity) {
   this.h = +h;
-  this.s = +s2;
+  this.s = +s3;
   this.l = +l;
   this.opacity = +opacity;
 }
 define_default(Hsl, hsl, extend(Color, {
-  brighter: function(k2) {
-    k2 = k2 == null ? brighter : Math.pow(brighter, k2);
-    return new Hsl(this.h, this.s, this.l * k2, this.opacity);
+  brighter: function(k3) {
+    k3 = k3 == null ? brighter : Math.pow(brighter, k3);
+    return new Hsl(this.h, this.s, this.l * k3, this.opacity);
   },
-  darker: function(k2) {
-    k2 = k2 == null ? darker : Math.pow(darker, k2);
-    return new Hsl(this.h, this.s, this.l * k2, this.opacity);
+  darker: function(k3) {
+    k3 = k3 == null ? darker : Math.pow(darker, k3);
+    return new Hsl(this.h, this.s, this.l * k3, this.opacity);
   },
   rgb: function() {
-    var h = this.h % 360 + (this.h < 0) * 360, s2 = isNaN(h) || isNaN(this.s) ? 0 : this.s, l = this.l, m2 = l + (l < 0.5 ? l : 1 - l) * s2, m1 = 2 * l - m2;
+    var h = this.h % 360 + (this.h < 0) * 360, s3 = isNaN(h) || isNaN(this.s) ? 0 : this.s, l = this.l, m2 = l + (l < 0.5 ? l : 1 - l) * s3, m1 = 2 * l - m2;
     return new Rgb(
       hsl2rgb(h >= 240 ? h - 240 : h + 120, m1, m2),
       hsl2rgb(h, m1, m2),
@@ -2401,9 +2125,9 @@ define_default(Hsl, hsl, extend(Color, {
     return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && (0 <= this.l && this.l <= 1) && (0 <= this.opacity && this.opacity <= 1);
   },
   formatHsl: function() {
-    var a2 = this.opacity;
-    a2 = isNaN(a2) ? 1 : Math.max(0, Math.min(1, a2));
-    return (a2 === 1 ? "hsl(" : "hsla(") + (this.h || 0) + ", " + (this.s || 0) * 100 + "%, " + (this.l || 0) * 100 + "%" + (a2 === 1 ? ")" : ", " + a2 + ")");
+    var a3 = this.opacity;
+    a3 = isNaN(a3) ? 1 : Math.max(0, Math.min(1, a3));
+    return (a3 === 1 ? "hsl(" : "hsla(") + (this.h || 0) + ", " + (this.s || 0) * 100 + "%, " + (this.l || 0) * 100 + "%" + (a3 === 1 ? ")" : ", " + a3 + ")");
   }
 }));
 function hsl2rgb(h, m1, m2) {
@@ -2427,39 +2151,39 @@ function labConvert(o) {
   if (o instanceof Lab) return new Lab(o.l, o.a, o.b, o.opacity);
   if (o instanceof Hcl) return hcl2lab(o);
   if (!(o instanceof Rgb)) o = rgbConvert(o);
-  var r = rgb2lrgb(o.r), g = rgb2lrgb(o.g), b = rgb2lrgb(o.b), y2 = xyz2lab((0.2225045 * r + 0.7168786 * g + 0.0606169 * b) / Yn), x2, z;
-  if (r === g && g === b) x2 = z = y2;
+  var r = rgb2lrgb(o.r), g = rgb2lrgb(o.g), b = rgb2lrgb(o.b), y3 = xyz2lab((0.2225045 * r + 0.7168786 * g + 0.0606169 * b) / Yn), x3, z;
+  if (r === g && g === b) x3 = z = y3;
   else {
-    x2 = xyz2lab((0.4360747 * r + 0.3850649 * g + 0.1430804 * b) / Xn);
+    x3 = xyz2lab((0.4360747 * r + 0.3850649 * g + 0.1430804 * b) / Xn);
     z = xyz2lab((0.0139322 * r + 0.0971045 * g + 0.7141733 * b) / Zn);
   }
-  return new Lab(116 * y2 - 16, 500 * (x2 - y2), 200 * (y2 - z), o.opacity);
+  return new Lab(116 * y3 - 16, 500 * (x3 - y3), 200 * (y3 - z), o.opacity);
 }
-function lab(l, a2, b, opacity) {
-  return arguments.length === 1 ? labConvert(l) : new Lab(l, a2, b, opacity == null ? 1 : opacity);
+function lab(l, a3, b, opacity) {
+  return arguments.length === 1 ? labConvert(l) : new Lab(l, a3, b, opacity == null ? 1 : opacity);
 }
-function Lab(l, a2, b, opacity) {
+function Lab(l, a3, b, opacity) {
   this.l = +l;
-  this.a = +a2;
+  this.a = +a3;
   this.b = +b;
   this.opacity = +opacity;
 }
 define_default(Lab, lab, extend(Color, {
-  brighter: function(k2) {
-    return new Lab(this.l + K * (k2 == null ? 1 : k2), this.a, this.b, this.opacity);
+  brighter: function(k3) {
+    return new Lab(this.l + K * (k3 == null ? 1 : k3), this.a, this.b, this.opacity);
   },
-  darker: function(k2) {
-    return new Lab(this.l - K * (k2 == null ? 1 : k2), this.a, this.b, this.opacity);
+  darker: function(k3) {
+    return new Lab(this.l - K * (k3 == null ? 1 : k3), this.a, this.b, this.opacity);
   },
   rgb: function() {
-    var y2 = (this.l + 16) / 116, x2 = isNaN(this.a) ? y2 : y2 + this.a / 500, z = isNaN(this.b) ? y2 : y2 - this.b / 200;
-    x2 = Xn * lab2xyz(x2);
-    y2 = Yn * lab2xyz(y2);
+    var y3 = (this.l + 16) / 116, x3 = isNaN(this.a) ? y3 : y3 + this.a / 500, z = isNaN(this.b) ? y3 : y3 - this.b / 200;
+    x3 = Xn * lab2xyz(x3);
+    y3 = Yn * lab2xyz(y3);
     z = Zn * lab2xyz(z);
     return new Rgb(
-      lrgb2rgb(3.1338561 * x2 - 1.6168667 * y2 - 0.4906146 * z),
-      lrgb2rgb(-0.9787684 * x2 + 1.9161415 * y2 + 0.033454 * z),
-      lrgb2rgb(0.0719453 * x2 - 0.2289914 * y2 + 1.4052427 * z),
+      lrgb2rgb(3.1338561 * x3 - 1.6168667 * y3 - 0.4906146 * z),
+      lrgb2rgb(-0.9787684 * x3 + 1.9161415 * y3 + 0.033454 * z),
+      lrgb2rgb(0.0719453 * x3 - 0.2289914 * y3 + 1.4052427 * z),
       this.opacity
     );
   }
@@ -2470,11 +2194,11 @@ function xyz2lab(t) {
 function lab2xyz(t) {
   return t > t1 ? t * t * t : t2 * (t - t0);
 }
-function lrgb2rgb(x2) {
-  return 255 * (x2 <= 31308e-7 ? 12.92 * x2 : 1.055 * Math.pow(x2, 1 / 2.4) - 0.055);
+function lrgb2rgb(x3) {
+  return 255 * (x3 <= 31308e-7 ? 12.92 * x3 : 1.055 * Math.pow(x3, 1 / 2.4) - 0.055);
 }
-function rgb2lrgb(x2) {
-  return (x2 /= 255) <= 0.04045 ? x2 / 12.92 : Math.pow((x2 + 0.055) / 1.055, 2.4);
+function rgb2lrgb(x3) {
+  return (x3 /= 255) <= 0.04045 ? x3 / 12.92 : Math.pow((x3 + 0.055) / 1.055, 2.4);
 }
 function hclConvert(o) {
   if (o instanceof Hcl) return new Hcl(o.h, o.c, o.l, o.opacity);
@@ -2498,11 +2222,11 @@ function hcl2lab(o) {
   return new Lab(o.l, Math.cos(h) * o.c, Math.sin(h) * o.c, o.opacity);
 }
 define_default(Hcl, hcl, extend(Color, {
-  brighter: function(k2) {
-    return new Hcl(this.h, this.c, this.l + K * (k2 == null ? 1 : k2), this.opacity);
+  brighter: function(k3) {
+    return new Hcl(this.h, this.c, this.l + K * (k3 == null ? 1 : k3), this.opacity);
   },
-  darker: function(k2) {
-    return new Hcl(this.h, this.c, this.l - K * (k2 == null ? 1 : k2), this.opacity);
+  darker: function(k3) {
+    return new Hcl(this.h, this.c, this.l - K * (k3 == null ? 1 : k3), this.opacity);
   },
   rgb: function() {
     return hcl2lab(this).rgb();
@@ -2521,42 +2245,42 @@ var BC_DA = B * C - D * A;
 function cubehelixConvert(o) {
   if (o instanceof Cubehelix) return new Cubehelix(o.h, o.s, o.l, o.opacity);
   if (!(o instanceof Rgb)) o = rgbConvert(o);
-  var r = o.r / 255, g = o.g / 255, b = o.b / 255, l = (BC_DA * b + ED * r - EB * g) / (BC_DA + ED - EB), bl = b - l, k2 = (E * (g - l) - C * bl) / D, s2 = Math.sqrt(k2 * k2 + bl * bl) / (E * l * (1 - l)), h = s2 ? Math.atan2(k2, bl) * degrees - 120 : NaN;
-  return new Cubehelix(h < 0 ? h + 360 : h, s2, l, o.opacity);
+  var r = o.r / 255, g = o.g / 255, b = o.b / 255, l = (BC_DA * b + ED * r - EB * g) / (BC_DA + ED - EB), bl = b - l, k3 = (E * (g - l) - C * bl) / D, s3 = Math.sqrt(k3 * k3 + bl * bl) / (E * l * (1 - l)), h = s3 ? Math.atan2(k3, bl) * degrees - 120 : NaN;
+  return new Cubehelix(h < 0 ? h + 360 : h, s3, l, o.opacity);
 }
-function cubehelix(h, s2, l, opacity) {
-  return arguments.length === 1 ? cubehelixConvert(h) : new Cubehelix(h, s2, l, opacity == null ? 1 : opacity);
+function cubehelix(h, s3, l, opacity) {
+  return arguments.length === 1 ? cubehelixConvert(h) : new Cubehelix(h, s3, l, opacity == null ? 1 : opacity);
 }
-function Cubehelix(h, s2, l, opacity) {
+function Cubehelix(h, s3, l, opacity) {
   this.h = +h;
-  this.s = +s2;
+  this.s = +s3;
   this.l = +l;
   this.opacity = +opacity;
 }
 define_default(Cubehelix, cubehelix, extend(Color, {
-  brighter: function(k2) {
-    k2 = k2 == null ? brighter : Math.pow(brighter, k2);
-    return new Cubehelix(this.h, this.s, this.l * k2, this.opacity);
+  brighter: function(k3) {
+    k3 = k3 == null ? brighter : Math.pow(brighter, k3);
+    return new Cubehelix(this.h, this.s, this.l * k3, this.opacity);
   },
-  darker: function(k2) {
-    k2 = k2 == null ? darker : Math.pow(darker, k2);
-    return new Cubehelix(this.h, this.s, this.l * k2, this.opacity);
+  darker: function(k3) {
+    k3 = k3 == null ? darker : Math.pow(darker, k3);
+    return new Cubehelix(this.h, this.s, this.l * k3, this.opacity);
   },
   rgb: function() {
-    var h = isNaN(this.h) ? 0 : (this.h + 120) * radians, l = +this.l, a2 = isNaN(this.s) ? 0 : this.s * l * (1 - l), cosh2 = Math.cos(h), sinh2 = Math.sin(h);
+    var h = isNaN(this.h) ? 0 : (this.h + 120) * radians, l = +this.l, a3 = isNaN(this.s) ? 0 : this.s * l * (1 - l), cosh3 = Math.cos(h), sinh3 = Math.sin(h);
     return new Rgb(
-      255 * (l + a2 * (A * cosh2 + B * sinh2)),
-      255 * (l + a2 * (C * cosh2 + D * sinh2)),
-      255 * (l + a2 * (E * cosh2)),
+      255 * (l + a3 * (A * cosh3 + B * sinh3)),
+      255 * (l + a3 * (C * cosh3 + D * sinh3)),
+      255 * (l + a3 * (E * cosh3)),
       this.opacity
     );
   }
 }));
 
 // node_modules/d3-interpolate/src/basis.js
-function basis(t14, v0, v1, v2, v3) {
-  var t22 = t14 * t14, t32 = t22 * t14;
-  return ((1 - 3 * t14 + 3 * t22 - t32) * v0 + (4 - 6 * t22 + 3 * t32) * v1 + (1 + 3 * t14 + 3 * t22 - 3 * t32) * v2 + t32 * v3) / 6;
+function basis(t15, v0, v1, v2, v3) {
+  var t23 = t15 * t15, t33 = t23 * t15;
+  return ((1 - 3 * t15 + 3 * t23 - t33) * v0 + (4 - 6 * t23 + 3 * t33) * v1 + (1 + 3 * t15 + 3 * t23 - 3 * t33) * v2 + t33 * v3) / 6;
 }
 function basis_default(values) {
   var n = values.length - 1;
@@ -2576,38 +2300,38 @@ function basisClosed_default(values) {
 }
 
 // node_modules/d3-interpolate/src/constant.js
-var constant_default3 = (x2) => () => x2;
+var constant_default3 = (x3) => () => x3;
 
 // node_modules/d3-interpolate/src/color.js
-function linear(a2, d) {
+function linear(a3, d) {
   return function(t) {
-    return a2 + t * d;
+    return a3 + t * d;
   };
 }
-function exponential(a2, b, y2) {
-  return a2 = Math.pow(a2, y2), b = Math.pow(b, y2) - a2, y2 = 1 / y2, function(t) {
-    return Math.pow(a2 + t * b, y2);
+function exponential(a3, b, y3) {
+  return a3 = Math.pow(a3, y3), b = Math.pow(b, y3) - a3, y3 = 1 / y3, function(t) {
+    return Math.pow(a3 + t * b, y3);
   };
 }
-function hue(a2, b) {
-  var d = b - a2;
-  return d ? linear(a2, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant_default3(isNaN(a2) ? b : a2);
+function hue(a3, b) {
+  var d = b - a3;
+  return d ? linear(a3, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant_default3(isNaN(a3) ? b : a3);
 }
-function gamma(y2) {
-  return (y2 = +y2) === 1 ? nogamma : function(a2, b) {
-    return b - a2 ? exponential(a2, b, y2) : constant_default3(isNaN(a2) ? b : a2);
+function gamma(y3) {
+  return (y3 = +y3) === 1 ? nogamma : function(a3, b) {
+    return b - a3 ? exponential(a3, b, y3) : constant_default3(isNaN(a3) ? b : a3);
   };
 }
-function nogamma(a2, b) {
-  var d = b - a2;
-  return d ? linear(a2, d) : constant_default3(isNaN(a2) ? b : a2);
+function nogamma(a3, b) {
+  var d = b - a3;
+  return d ? linear(a3, d) : constant_default3(isNaN(a3) ? b : a3);
 }
 
 // node_modules/d3-interpolate/src/rgb.js
-var rgb_default = function rgbGamma(y2) {
-  var color2 = gamma(y2);
-  function rgb2(start2, end) {
-    var r = color2((start2 = rgb(start2)).r, (end = rgb(end)).r), g = color2(start2.g, end.g), b = color2(start2.b, end.b), opacity = nogamma(start2.opacity, end.opacity);
+var rgb_default = function rgbGamma(y3) {
+  var color3 = gamma(y3);
+  function rgb3(start2, end) {
+    var r = color3((start2 = rgb(start2)).r, (end = rgb(end)).r), g = color3(start2.g, end.g), b = color3(start2.b, end.b), opacity = nogamma(start2.opacity, end.opacity);
     return function(t) {
       start2.r = r(t);
       start2.g = g(t);
@@ -2616,27 +2340,27 @@ var rgb_default = function rgbGamma(y2) {
       return start2 + "";
     };
   }
-  rgb2.gamma = rgbGamma;
-  return rgb2;
+  rgb3.gamma = rgbGamma;
+  return rgb3;
 }(1);
 function rgbSpline(spline) {
   return function(colors) {
-    var n = colors.length, r = new Array(n), g = new Array(n), b = new Array(n), i, color2;
+    var n = colors.length, r = new Array(n), g = new Array(n), b = new Array(n), i, color3;
     for (i = 0; i < n; ++i) {
-      color2 = rgb(colors[i]);
-      r[i] = color2.r || 0;
-      g[i] = color2.g || 0;
-      b[i] = color2.b || 0;
+      color3 = rgb(colors[i]);
+      r[i] = color3.r || 0;
+      g[i] = color3.g || 0;
+      b[i] = color3.b || 0;
     }
     r = spline(r);
     g = spline(g);
     b = spline(b);
-    color2.opacity = 1;
+    color3.opacity = 1;
     return function(t) {
-      color2.r = r(t);
-      color2.g = g(t);
-      color2.b = b(t);
-      return color2 + "";
+      color3.r = r(t);
+      color3.g = g(t);
+      color3.b = b(t);
+      return color3 + "";
     };
   };
 }
@@ -2644,58 +2368,58 @@ var rgbBasis = rgbSpline(basis_default);
 var rgbBasisClosed = rgbSpline(basisClosed_default);
 
 // node_modules/d3-interpolate/src/numberArray.js
-function numberArray_default(a2, b) {
+function numberArray_default(a3, b) {
   if (!b) b = [];
-  var n = a2 ? Math.min(b.length, a2.length) : 0, c = b.slice(), i;
+  var n = a3 ? Math.min(b.length, a3.length) : 0, c = b.slice(), i;
   return function(t) {
-    for (i = 0; i < n; ++i) c[i] = a2[i] * (1 - t) + b[i] * t;
+    for (i = 0; i < n; ++i) c[i] = a3[i] * (1 - t) + b[i] * t;
     return c;
   };
 }
-function isNumberArray(x2) {
-  return ArrayBuffer.isView(x2) && !(x2 instanceof DataView);
+function isNumberArray(x3) {
+  return ArrayBuffer.isView(x3) && !(x3 instanceof DataView);
 }
 
 // node_modules/d3-interpolate/src/array.js
-function genericArray(a2, b) {
-  var nb = b ? b.length : 0, na = a2 ? Math.min(nb, a2.length) : 0, x2 = new Array(na), c = new Array(nb), i;
-  for (i = 0; i < na; ++i) x2[i] = value_default(a2[i], b[i]);
+function genericArray(a3, b) {
+  var nb = b ? b.length : 0, na = a3 ? Math.min(nb, a3.length) : 0, x3 = new Array(na), c = new Array(nb), i;
+  for (i = 0; i < na; ++i) x3[i] = value_default(a3[i], b[i]);
   for (; i < nb; ++i) c[i] = b[i];
   return function(t) {
-    for (i = 0; i < na; ++i) c[i] = x2[i](t);
+    for (i = 0; i < na; ++i) c[i] = x3[i](t);
     return c;
   };
 }
 
 // node_modules/d3-interpolate/src/date.js
-function date_default(a2, b) {
+function date_default(a3, b) {
   var d = /* @__PURE__ */ new Date();
-  return a2 = +a2, b = +b, function(t) {
-    return d.setTime(a2 * (1 - t) + b * t), d;
+  return a3 = +a3, b = +b, function(t) {
+    return d.setTime(a3 * (1 - t) + b * t), d;
   };
 }
 
 // node_modules/d3-interpolate/src/number.js
-function number_default(a2, b) {
-  return a2 = +a2, b = +b, function(t) {
-    return a2 * (1 - t) + b * t;
+function number_default(a3, b) {
+  return a3 = +a3, b = +b, function(t) {
+    return a3 * (1 - t) + b * t;
   };
 }
 
 // node_modules/d3-interpolate/src/object.js
-function object_default(a2, b) {
-  var i = {}, c = {}, k2;
-  if (a2 === null || typeof a2 !== "object") a2 = {};
+function object_default(a3, b) {
+  var i = {}, c = {}, k3;
+  if (a3 === null || typeof a3 !== "object") a3 = {};
   if (b === null || typeof b !== "object") b = {};
-  for (k2 in b) {
-    if (k2 in a2) {
-      i[k2] = value_default(a2[k2], b[k2]);
+  for (k3 in b) {
+    if (k3 in a3) {
+      i[k3] = value_default(a3[k3], b[k3]);
     } else {
-      c[k2] = b[k2];
+      c[k3] = b[k3];
     }
   }
   return function(t) {
-    for (k2 in i) c[k2] = i[k2](t);
+    for (k3 in i) c[k3] = i[k3](t);
     return c;
   };
 }
@@ -2713,45 +2437,45 @@ function one(b) {
     return b(t) + "";
   };
 }
-function string_default(a2, b) {
-  var bi = reA.lastIndex = reB.lastIndex = 0, am, bm, bs, i = -1, s2 = [], q = [];
-  a2 = a2 + "", b = b + "";
-  while ((am = reA.exec(a2)) && (bm = reB.exec(b))) {
+function string_default(a3, b) {
+  var bi = reA.lastIndex = reB.lastIndex = 0, am, bm, bs, i = -1, s3 = [], q = [];
+  a3 = a3 + "", b = b + "";
+  while ((am = reA.exec(a3)) && (bm = reB.exec(b))) {
     if ((bs = bm.index) > bi) {
       bs = b.slice(bi, bs);
-      if (s2[i]) s2[i] += bs;
-      else s2[++i] = bs;
+      if (s3[i]) s3[i] += bs;
+      else s3[++i] = bs;
     }
     if ((am = am[0]) === (bm = bm[0])) {
-      if (s2[i]) s2[i] += bm;
-      else s2[++i] = bm;
+      if (s3[i]) s3[i] += bm;
+      else s3[++i] = bm;
     } else {
-      s2[++i] = null;
+      s3[++i] = null;
       q.push({ i, x: number_default(am, bm) });
     }
     bi = reB.lastIndex;
   }
   if (bi < b.length) {
     bs = b.slice(bi);
-    if (s2[i]) s2[i] += bs;
-    else s2[++i] = bs;
+    if (s3[i]) s3[i] += bs;
+    else s3[++i] = bs;
   }
-  return s2.length < 2 ? q[0] ? one(q[0].x) : zero(b) : (b = q.length, function(t) {
-    for (var i2 = 0, o; i2 < b; ++i2) s2[(o = q[i2]).i] = o.x(t);
-    return s2.join("");
+  return s3.length < 2 ? q[0] ? one(q[0].x) : zero(b) : (b = q.length, function(t) {
+    for (var i2 = 0, o; i2 < b; ++i2) s3[(o = q[i2]).i] = o.x(t);
+    return s3.join("");
   });
 }
 
 // node_modules/d3-interpolate/src/value.js
-function value_default(a2, b) {
+function value_default(a3, b) {
   var t = typeof b, c;
-  return b == null || t === "boolean" ? constant_default3(b) : (t === "number" ? number_default : t === "string" ? (c = color(b)) ? (b = c, rgb_default) : string_default : b instanceof color ? rgb_default : b instanceof Date ? date_default : isNumberArray(b) ? numberArray_default : Array.isArray(b) ? genericArray : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object_default : number_default)(a2, b);
+  return b == null || t === "boolean" ? constant_default3(b) : (t === "number" ? number_default : t === "string" ? (c = color(b)) ? (b = c, rgb_default) : string_default : b instanceof color ? rgb_default : b instanceof Date ? date_default : isNumberArray(b) ? numberArray_default : Array.isArray(b) ? genericArray : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object_default : number_default)(a3, b);
 }
 
 // node_modules/d3-interpolate/src/round.js
-function round_default(a2, b) {
-  return a2 = +a2, b = +b, function(t) {
-    return Math.round(a2 * (1 - t) + b * t);
+function round_default(a3, b) {
+  return a3 = +a3, b = +b, function(t) {
+    return Math.round(a3 * (1 - t) + b * t);
   };
 }
 
@@ -2765,16 +2489,16 @@ var identity = {
   scaleX: 1,
   scaleY: 1
 };
-function decompose_default(a2, b, c, d, e, f) {
+function decompose_default(a3, b, c, d, e, f) {
   var scaleX, scaleY, skewX;
-  if (scaleX = Math.sqrt(a2 * a2 + b * b)) a2 /= scaleX, b /= scaleX;
-  if (skewX = a2 * c + b * d) c -= a2 * skewX, d -= b * skewX;
+  if (scaleX = Math.sqrt(a3 * a3 + b * b)) a3 /= scaleX, b /= scaleX;
+  if (skewX = a3 * c + b * d) c -= a3 * skewX, d -= b * skewX;
   if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
-  if (a2 * d < b * c) a2 = -a2, b = -b, skewX = -skewX, scaleX = -scaleX;
+  if (a3 * d < b * c) a3 = -a3, b = -b, skewX = -skewX, scaleX = -scaleX;
   return {
     translateX: e,
     translateY: f,
-    rotate: Math.atan2(b, a2) * degrees2,
+    rotate: Math.atan2(b, a3) * degrees2,
     skewX: Math.atan(skewX) * degrees2,
     scaleX,
     scaleY
@@ -2783,68 +2507,68 @@ function decompose_default(a2, b, c, d, e, f) {
 
 // node_modules/d3-interpolate/src/transform/parse.js
 var svgNode;
-function parseCss(value) {
-  const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
+function parseCss(value2) {
+  const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value2 + "");
   return m.isIdentity ? identity : decompose_default(m.a, m.b, m.c, m.d, m.e, m.f);
 }
-function parseSvg(value) {
-  if (value == null) return identity;
+function parseSvg(value2) {
+  if (value2 == null) return identity;
   if (!svgNode) svgNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  svgNode.setAttribute("transform", value);
-  if (!(value = svgNode.transform.baseVal.consolidate())) return identity;
-  value = value.matrix;
-  return decompose_default(value.a, value.b, value.c, value.d, value.e, value.f);
+  svgNode.setAttribute("transform", value2);
+  if (!(value2 = svgNode.transform.baseVal.consolidate())) return identity;
+  value2 = value2.matrix;
+  return decompose_default(value2.a, value2.b, value2.c, value2.d, value2.e, value2.f);
 }
 
 // node_modules/d3-interpolate/src/transform/index.js
 function interpolateTransform(parse, pxComma, pxParen, degParen) {
-  function pop(s2) {
-    return s2.length ? s2.pop() + " " : "";
+  function pop(s3) {
+    return s3.length ? s3.pop() + " " : "";
   }
-  function translate(xa, ya, xb, yb, s2, q) {
+  function translate(xa, ya, xb, yb, s3, q) {
     if (xa !== xb || ya !== yb) {
-      var i = s2.push("translate(", null, pxComma, null, pxParen);
+      var i = s3.push("translate(", null, pxComma, null, pxParen);
       q.push({ i: i - 4, x: number_default(xa, xb) }, { i: i - 2, x: number_default(ya, yb) });
     } else if (xb || yb) {
-      s2.push("translate(" + xb + pxComma + yb + pxParen);
+      s3.push("translate(" + xb + pxComma + yb + pxParen);
     }
   }
-  function rotate(a2, b, s2, q) {
-    if (a2 !== b) {
-      if (a2 - b > 180) b += 360;
-      else if (b - a2 > 180) a2 += 360;
-      q.push({ i: s2.push(pop(s2) + "rotate(", null, degParen) - 2, x: number_default(a2, b) });
+  function rotate(a3, b, s3, q) {
+    if (a3 !== b) {
+      if (a3 - b > 180) b += 360;
+      else if (b - a3 > 180) a3 += 360;
+      q.push({ i: s3.push(pop(s3) + "rotate(", null, degParen) - 2, x: number_default(a3, b) });
     } else if (b) {
-      s2.push(pop(s2) + "rotate(" + b + degParen);
+      s3.push(pop(s3) + "rotate(" + b + degParen);
     }
   }
-  function skewX(a2, b, s2, q) {
-    if (a2 !== b) {
-      q.push({ i: s2.push(pop(s2) + "skewX(", null, degParen) - 2, x: number_default(a2, b) });
+  function skewX(a3, b, s3, q) {
+    if (a3 !== b) {
+      q.push({ i: s3.push(pop(s3) + "skewX(", null, degParen) - 2, x: number_default(a3, b) });
     } else if (b) {
-      s2.push(pop(s2) + "skewX(" + b + degParen);
+      s3.push(pop(s3) + "skewX(" + b + degParen);
     }
   }
-  function scale(xa, ya, xb, yb, s2, q) {
+  function scale(xa, ya, xb, yb, s3, q) {
     if (xa !== xb || ya !== yb) {
-      var i = s2.push(pop(s2) + "scale(", null, ",", null, ")");
+      var i = s3.push(pop(s3) + "scale(", null, ",", null, ")");
       q.push({ i: i - 4, x: number_default(xa, xb) }, { i: i - 2, x: number_default(ya, yb) });
     } else if (xb !== 1 || yb !== 1) {
-      s2.push(pop(s2) + "scale(" + xb + "," + yb + ")");
+      s3.push(pop(s3) + "scale(" + xb + "," + yb + ")");
     }
   }
-  return function(a2, b) {
-    var s2 = [], q = [];
-    a2 = parse(a2), b = parse(b);
-    translate(a2.translateX, a2.translateY, b.translateX, b.translateY, s2, q);
-    rotate(a2.rotate, b.rotate, s2, q);
-    skewX(a2.skewX, b.skewX, s2, q);
-    scale(a2.scaleX, a2.scaleY, b.scaleX, b.scaleY, s2, q);
-    a2 = b = null;
+  return function(a3, b) {
+    var s3 = [], q = [];
+    a3 = parse(a3), b = parse(b);
+    translate(a3.translateX, a3.translateY, b.translateX, b.translateY, s3, q);
+    rotate(a3.rotate, b.rotate, s3, q);
+    skewX(a3.skewX, b.skewX, s3, q);
+    scale(a3.scaleX, a3.scaleY, b.scaleX, b.scaleY, s3, q);
+    a3 = b = null;
     return function(t) {
       var i = -1, n = q.length, o;
-      while (++i < n) s2[(o = q[i]).i] = o.x(t);
-      return s2.join("");
+      while (++i < n) s3[(o = q[i]).i] = o.x(t);
+      return s3.join("");
     };
   };
 }
@@ -2853,14 +2577,14 @@ var interpolateTransformSvg = interpolateTransform(parseSvg, ", ", ")", ")");
 
 // node_modules/d3-interpolate/src/zoom.js
 var epsilon2 = 1e-12;
-function cosh(x2) {
-  return ((x2 = Math.exp(x2)) + 1 / x2) / 2;
+function cosh(x3) {
+  return ((x3 = Math.exp(x3)) + 1 / x3) / 2;
 }
-function sinh(x2) {
-  return ((x2 = Math.exp(x2)) - 1 / x2) / 2;
+function sinh(x3) {
+  return ((x3 = Math.exp(x3)) - 1 / x3) / 2;
 }
-function tanh(x2) {
-  return ((x2 = Math.exp(2 * x2)) - 1) / (x2 + 1);
+function tanh(x3) {
+  return ((x3 = Math.exp(2 * x3)) - 1) / (x3 + 1);
 }
 var zoom_default = function zoomRho(rho, rho2, rho4) {
   function zoom(p0, p1) {
@@ -2875,14 +2599,14 @@ var zoom_default = function zoomRho(rho, rho2, rho4) {
         ];
       };
     } else {
-      var d1 = Math.sqrt(d2), b03 = (w1 * w1 - w0 * w0 + rho4 * d2) / (2 * w0 * rho2 * d1), b13 = (w1 * w1 - w0 * w0 - rho4 * d2) / (2 * w1 * rho2 * d1), r0 = Math.log(Math.sqrt(b03 * b03 + 1) - b03), r1 = Math.log(Math.sqrt(b13 * b13 + 1) - b13);
+      var d1 = Math.sqrt(d2), b02 = (w1 * w1 - w0 * w0 + rho4 * d2) / (2 * w0 * rho2 * d1), b12 = (w1 * w1 - w0 * w0 - rho4 * d2) / (2 * w1 * rho2 * d1), r0 = Math.log(Math.sqrt(b02 * b02 + 1) - b02), r1 = Math.log(Math.sqrt(b12 * b12 + 1) - b12);
       S = (r1 - r0) / rho;
       i = function(t) {
-        var s2 = t * S, coshr0 = cosh(r0), u = w0 / (rho2 * d1) * (coshr0 * tanh(rho * s2 + r0) - sinh(r0));
+        var s3 = t * S, coshr0 = cosh(r0), u = w0 / (rho2 * d1) * (coshr0 * tanh(rho * s3 + r0) - sinh(r0));
         return [
           ux0 + u * dx,
           uy0 + u * dy,
-          w0 * coshr0 / cosh(rho * s2 + r0)
+          w0 * coshr0 / cosh(rho * s3 + r0)
         ];
       };
     }
@@ -2897,12 +2621,12 @@ var zoom_default = function zoomRho(rho, rho2, rho4) {
 }(Math.SQRT2, 2, 4);
 
 // node_modules/d3-interpolate/src/hsl.js
-function hsl2(hue2) {
+function hsl2(hue3) {
   return function(start2, end) {
-    var h = hue2((start2 = hsl(start2)).h, (end = hsl(end)).h), s2 = nogamma(start2.s, end.s), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
+    var h = hue3((start2 = hsl(start2)).h, (end = hsl(end)).h), s3 = nogamma(start2.s, end.s), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
     return function(t) {
       start2.h = h(t);
-      start2.s = s2(t);
+      start2.s = s3(t);
       start2.l = l(t);
       start2.opacity = opacity(t);
       return start2 + "";
@@ -2913,9 +2637,9 @@ var hsl_default = hsl2(hue);
 var hslLong = hsl2(nogamma);
 
 // node_modules/d3-interpolate/src/hcl.js
-function hcl2(hue2) {
+function hcl2(hue3) {
   return function(start2, end) {
-    var h = hue2((start2 = hcl(start2)).h, (end = hcl(end)).h), c = nogamma(start2.c, end.c), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
+    var h = hue3((start2 = hcl(start2)).h, (end = hcl(end)).h), c = nogamma(start2.c, end.c), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
     return function(t) {
       start2.h = h(t);
       start2.c = c(t);
@@ -2929,97 +2653,27 @@ var hcl_default = hcl2(hue);
 var hclLong = hcl2(nogamma);
 
 // node_modules/d3-interpolate/src/cubehelix.js
-function cubehelix2(hue2) {
-  return function cubehelixGamma(y2) {
-    y2 = +y2;
-    function cubehelix3(start2, end) {
-      var h = hue2((start2 = cubehelix(start2)).h, (end = cubehelix(end)).h), s2 = nogamma(start2.s, end.s), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
+function cubehelix2(hue3) {
+  return function cubehelixGamma(y3) {
+    y3 = +y3;
+    function cubehelix5(start2, end) {
+      var h = hue3((start2 = cubehelix(start2)).h, (end = cubehelix(end)).h), s3 = nogamma(start2.s, end.s), l = nogamma(start2.l, end.l), opacity = nogamma(start2.opacity, end.opacity);
       return function(t) {
         start2.h = h(t);
-        start2.s = s2(t);
-        start2.l = l(Math.pow(t, y2));
+        start2.s = s3(t);
+        start2.l = l(Math.pow(t, y3));
         start2.opacity = opacity(t);
         return start2 + "";
       };
     }
-    cubehelix3.gamma = cubehelixGamma;
-    return cubehelix3;
+    cubehelix5.gamma = cubehelixGamma;
+    return cubehelix5;
   }(1);
 }
 var cubehelix_default = cubehelix2(hue);
 var cubehelixLong = cubehelix2(nogamma);
 
-// node_modules/d3-transition/node_modules/d3-dispatch/src/dispatch.js
-var noop2 = { value: () => {
-} };
-function dispatch2() {
-  for (var i = 0, n = arguments.length, _ = {}, t; i < n; ++i) {
-    if (!(t = arguments[i] + "") || t in _ || /[\s.]/.test(t)) throw new Error("illegal type: " + t);
-    _[t] = [];
-  }
-  return new Dispatch2(_);
-}
-function Dispatch2(_) {
-  this._ = _;
-}
-function parseTypenames3(typenames, types) {
-  return typenames.trim().split(/^|\s+/).map(function(t) {
-    var name = "", i = t.indexOf(".");
-    if (i >= 0) name = t.slice(i + 1), t = t.slice(0, i);
-    if (t && !types.hasOwnProperty(t)) throw new Error("unknown type: " + t);
-    return { type: t, name };
-  });
-}
-Dispatch2.prototype = dispatch2.prototype = {
-  constructor: Dispatch2,
-  on: function(typename, callback) {
-    var _ = this._, T = parseTypenames3(typename + "", _), t, i = -1, n = T.length;
-    if (arguments.length < 2) {
-      while (++i < n) if ((t = (typename = T[i]).type) && (t = get2(_[t], typename.name))) return t;
-      return;
-    }
-    if (callback != null && typeof callback !== "function") throw new Error("invalid callback: " + callback);
-    while (++i < n) {
-      if (t = (typename = T[i]).type) _[t] = set2(_[t], typename.name, callback);
-      else if (callback == null) for (t in _) _[t] = set2(_[t], typename.name, null);
-    }
-    return this;
-  },
-  copy: function() {
-    var copy3 = {}, _ = this._;
-    for (var t in _) copy3[t] = _[t].slice();
-    return new Dispatch2(copy3);
-  },
-  call: function(type2, that) {
-    if ((n = arguments.length - 2) > 0) for (var args = new Array(n), i = 0, n, t; i < n; ++i) args[i] = arguments[i + 2];
-    if (!this._.hasOwnProperty(type2)) throw new Error("unknown type: " + type2);
-    for (t = this._[type2], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
-  },
-  apply: function(type2, that, args) {
-    if (!this._.hasOwnProperty(type2)) throw new Error("unknown type: " + type2);
-    for (var t = this._[type2], i = 0, n = t.length; i < n; ++i) t[i].value.apply(that, args);
-  }
-};
-function get2(type2, name) {
-  for (var i = 0, n = type2.length, c; i < n; ++i) {
-    if ((c = type2[i]).name === name) {
-      return c.value;
-    }
-  }
-}
-function set2(type2, name, callback) {
-  for (var i = 0, n = type2.length; i < n; ++i) {
-    if (type2[i].name === name) {
-      type2[i] = noop2, type2 = type2.slice(0, i).concat(type2.slice(i + 1));
-      break;
-    }
-  }
-  if (callback != null) type2.push({ name, value: callback });
-  return type2;
-}
-var dispatch_default3 = dispatch2;
-
-// node_modules/d3-transition/node_modules/d3-timer/src/timer.js
+// node_modules/d3-timer/src/timer.js
 var frame = 0;
 var timeout = 0;
 var interval = 0;
@@ -3074,7 +2728,7 @@ function timerFlush() {
   ++frame;
   var t = taskHead, e;
   while (t) {
-    if ((e = clockNow - t._time) >= 0) t._call.call(null, e);
+    if ((e = clockNow - t._time) >= 0) t._call.call(void 0, e);
     t = t._next;
   }
   --frame;
@@ -3095,17 +2749,17 @@ function poke() {
   if (delay > pokeDelay) clockSkew -= delay, clockLast = now2;
 }
 function nap() {
-  var t04, t14 = taskHead, t22, time2 = Infinity;
-  while (t14) {
-    if (t14._call) {
-      if (time2 > t14._time) time2 = t14._time;
-      t04 = t14, t14 = t14._next;
+  var t05, t15 = taskHead, t23, time2 = Infinity;
+  while (t15) {
+    if (t15._call) {
+      if (time2 > t15._time) time2 = t15._time;
+      t05 = t15, t15 = t15._next;
     } else {
-      t22 = t14._next, t14._next = null;
-      t14 = t04 ? t04._next = t22 : taskHead = t22;
+      t23 = t15._next, t15._next = null;
+      t15 = t05 ? t05._next = t23 : taskHead = t23;
     }
   }
-  taskTail = t04;
+  taskTail = t05;
   sleep(time2);
 }
 function sleep(time2) {
@@ -3121,7 +2775,7 @@ function sleep(time2) {
   }
 }
 
-// node_modules/d3-transition/node_modules/d3-timer/src/timeout.js
+// node_modules/d3-timer/src/timeout.js
 function timeout_default(callback, delay, time2) {
   var t = new Timer();
   delay = delay == null ? 0 : +delay;
@@ -3133,7 +2787,7 @@ function timeout_default(callback, delay, time2) {
 }
 
 // node_modules/d3-transition/src/transition/schedule.js
-var emptyOn = dispatch_default3("start", "end", "cancel", "interrupt");
+var emptyOn = dispatch_default2("start", "end", "cancel", "interrupt");
 var emptyTween = [];
 var CREATED = 0;
 var SCHEDULED = 1;
@@ -3142,15 +2796,15 @@ var STARTED = 3;
 var RUNNING = 4;
 var ENDING = 5;
 var ENDED = 6;
-function schedule_default(node, name, id3, index2, group2, timing) {
+function schedule_default(node, name, id3, index4, group4, timing) {
   var schedules = node.__transition;
   if (!schedules) node.__transition = {};
   else if (id3 in schedules) return;
   create(node, id3, {
     name,
-    index: index2,
+    index: index4,
     // For context during callback.
-    group: group2,
+    group: group4,
     // For context during callback.
     on: emptyOn,
     tween: emptyTween,
@@ -3163,16 +2817,16 @@ function schedule_default(node, name, id3, index2, group2, timing) {
   });
 }
 function init(node, id3) {
-  var schedule = get3(node, id3);
+  var schedule = get2(node, id3);
   if (schedule.state > CREATED) throw new Error("too late; already scheduled");
   return schedule;
 }
-function set3(node, id3) {
-  var schedule = get3(node, id3);
+function set2(node, id3) {
+  var schedule = get2(node, id3);
   if (schedule.state > STARTED) throw new Error("too late; already running");
   return schedule;
 }
-function get3(node, id3) {
+function get2(node, id3) {
   var schedule = node.__transition;
   if (!schedule || !(schedule = schedule[id3])) throw new Error("transition not found");
   return schedule;
@@ -3273,7 +2927,7 @@ function interrupt_default2(name) {
 function tweenRemove(id3, name) {
   var tween0, tween1;
   return function() {
-    var schedule = set3(this, id3), tween = schedule.tween;
+    var schedule = set2(this, id3), tween = schedule.tween;
     if (tween !== tween0) {
       tween1 = tween0 = tween;
       for (var i = 0, n = tween1.length; i < n; ++i) {
@@ -3287,14 +2941,14 @@ function tweenRemove(id3, name) {
     schedule.tween = tween1;
   };
 }
-function tweenFunction(id3, name, value) {
+function tweenFunction(id3, name, value2) {
   var tween0, tween1;
-  if (typeof value !== "function") throw new Error();
+  if (typeof value2 !== "function") throw new Error();
   return function() {
-    var schedule = set3(this, id3), tween = schedule.tween;
+    var schedule = set2(this, id3), tween = schedule.tween;
     if (tween !== tween0) {
       tween1 = (tween0 = tween).slice();
-      for (var t = { name, value }, i = 0, n = tween1.length; i < n; ++i) {
+      for (var t = { name, value: value2 }, i = 0, n = tween1.length; i < n; ++i) {
         if (tween1[i].name === name) {
           tween1[i] = t;
           break;
@@ -3305,11 +2959,11 @@ function tweenFunction(id3, name, value) {
     schedule.tween = tween1;
   };
 }
-function tween_default(name, value) {
+function tween_default(name, value2) {
   var id3 = this._id;
   name += "";
   if (arguments.length < 2) {
-    var tween = get3(this.node(), id3).tween;
+    var tween = get2(this.node(), id3).tween;
     for (var i = 0, n = tween.length, t; i < n; ++i) {
       if ((t = tween[i]).name === name) {
         return t.value;
@@ -3317,23 +2971,23 @@ function tween_default(name, value) {
     }
     return null;
   }
-  return this.each((value == null ? tweenRemove : tweenFunction)(id3, name, value));
+  return this.each((value2 == null ? tweenRemove : tweenFunction)(id3, name, value2));
 }
-function tweenValue(transition3, name, value) {
+function tweenValue(transition3, name, value2) {
   var id3 = transition3._id;
   transition3.each(function() {
-    var schedule = set3(this, id3);
-    (schedule.value || (schedule.value = {}))[name] = value.apply(this, arguments);
+    var schedule = set2(this, id3);
+    (schedule.value || (schedule.value = {}))[name] = value2.apply(this, arguments);
   });
   return function(node) {
-    return get3(node, id3).value[name];
+    return get2(node, id3).value[name];
   };
 }
 
 // node_modules/d3-transition/src/transition/interpolate.js
-function interpolate_default(a2, b) {
+function interpolate_default(a3, b) {
   var c;
-  return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c = color(b)) ? (b = c, rgb_default) : string_default)(a2, b);
+  return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c = color(b)) ? (b = c, rgb_default) : string_default)(a3, b);
 }
 
 // node_modules/d3-transition/src/transition/attr.js
@@ -3361,29 +3015,29 @@ function attrConstantNS2(fullname, interpolate, value1) {
     return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate(string00 = string0, value1);
   };
 }
-function attrFunction2(name, interpolate, value) {
+function attrFunction2(name, interpolate, value2) {
   var string00, string10, interpolate0;
   return function() {
-    var string0, value1 = value(this), string1;
+    var string0, value1 = value2(this), string1;
     if (value1 == null) return void this.removeAttribute(name);
     string0 = this.getAttribute(name);
     string1 = value1 + "";
     return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate(string00 = string0, value1));
   };
 }
-function attrFunctionNS2(fullname, interpolate, value) {
+function attrFunctionNS2(fullname, interpolate, value2) {
   var string00, string10, interpolate0;
   return function() {
-    var string0, value1 = value(this), string1;
+    var string0, value1 = value2(this), string1;
     if (value1 == null) return void this.removeAttributeNS(fullname.space, fullname.local);
     string0 = this.getAttributeNS(fullname.space, fullname.local);
     string1 = value1 + "";
     return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate(string00 = string0, value1));
   };
 }
-function attr_default2(name, value) {
+function attr_default2(name, value2) {
   var fullname = namespace_default(name), i = fullname === "transform" ? interpolateTransformSvg : interpolate_default;
-  return this.attrTween(name, typeof value === "function" ? (fullname.local ? attrFunctionNS2 : attrFunction2)(fullname, i, tweenValue(this, "attr." + name, value)) : value == null ? (fullname.local ? attrRemoveNS2 : attrRemove2)(fullname) : (fullname.local ? attrConstantNS2 : attrConstant2)(fullname, i, value));
+  return this.attrTween(name, typeof value2 === "function" ? (fullname.local ? attrFunctionNS2 : attrFunction2)(fullname, i, tweenValue(this, "attr." + name, value2)) : value2 == null ? (fullname.local ? attrRemoveNS2 : attrRemove2)(fullname) : (fullname.local ? attrConstantNS2 : attrConstant2)(fullname, i, value2));
 }
 
 // node_modules/d3-transition/src/transition/attrTween.js
@@ -3397,98 +3051,98 @@ function attrInterpolateNS(fullname, i) {
     this.setAttributeNS(fullname.space, fullname.local, i.call(this, t));
   };
 }
-function attrTweenNS(fullname, value) {
-  var t04, i0;
+function attrTweenNS(fullname, value2) {
+  var t05, i0;
   function tween() {
-    var i = value.apply(this, arguments);
-    if (i !== i0) t04 = (i0 = i) && attrInterpolateNS(fullname, i);
-    return t04;
+    var i = value2.apply(this, arguments);
+    if (i !== i0) t05 = (i0 = i) && attrInterpolateNS(fullname, i);
+    return t05;
   }
-  tween._value = value;
+  tween._value = value2;
   return tween;
 }
-function attrTween(name, value) {
-  var t04, i0;
+function attrTween(name, value2) {
+  var t05, i0;
   function tween() {
-    var i = value.apply(this, arguments);
-    if (i !== i0) t04 = (i0 = i) && attrInterpolate(name, i);
-    return t04;
+    var i = value2.apply(this, arguments);
+    if (i !== i0) t05 = (i0 = i) && attrInterpolate(name, i);
+    return t05;
   }
-  tween._value = value;
+  tween._value = value2;
   return tween;
 }
-function attrTween_default(name, value) {
+function attrTween_default(name, value2) {
   var key = "attr." + name;
   if (arguments.length < 2) return (key = this.tween(key)) && key._value;
-  if (value == null) return this.tween(key, null);
-  if (typeof value !== "function") throw new Error();
+  if (value2 == null) return this.tween(key, null);
+  if (typeof value2 !== "function") throw new Error();
   var fullname = namespace_default(name);
-  return this.tween(key, (fullname.local ? attrTweenNS : attrTween)(fullname, value));
+  return this.tween(key, (fullname.local ? attrTweenNS : attrTween)(fullname, value2));
 }
 
 // node_modules/d3-transition/src/transition/delay.js
-function delayFunction(id3, value) {
+function delayFunction(id3, value2) {
   return function() {
-    init(this, id3).delay = +value.apply(this, arguments);
+    init(this, id3).delay = +value2.apply(this, arguments);
   };
 }
-function delayConstant(id3, value) {
-  return value = +value, function() {
-    init(this, id3).delay = value;
+function delayConstant(id3, value2) {
+  return value2 = +value2, function() {
+    init(this, id3).delay = value2;
   };
 }
-function delay_default(value) {
+function delay_default(value2) {
   var id3 = this._id;
-  return arguments.length ? this.each((typeof value === "function" ? delayFunction : delayConstant)(id3, value)) : get3(this.node(), id3).delay;
+  return arguments.length ? this.each((typeof value2 === "function" ? delayFunction : delayConstant)(id3, value2)) : get2(this.node(), id3).delay;
 }
 
 // node_modules/d3-transition/src/transition/duration.js
-function durationFunction(id3, value) {
+function durationFunction(id3, value2) {
   return function() {
-    set3(this, id3).duration = +value.apply(this, arguments);
+    set2(this, id3).duration = +value2.apply(this, arguments);
   };
 }
-function durationConstant(id3, value) {
-  return value = +value, function() {
-    set3(this, id3).duration = value;
+function durationConstant(id3, value2) {
+  return value2 = +value2, function() {
+    set2(this, id3).duration = value2;
   };
 }
-function duration_default(value) {
+function duration_default(value2) {
   var id3 = this._id;
-  return arguments.length ? this.each((typeof value === "function" ? durationFunction : durationConstant)(id3, value)) : get3(this.node(), id3).duration;
+  return arguments.length ? this.each((typeof value2 === "function" ? durationFunction : durationConstant)(id3, value2)) : get2(this.node(), id3).duration;
 }
 
 // node_modules/d3-transition/src/transition/ease.js
-function easeConstant(id3, value) {
-  if (typeof value !== "function") throw new Error();
+function easeConstant(id3, value2) {
+  if (typeof value2 !== "function") throw new Error();
   return function() {
-    set3(this, id3).ease = value;
+    set2(this, id3).ease = value2;
   };
 }
-function ease_default(value) {
+function ease_default(value2) {
   var id3 = this._id;
-  return arguments.length ? this.each(easeConstant(id3, value)) : get3(this.node(), id3).ease;
+  return arguments.length ? this.each(easeConstant(id3, value2)) : get2(this.node(), id3).ease;
 }
 
 // node_modules/d3-transition/src/transition/easeVarying.js
-function easeVarying(id3, value) {
+function easeVarying(id3, value2) {
   return function() {
-    var v = value.apply(this, arguments);
+    var v = value2.apply(this, arguments);
     if (typeof v !== "function") throw new Error();
-    set3(this, id3).ease = v;
+    set2(this, id3).ease = v;
   };
 }
-function easeVarying_default(value) {
-  if (typeof value !== "function") throw new Error();
-  return this.each(easeVarying(this._id, value));
+function easeVarying_default(value2) {
+  if (typeof value2 !== "function") throw new Error();
+  return this.each(easeVarying(this._id, value2));
 }
 
 // node_modules/d3-transition/src/transition/filter.js
 function filter_default2(match) {
   if (typeof match !== "function") match = matcher_default(match);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && match.call(node, node.__data__, i, group2)) {
+  for (var groups4 = this._groups, m = groups4.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
+      if ((node = group4[i]) && match.call(node, node.__data__, i, group4)) {
         subgroup.push(node);
       }
     }
@@ -3500,9 +3154,9 @@ function filter_default2(match) {
 function merge_default2(transition3) {
   if (transition3._id !== this._id) throw new Error();
   for (var groups0 = this._groups, groups1 = transition3._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
-    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge2 = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
+    for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge4 = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
       if (node = group0[i] || group1[i]) {
-        merge2[i] = node;
+        merge4[i] = node;
       }
     }
   }
@@ -3521,7 +3175,7 @@ function start(name) {
   });
 }
 function onFunction(id3, name, listener) {
-  var on0, on1, sit = start(name) ? init : set3;
+  var on0, on1, sit = start(name) ? init : set2;
   return function() {
     var schedule = sit(this, id3), on = schedule.on;
     if (on !== on0) (on1 = (on0 = on).copy()).on(name, listener);
@@ -3530,7 +3184,7 @@ function onFunction(id3, name, listener) {
 }
 function on_default2(name, listener) {
   var id3 = this._id;
-  return arguments.length < 2 ? get3(this.node(), id3).on.on(name) : this.each(onFunction(id3, name, listener));
+  return arguments.length < 2 ? get2(this.node(), id3).on.on(name) : this.each(onFunction(id3, name, listener));
 }
 
 // node_modules/d3-transition/src/transition/remove.js
@@ -3549,12 +3203,12 @@ function remove_default2() {
 function select_default3(select) {
   var name = this._name, id3 = this._id;
   if (typeof select !== "function") select = selector_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = new Array(m), j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
-      if ((node = group2[i]) && (subnode = select.call(node, node.__data__, i, group2))) {
+  for (var groups4 = this._groups, m = groups4.length, subgroups = new Array(m), j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
+      if ((node = group4[i]) && (subnode = select.call(node, node.__data__, i, group4))) {
         if ("__data__" in node) subnode.__data__ = node.__data__;
         subgroup[i] = subnode;
-        schedule_default(subgroup[i], name, id3, i, subgroup, get3(node, id3));
+        schedule_default(subgroup[i], name, id3, i, subgroup, get2(node, id3));
       }
     }
   }
@@ -3565,12 +3219,12 @@ function select_default3(select) {
 function selectAll_default3(select) {
   var name = this._name, id3 = this._id;
   if (typeof select !== "function") select = selectorAll_default(select);
-  for (var groups2 = this._groups, m = groups2.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        for (var children2 = select.call(node, node.__data__, i, group2), child, inherit2 = get3(node, id3), k2 = 0, l = children2.length; k2 < l; ++k2) {
-          if (child = children2[k2]) {
-            schedule_default(child, name, id3, k2, children2, inherit2);
+  for (var groups4 = this._groups, m = groups4.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, node, i = 0; i < n; ++i) {
+      if (node = group4[i]) {
+        for (var children2 = select.call(node, node.__data__, i, group4), child, inherit2 = get2(node, id3), k3 = 0, l = children2.length; k3 < l; ++k3) {
+          if (child = children2[k3]) {
+            schedule_default(child, name, id3, k3, children2, inherit2);
           }
         }
         subgroups.push(children2);
@@ -3607,10 +3261,10 @@ function styleConstant2(name, interpolate, value1) {
     return string0 === string1 ? null : string0 === string00 ? interpolate0 : interpolate0 = interpolate(string00 = string0, value1);
   };
 }
-function styleFunction2(name, interpolate, value) {
+function styleFunction2(name, interpolate, value2) {
   var string00, string10, interpolate0;
   return function() {
-    var string0 = styleValue(this, name), value1 = value(this), string1 = value1 + "";
+    var string0 = styleValue(this, name), value1 = value2(this), string1 = value1 + "";
     if (value1 == null) string1 = value1 = (this.style.removeProperty(name), styleValue(this, name));
     return string0 === string1 ? null : string0 === string00 && string1 === string10 ? interpolate0 : (string10 = string1, interpolate0 = interpolate(string00 = string0, value1));
   };
@@ -3618,14 +3272,14 @@ function styleFunction2(name, interpolate, value) {
 function styleMaybeRemove(id3, name) {
   var on0, on1, listener0, key = "style." + name, event = "end." + key, remove2;
   return function() {
-    var schedule = set3(this, id3), on = schedule.on, listener = schedule.value[key] == null ? remove2 || (remove2 = styleRemove2(name)) : void 0;
+    var schedule = set2(this, id3), on = schedule.on, listener = schedule.value[key] == null ? remove2 || (remove2 = styleRemove2(name)) : void 0;
     if (on !== on0 || listener0 !== listener) (on1 = (on0 = on).copy()).on(event, listener0 = listener);
     schedule.on = on1;
   };
 }
-function style_default2(name, value, priority) {
+function style_default2(name, value2, priority) {
   var i = (name += "") === "transform" ? interpolateTransformCss : interpolate_default;
-  return value == null ? this.styleTween(name, styleNull(name, i)).on("end.style." + name, styleRemove2(name)) : typeof value === "function" ? this.styleTween(name, styleFunction2(name, i, tweenValue(this, "style." + name, value))).each(styleMaybeRemove(this._id, name)) : this.styleTween(name, styleConstant2(name, i, value), priority).on("end.style." + name, null);
+  return value2 == null ? this.styleTween(name, styleNull(name, i)).on("end.style." + name, styleRemove2(name)) : typeof value2 === "function" ? this.styleTween(name, styleFunction2(name, i, tweenValue(this, "style." + name, value2))).each(styleMaybeRemove(this._id, name)) : this.styleTween(name, styleConstant2(name, i, value2), priority).on("end.style." + name, null);
 }
 
 // node_modules/d3-transition/src/transition/styleTween.js
@@ -3634,38 +3288,38 @@ function styleInterpolate(name, i, priority) {
     this.style.setProperty(name, i.call(this, t), priority);
   };
 }
-function styleTween(name, value, priority) {
+function styleTween(name, value2, priority) {
   var t, i0;
   function tween() {
-    var i = value.apply(this, arguments);
+    var i = value2.apply(this, arguments);
     if (i !== i0) t = (i0 = i) && styleInterpolate(name, i, priority);
     return t;
   }
-  tween._value = value;
+  tween._value = value2;
   return tween;
 }
-function styleTween_default(name, value, priority) {
+function styleTween_default(name, value2, priority) {
   var key = "style." + (name += "");
   if (arguments.length < 2) return (key = this.tween(key)) && key._value;
-  if (value == null) return this.tween(key, null);
-  if (typeof value !== "function") throw new Error();
-  return this.tween(key, styleTween(name, value, priority == null ? "" : priority));
+  if (value2 == null) return this.tween(key, null);
+  if (typeof value2 !== "function") throw new Error();
+  return this.tween(key, styleTween(name, value2, priority == null ? "" : priority));
 }
 
 // node_modules/d3-transition/src/transition/text.js
-function textConstant2(value) {
+function textConstant2(value2) {
   return function() {
-    this.textContent = value;
+    this.textContent = value2;
   };
 }
-function textFunction2(value) {
+function textFunction2(value2) {
   return function() {
-    var value1 = value(this);
+    var value1 = value2(this);
     this.textContent = value1 == null ? "" : value1;
   };
 }
-function text_default2(value) {
-  return this.tween("text", typeof value === "function" ? textFunction2(tweenValue(this, "text", value)) : textConstant2(value == null ? "" : value + ""));
+function text_default2(value2) {
+  return this.tween("text", typeof value2 === "function" ? textFunction2(tweenValue(this, "text", value2)) : textConstant2(value2 == null ? "" : value2 + ""));
 }
 
 // node_modules/d3-transition/src/transition/textTween.js
@@ -3674,32 +3328,32 @@ function textInterpolate(i) {
     this.textContent = i.call(this, t);
   };
 }
-function textTween(value) {
-  var t04, i0;
+function textTween(value2) {
+  var t05, i0;
   function tween() {
-    var i = value.apply(this, arguments);
-    if (i !== i0) t04 = (i0 = i) && textInterpolate(i);
-    return t04;
+    var i = value2.apply(this, arguments);
+    if (i !== i0) t05 = (i0 = i) && textInterpolate(i);
+    return t05;
   }
-  tween._value = value;
+  tween._value = value2;
   return tween;
 }
-function textTween_default(value) {
+function textTween_default(value2) {
   var key = "text";
   if (arguments.length < 1) return (key = this.tween(key)) && key._value;
-  if (value == null) return this.tween(key, null);
-  if (typeof value !== "function") throw new Error();
-  return this.tween(key, textTween(value));
+  if (value2 == null) return this.tween(key, null);
+  if (typeof value2 !== "function") throw new Error();
+  return this.tween(key, textTween(value2));
 }
 
 // node_modules/d3-transition/src/transition/transition.js
 function transition_default() {
   var name = this._name, id0 = this._id, id1 = newId();
-  for (var groups2 = this._groups, m = groups2.length, j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        var inherit2 = get3(node, id0);
-        schedule_default(node, name, id1, i, group2, {
+  for (var groups4 = this._groups, m = groups4.length, j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, node, i = 0; i < n; ++i) {
+      if (node = group4[i]) {
+        var inherit2 = get2(node, id0);
+        schedule_default(node, name, id1, i, group4, {
           time: inherit2.time + inherit2.delay + inherit2.duration,
           delay: 0,
           duration: inherit2.duration,
@@ -3708,7 +3362,7 @@ function transition_default() {
       }
     }
   }
-  return new Transition(groups2, this._parents, name, id1);
+  return new Transition(groups4, this._parents, name, id1);
 }
 
 // node_modules/d3-transition/src/transition/end.js
@@ -3719,7 +3373,7 @@ function end_default() {
       if (--size === 0) resolve();
     } };
     that.each(function() {
-      var schedule = set3(this, id3), on = schedule.on;
+      var schedule = set2(this, id3), on = schedule.on;
       if (on !== on0) {
         on1 = (on0 = on).copy();
         on1._.cancel.push(cancel);
@@ -3734,8 +3388,8 @@ function end_default() {
 
 // node_modules/d3-transition/src/transition/index.js
 var id = 0;
-function Transition(groups2, parents, name, id3) {
-  this._groups = groups2;
+function Transition(groups4, parents, name, id3) {
+  this._groups = groups4;
   this._parents = parents;
   this._name = name;
   this._id = id3;
@@ -3751,6 +3405,8 @@ Transition.prototype = transition2.prototype = {
   constructor: Transition,
   select: select_default3,
   selectAll: selectAll_default3,
+  selectChild: selection_prototype.selectChild,
+  selectChildren: selection_prototype.selectChildren,
   filter: filter_default2,
   merge: merge_default2,
   selection: selection_default2,
@@ -3778,48 +3434,51 @@ Transition.prototype = transition2.prototype = {
   [Symbol.iterator]: selection_prototype[Symbol.iterator]
 };
 
-// node_modules/d3-transition/node_modules/d3-ease/src/cubic.js
+// node_modules/d3-ease/src/cubic.js
 function cubicInOut(t) {
   return ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
 }
 
-// node_modules/d3-transition/node_modules/d3-ease/src/poly.js
+// node_modules/d3-ease/src/poly.js
 var exponent = 3;
 var polyIn = function custom(e) {
   e = +e;
-  function polyIn3(t) {
+  function polyIn2(t) {
     return Math.pow(t, e);
   }
-  polyIn3.exponent = custom;
-  return polyIn3;
+  polyIn2.exponent = custom;
+  return polyIn2;
 }(exponent);
 var polyOut = function custom2(e) {
   e = +e;
-  function polyOut3(t) {
+  function polyOut2(t) {
     return 1 - Math.pow(1 - t, e);
   }
-  polyOut3.exponent = custom2;
-  return polyOut3;
+  polyOut2.exponent = custom2;
+  return polyOut2;
 }(exponent);
 var polyInOut = function custom3(e) {
   e = +e;
-  function polyInOut3(t) {
+  function polyInOut2(t) {
     return ((t *= 2) <= 1 ? Math.pow(t, e) : 2 - Math.pow(2 - t, e)) / 2;
   }
-  polyInOut3.exponent = custom3;
-  return polyInOut3;
+  polyInOut2.exponent = custom3;
+  return polyInOut2;
 }(exponent);
 
-// node_modules/d3-transition/node_modules/d3-ease/src/sin.js
+// node_modules/d3-ease/src/sin.js
 var pi = Math.PI;
 var halfPi = pi / 2;
-
-// node_modules/d3-transition/node_modules/d3-ease/src/math.js
-function tpmt(x2) {
-  return (Math.pow(2, -10 * x2) - 9765625e-10) * 1.0009775171065494;
+function sinInOut(t) {
+  return (1 - Math.cos(pi * t)) / 2;
 }
 
-// node_modules/d3-transition/node_modules/d3-ease/src/bounce.js
+// node_modules/d3-ease/src/math.js
+function tpmt(x3) {
+  return (Math.pow(2, -10 * x3) - 9765625e-10) * 1.0009775171065494;
+}
+
+// node_modules/d3-ease/src/bounce.js
 var b1 = 4 / 11;
 var b2 = 6 / 11;
 var b3 = 8 / 11;
@@ -3831,75 +3490,75 @@ var b8 = 21 / 22;
 var b9 = 63 / 64;
 var b0 = 1 / b1 / b1;
 
-// node_modules/d3-transition/node_modules/d3-ease/src/back.js
+// node_modules/d3-ease/src/back.js
 var overshoot = 1.70158;
-var backIn = function custom4(s2) {
-  s2 = +s2;
-  function backIn3(t) {
-    return (t = +t) * t * (s2 * (t - 1) + t);
+var backIn = function custom4(s3) {
+  s3 = +s3;
+  function backIn2(t) {
+    return (t = +t) * t * (s3 * (t - 1) + t);
   }
-  backIn3.overshoot = custom4;
-  return backIn3;
+  backIn2.overshoot = custom4;
+  return backIn2;
 }(overshoot);
-var backOut = function custom5(s2) {
-  s2 = +s2;
-  function backOut3(t) {
-    return --t * t * ((t + 1) * s2 + t) + 1;
+var backOut = function custom5(s3) {
+  s3 = +s3;
+  function backOut2(t) {
+    return --t * t * ((t + 1) * s3 + t) + 1;
   }
-  backOut3.overshoot = custom5;
-  return backOut3;
+  backOut2.overshoot = custom5;
+  return backOut2;
 }(overshoot);
-var backInOut = function custom6(s2) {
-  s2 = +s2;
-  function backInOut3(t) {
-    return ((t *= 2) < 1 ? t * t * ((s2 + 1) * t - s2) : (t -= 2) * t * ((s2 + 1) * t + s2) + 2) / 2;
+var backInOut = function custom6(s3) {
+  s3 = +s3;
+  function backInOut2(t) {
+    return ((t *= 2) < 1 ? t * t * ((s3 + 1) * t - s3) : (t -= 2) * t * ((s3 + 1) * t + s3) + 2) / 2;
   }
-  backInOut3.overshoot = custom6;
-  return backInOut3;
+  backInOut2.overshoot = custom6;
+  return backInOut2;
 }(overshoot);
 
-// node_modules/d3-transition/node_modules/d3-ease/src/elastic.js
+// node_modules/d3-ease/src/elastic.js
 var tau = 2 * Math.PI;
 var amplitude = 1;
 var period = 0.3;
-var elasticIn = function custom7(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau);
-  function elasticIn3(t) {
-    return a2 * tpmt(- --t) * Math.sin((s2 - t) / p);
+var elasticIn = function custom7(a3, p) {
+  var s3 = Math.asin(1 / (a3 = Math.max(1, a3))) * (p /= tau);
+  function elasticIn2(t) {
+    return a3 * tpmt(- --t) * Math.sin((s3 - t) / p);
   }
-  elasticIn3.amplitude = function(a3) {
-    return custom7(a3, p * tau);
+  elasticIn2.amplitude = function(a4) {
+    return custom7(a4, p * tau);
   };
-  elasticIn3.period = function(p2) {
-    return custom7(a2, p2);
+  elasticIn2.period = function(p2) {
+    return custom7(a3, p2);
   };
-  return elasticIn3;
+  return elasticIn2;
 }(amplitude, period);
-var elasticOut = function custom8(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau);
-  function elasticOut3(t) {
-    return 1 - a2 * tpmt(t = +t) * Math.sin((t + s2) / p);
+var elasticOut = function custom8(a3, p) {
+  var s3 = Math.asin(1 / (a3 = Math.max(1, a3))) * (p /= tau);
+  function elasticOut2(t) {
+    return 1 - a3 * tpmt(t = +t) * Math.sin((t + s3) / p);
   }
-  elasticOut3.amplitude = function(a3) {
-    return custom8(a3, p * tau);
+  elasticOut2.amplitude = function(a4) {
+    return custom8(a4, p * tau);
   };
-  elasticOut3.period = function(p2) {
-    return custom8(a2, p2);
+  elasticOut2.period = function(p2) {
+    return custom8(a3, p2);
   };
-  return elasticOut3;
+  return elasticOut2;
 }(amplitude, period);
-var elasticInOut = function custom9(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau);
-  function elasticInOut3(t) {
-    return ((t = t * 2 - 1) < 0 ? a2 * tpmt(-t) * Math.sin((s2 - t) / p) : 2 - a2 * tpmt(t) * Math.sin((s2 + t) / p)) / 2;
+var elasticInOut = function custom9(a3, p) {
+  var s3 = Math.asin(1 / (a3 = Math.max(1, a3))) * (p /= tau);
+  function elasticInOut2(t) {
+    return ((t = t * 2 - 1) < 0 ? a3 * tpmt(-t) * Math.sin((s3 - t) / p) : 2 - a3 * tpmt(t) * Math.sin((s3 + t) / p)) / 2;
   }
-  elasticInOut3.amplitude = function(a3) {
-    return custom9(a3, p * tau);
+  elasticInOut2.amplitude = function(a4) {
+    return custom9(a4, p * tau);
   };
-  elasticInOut3.period = function(p2) {
-    return custom9(a2, p2);
+  elasticInOut2.period = function(p2) {
+    return custom9(a3, p2);
   };
-  return elasticInOut3;
+  return elasticInOut2;
 }(amplitude, period);
 
 // node_modules/d3-transition/src/selection/transition.js
@@ -3926,14 +3585,14 @@ function transition_default2(name) {
   } else {
     id3 = newId(), (timing = defaultTiming).time = now(), name = name == null ? null : name + "";
   }
-  for (var groups2 = this._groups, m = groups2.length, j = 0; j < m; ++j) {
-    for (var group2 = groups2[j], n = group2.length, node, i = 0; i < n; ++i) {
-      if (node = group2[i]) {
-        schedule_default(node, name, id3, i, group2, timing || inherit(node, id3));
+  for (var groups4 = this._groups, m = groups4.length, j = 0; j < m; ++j) {
+    for (var group4 = groups4[j], n = group4.length, node, i = 0; i < n; ++i) {
+      if (node = group4[i]) {
+        schedule_default(node, name, id3, i, group4, timing || inherit(node, id3));
       }
     }
   }
-  return new Transition(groups2, this._parents, name, id3);
+  return new Transition(groups4, this._parents, name, id3);
 }
 
 // node_modules/d3-transition/src/selection/index.js
@@ -3941,23 +3600,23 @@ selection_default.prototype.interrupt = interrupt_default2;
 selection_default.prototype.transition = transition_default2;
 
 // node_modules/d3-brush/src/constant.js
-var constant_default4 = (x2) => () => x2;
+var constant_default4 = (x3) => () => x3;
 
 // node_modules/d3-brush/src/event.js
 function BrushEvent(type2, {
   sourceEvent,
   target,
   selection: selection2,
-  mode,
-  dispatch: dispatch3
+  mode: mode2,
+  dispatch: dispatch2
 }) {
   Object.defineProperties(this, {
     type: { value: type2, enumerable: true, configurable: true },
     sourceEvent: { value: sourceEvent, enumerable: true, configurable: true },
     target: { value: target, enumerable: true, configurable: true },
     selection: { value: selection2, enumerable: true, configurable: true },
-    mode: { value: mode, enumerable: true, configurable: true },
-    _: { value: dispatch3 }
+    mode: { value: mode2, enumerable: true, configurable: true },
+    _: { value: dispatch2 }
   });
 }
 
@@ -3985,8 +3644,8 @@ function number2(e) {
 var X = {
   name: "x",
   handles: ["w", "e"].map(type),
-  input: function(x2, e) {
-    return x2 == null ? null : [[+x2[0], e[0][1]], [+x2[1], e[1][1]]];
+  input: function(x3, e) {
+    return x3 == null ? null : [[+x3[0], e[0][1]], [+x3[1], e[1][1]]];
   },
   output: function(xy) {
     return xy && [xy[0][0], xy[1][0]];
@@ -3995,8 +3654,8 @@ var X = {
 var Y = {
   name: "y",
   handles: ["n", "s"].map(type),
-  input: function(y2, e) {
-    return y2 == null ? null : [[e[0][0], +y2[0]], [e[1][0], +y2[1]]];
+  input: function(y3, e) {
+    return y3 == null ? null : [[e[0][0], +y3[0]], [e[1][0], +y3[1]]];
   },
   output: function(xy) {
     return xy && [xy[0][1], xy[1][1]];
@@ -4085,22 +3744,22 @@ function local2(node) {
   while (!node.__brush) if (!(node = node.parentNode)) return;
   return node.__brush;
 }
-function empty2(extent) {
-  return extent[0][0] === extent[1][0] || extent[0][1] === extent[1][1];
+function empty2(extent2) {
+  return extent2[0][0] === extent2[1][0] || extent2[0][1] === extent2[1][1];
 }
 function brushX() {
   return brush(X);
 }
 function brush(dim) {
-  var extent = defaultExtent, filter3 = defaultFilter, touchable = defaultTouchable, keys = true, listeners = dispatch_default2("start", "brush", "end"), handleSize = 6, touchending;
-  function brush2(group2) {
-    var overlay = group2.property("__brush", initialize).selectAll(".overlay").data([type("overlay")]);
+  var extent2 = defaultExtent, filter5 = defaultFilter, touchable = defaultTouchable, keys = true, listeners = dispatch_default2("start", "brush", "end"), handleSize = 6, touchending;
+  function brush2(group4) {
+    var overlay = group4.property("__brush", initialize).selectAll(".overlay").data([type("overlay")]);
     overlay.enter().append("rect").attr("class", "overlay").attr("pointer-events", "all").attr("cursor", cursors.overlay).merge(overlay).each(function() {
-      var extent2 = local2(this).extent;
-      select_default2(this).attr("x", extent2[0][0]).attr("y", extent2[0][1]).attr("width", extent2[1][0] - extent2[0][0]).attr("height", extent2[1][1] - extent2[0][1]);
+      var extent3 = local2(this).extent;
+      select_default2(this).attr("x", extent3[0][0]).attr("y", extent3[0][1]).attr("width", extent3[1][0] - extent3[0][0]).attr("height", extent3[1][1] - extent3[0][1]);
     });
-    group2.selectAll(".selection").data([type("selection")]).enter().append("rect").attr("class", "selection").attr("cursor", cursors.selection).attr("fill", "#777").attr("fill-opacity", 0.3).attr("stroke", "#fff").attr("shape-rendering", "crispEdges");
-    var handle = group2.selectAll(".handle").data(dim.handles, function(d) {
+    group4.selectAll(".selection").data([type("selection")]).enter().append("rect").attr("class", "selection").attr("cursor", cursors.selection).attr("fill", "#777").attr("fill-opacity", 0.3).attr("stroke", "#fff").attr("shape-rendering", "crispEdges");
+    var handle = group4.selectAll(".handle").data(dim.handles, function(d) {
       return d.type;
     });
     handle.exit().remove();
@@ -4109,14 +3768,14 @@ function brush(dim) {
     }).attr("cursor", function(d) {
       return cursors[d.type];
     });
-    group2.each(redraw).attr("fill", "none").attr("pointer-events", "all").on("mousedown.brush", started).filter(touchable).on("touchstart.brush", started).on("touchmove.brush", touchmoved).on("touchend.brush touchcancel.brush", touchended).style("touch-action", "none").style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
+    group4.each(redraw).attr("fill", "none").attr("pointer-events", "all").on("mousedown.brush", started).filter(touchable).on("touchstart.brush", started).on("touchmove.brush", touchmoved).on("touchend.brush touchcancel.brush", touchended).style("touch-action", "none").style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
   }
-  brush2.move = function(group2, selection2) {
-    if (group2.tween) {
-      group2.on("start.brush", function(event) {
-        emitter(this, arguments).beforestart().start(event);
-      }).on("interrupt.brush end.brush", function(event) {
-        emitter(this, arguments).end(event);
+  brush2.move = function(group4, selection2, event) {
+    if (group4.tween) {
+      group4.on("start.brush", function(event2) {
+        emitter(this, arguments).beforestart().start(event2);
+      }).on("interrupt.brush end.brush", function(event2) {
+        emitter(this, arguments).end(event2);
       }).tween("brush", function() {
         var that = this, state = that.__brush, emit = emitter(that, arguments), selection0 = state.selection, selection1 = dim.input(typeof selection2 === "function" ? selection2.apply(this, arguments) : selection2, state.extent), i = value_default(selection0, selection1);
         function tween(t) {
@@ -4127,23 +3786,23 @@ function brush(dim) {
         return selection0 !== null && selection1 !== null ? tween : tween(1);
       });
     } else {
-      group2.each(function() {
+      group4.each(function() {
         var that = this, args = arguments, state = that.__brush, selection1 = dim.input(typeof selection2 === "function" ? selection2.apply(that, args) : selection2, state.extent), emit = emitter(that, args).beforestart();
         interrupt_default(that);
         state.selection = selection1 === null ? null : selection1;
         redraw.call(that);
-        emit.start().brush().end();
+        emit.start(event).brush(event).end(event);
       });
     }
   };
-  brush2.clear = function(group2) {
-    brush2.move(group2, null);
+  brush2.clear = function(group4, event) {
+    brush2.move(group4, null, event);
   };
   function redraw() {
-    var group2 = select_default2(this), selection2 = local2(this).selection;
+    var group4 = select_default2(this), selection2 = local2(this).selection;
     if (selection2) {
-      group2.selectAll(".selection").style("display", null).attr("x", selection2[0][0]).attr("y", selection2[0][1]).attr("width", selection2[1][0] - selection2[0][0]).attr("height", selection2[1][1] - selection2[0][1]);
-      group2.selectAll(".handle").style("display", null).attr("x", function(d) {
+      group4.selectAll(".selection").style("display", null).attr("x", selection2[0][0]).attr("y", selection2[0][1]).attr("width", selection2[1][0] - selection2[0][0]).attr("height", selection2[1][1] - selection2[0][1]);
+      group4.selectAll(".handle").style("display", null).attr("x", function(d) {
         return d.type[d.type.length - 1] === "e" ? selection2[1][0] - handleSize / 2 : selection2[0][0] - handleSize / 2;
       }).attr("y", function(d) {
         return d.type[0] === "s" ? selection2[1][1] - handleSize / 2 : selection2[0][1] - handleSize / 2;
@@ -4153,7 +3812,7 @@ function brush(dim) {
         return d.type === "e" || d.type === "w" ? selection2[1][1] - selection2[0][1] + handleSize : handleSize;
       });
     } else {
-      group2.selectAll(".selection,.handle").style("display", "none").attr("x", null).attr("y", null).attr("width", null).attr("height", null);
+      group4.selectAll(".selection,.handle").style("display", "none").attr("x", null).attr("y", null).attr("width", null).attr("height", null);
     }
   }
   function emitter(that, args, clean) {
@@ -4172,20 +3831,20 @@ function brush(dim) {
       if (++this.active === 1) this.state.emitter = this, this.starting = true;
       return this;
     },
-    start: function(event, mode) {
-      if (this.starting) this.starting = false, this.emit("start", event, mode);
+    start: function(event, mode2) {
+      if (this.starting) this.starting = false, this.emit("start", event, mode2);
       else this.emit("brush", event);
       return this;
     },
-    brush: function(event, mode) {
-      this.emit("brush", event, mode);
+    brush: function(event, mode2) {
+      this.emit("brush", event, mode2);
       return this;
     },
-    end: function(event, mode) {
-      if (--this.active === 0) delete this.state.emitter, this.emit("end", event, mode);
+    end: function(event, mode2) {
+      if (--this.active === 0) delete this.state.emitter, this.emit("end", event, mode2);
       return this;
     },
-    emit: function(type2, event, mode) {
+    emit: function(type2, event, mode2) {
       var d = select_default2(this.that).datum();
       listeners.call(
         type2,
@@ -4194,7 +3853,7 @@ function brush(dim) {
           sourceEvent: event,
           target: brush2,
           selection: dim.output(this.state.selection),
-          mode,
+          mode: mode2,
           dispatch: listeners
         }),
         d
@@ -4203,14 +3862,16 @@ function brush(dim) {
   };
   function started(event) {
     if (touchending && !event.touches) return;
-    if (!filter3.apply(this, arguments)) return;
-    var that = this, type2 = event.target.__data__.type, mode = (keys && event.metaKey ? type2 = "overlay" : type2) === "selection" ? MODE_DRAG : keys && event.altKey ? MODE_CENTER : MODE_HANDLE, signX = dim === Y ? null : signsX[type2], signY = dim === X ? null : signsY[type2], state = local2(that), extent2 = state.extent, selection2 = state.selection, W = extent2[0][0], w0, w1, N = extent2[0][1], n0, n1, E2 = extent2[1][0], e0, e1, S = extent2[1][1], s0, s1, dx = 0, dy = 0, moving, shifting = signX && signY && keys && event.shiftKey, lockX, lockY, points = Array.from(event.touches || [event], (t) => {
+    if (!filter5.apply(this, arguments)) return;
+    var that = this, type2 = event.target.__data__.type, mode2 = (keys && event.metaKey ? type2 = "overlay" : type2) === "selection" ? MODE_DRAG : keys && event.altKey ? MODE_CENTER : MODE_HANDLE, signX = dim === Y ? null : signsX[type2], signY = dim === X ? null : signsY[type2], state = local2(that), extent3 = state.extent, selection2 = state.selection, W = extent3[0][0], w0, w1, N = extent3[0][1], n0, n1, E3 = extent3[1][0], e0, e1, S = extent3[1][1], s0, s1, dx = 0, dy = 0, moving, shifting = signX && signY && keys && event.shiftKey, lockX, lockY, points = Array.from(event.touches || [event], (t) => {
       const i = t.identifier;
       t = pointer_default(t, that);
       t.point0 = t.slice();
       t.identifier = i;
       return t;
     });
+    interrupt_default(that);
+    var emit = emitter(that, arguments, true).beforestart();
     if (type2 === "overlay") {
       if (selection2) moving = true;
       const pts = [points[0], points[1] || points[0]];
@@ -4218,10 +3879,10 @@ function brush(dim) {
         w0 = dim === Y ? W : min(pts[0][0], pts[1][0]),
         n0 = dim === X ? N : min(pts[0][1], pts[1][1])
       ], [
-        e0 = dim === Y ? E2 : max(pts[0][0], pts[1][0]),
+        e0 = dim === Y ? E3 : max(pts[0][0], pts[1][0]),
         s0 = dim === X ? S : max(pts[0][1], pts[1][1])
       ]];
-      if (points.length > 1) move();
+      if (points.length > 1) move(event);
     } else {
       w0 = selection2[0][0];
       n0 = selection2[0][1];
@@ -4232,10 +3893,8 @@ function brush(dim) {
     n1 = n0;
     e1 = e0;
     s1 = s0;
-    var group2 = select_default2(that).attr("pointer-events", "none");
-    var overlay = group2.selectAll(".overlay").attr("cursor", cursors[type2]);
-    interrupt_default(that);
-    var emit = emitter(that, arguments, true).beforestart();
+    var group4 = select_default2(that).attr("pointer-events", "none");
+    var overlay = group4.selectAll(".overlay").attr("cursor", cursors[type2]);
     if (event.touches) {
       emit.moved = moved;
       emit.ended = ended;
@@ -4245,51 +3904,51 @@ function brush(dim) {
       nodrag_default(event.view);
     }
     redraw.call(that);
-    emit.start(event, mode.name);
+    emit.start(event, mode2.name);
     function moved(event2) {
       for (const p of event2.changedTouches || [event2]) {
         for (const d of points)
           if (d.identifier === p.identifier) d.cur = pointer_default(p, that);
       }
       if (shifting && !lockX && !lockY && points.length === 1) {
-        const point6 = points[0];
-        if (abs(point6.cur[0] - point6[0]) > abs(point6.cur[1] - point6[1]))
+        const point10 = points[0];
+        if (abs(point10.cur[0] - point10[0]) > abs(point10.cur[1] - point10[1]))
           lockY = true;
         else
           lockX = true;
       }
-      for (const point6 of points)
-        if (point6.cur) point6[0] = point6.cur[0], point6[1] = point6.cur[1];
+      for (const point10 of points)
+        if (point10.cur) point10[0] = point10.cur[0], point10[1] = point10.cur[1];
       moving = true;
       noevent_default2(event2);
       move(event2);
     }
     function move(event2) {
-      const point6 = points[0], point0 = point6.point0;
+      const point10 = points[0], point0 = point10.point0;
       var t;
-      dx = point6[0] - point0[0];
-      dy = point6[1] - point0[1];
-      switch (mode) {
+      dx = point10[0] - point0[0];
+      dy = point10[1] - point0[1];
+      switch (mode2) {
         case MODE_SPACE:
         case MODE_DRAG: {
-          if (signX) dx = max(W - w0, min(E2 - e0, dx)), w1 = w0 + dx, e1 = e0 + dx;
+          if (signX) dx = max(W - w0, min(E3 - e0, dx)), w1 = w0 + dx, e1 = e0 + dx;
           if (signY) dy = max(N - n0, min(S - s0, dy)), n1 = n0 + dy, s1 = s0 + dy;
           break;
         }
         case MODE_HANDLE: {
           if (points[1]) {
-            if (signX) w1 = max(W, min(E2, points[0][0])), e1 = max(W, min(E2, points[1][0])), signX = 1;
+            if (signX) w1 = max(W, min(E3, points[0][0])), e1 = max(W, min(E3, points[1][0])), signX = 1;
             if (signY) n1 = max(N, min(S, points[0][1])), s1 = max(N, min(S, points[1][1])), signY = 1;
           } else {
-            if (signX < 0) dx = max(W - w0, min(E2 - w0, dx)), w1 = w0 + dx, e1 = e0;
-            else if (signX > 0) dx = max(W - e0, min(E2 - e0, dx)), w1 = w0, e1 = e0 + dx;
+            if (signX < 0) dx = max(W - w0, min(E3 - w0, dx)), w1 = w0 + dx, e1 = e0;
+            else if (signX > 0) dx = max(W - e0, min(E3 - e0, dx)), w1 = w0, e1 = e0 + dx;
             if (signY < 0) dy = max(N - n0, min(S - n0, dy)), n1 = n0 + dy, s1 = s0;
             else if (signY > 0) dy = max(N - s0, min(S - s0, dy)), n1 = n0, s1 = s0 + dy;
           }
           break;
         }
         case MODE_CENTER: {
-          if (signX) w1 = max(W, min(E2, w0 - dx * signX)), e1 = max(W, min(E2, e0 + dx * signX));
+          if (signX) w1 = max(W, min(E3, w0 - dx * signX)), e1 = max(W, min(E3, e0 + dx * signX));
           if (signY) n1 = max(N, min(S, n0 - dy * signY)), s1 = max(N, min(S, s0 + dy * signY));
           break;
         }
@@ -4312,7 +3971,7 @@ function brush(dim) {
       if (selection2[0][0] !== w1 || selection2[0][1] !== n1 || selection2[1][0] !== e1 || selection2[1][1] !== s1) {
         state.selection = [[w1, n1], [e1, s1]];
         redraw.call(that);
-        emit.brush(event2, mode.name);
+        emit.brush(event2, mode2.name);
       }
     }
     function ended(event2) {
@@ -4327,11 +3986,11 @@ function brush(dim) {
         yesdrag(event2.view, moving);
         view.on("keydown.brush keyup.brush mousemove.brush mouseup.brush", null);
       }
-      group2.attr("pointer-events", "all");
+      group4.attr("pointer-events", "all");
       overlay.attr("cursor", cursors.overlay);
       if (state.selection) selection2 = state.selection;
       if (empty2(selection2)) state.selection = null, redraw.call(that);
-      emit.end(event2, mode.name);
+      emit.end(event2, mode2.name);
     }
     function keydowned(event2) {
       switch (event2.keyCode) {
@@ -4340,23 +3999,23 @@ function brush(dim) {
           break;
         }
         case 18: {
-          if (mode === MODE_HANDLE) {
+          if (mode2 === MODE_HANDLE) {
             if (signX) e0 = e1 - dx * signX, w0 = w1 + dx * signX;
             if (signY) s0 = s1 - dy * signY, n0 = n1 + dy * signY;
-            mode = MODE_CENTER;
-            move();
+            mode2 = MODE_CENTER;
+            move(event2);
           }
           break;
         }
         case 32: {
-          if (mode === MODE_HANDLE || mode === MODE_CENTER) {
+          if (mode2 === MODE_HANDLE || mode2 === MODE_CENTER) {
             if (signX < 0) e0 = e1 - dx;
             else if (signX > 0) w0 = w1 - dx;
             if (signY < 0) s0 = s1 - dy;
             else if (signY > 0) n0 = n1 - dy;
-            mode = MODE_SPACE;
+            mode2 = MODE_SPACE;
             overlay.attr("cursor", cursors.selection);
-            move();
+            move(event2);
           }
           break;
         }
@@ -4370,36 +4029,36 @@ function brush(dim) {
         case 16: {
           if (shifting) {
             lockX = lockY = shifting = false;
-            move();
+            move(event2);
           }
           break;
         }
         case 18: {
-          if (mode === MODE_CENTER) {
+          if (mode2 === MODE_CENTER) {
             if (signX < 0) e0 = e1;
             else if (signX > 0) w0 = w1;
             if (signY < 0) s0 = s1;
             else if (signY > 0) n0 = n1;
-            mode = MODE_HANDLE;
-            move();
+            mode2 = MODE_HANDLE;
+            move(event2);
           }
           break;
         }
         case 32: {
-          if (mode === MODE_SPACE) {
+          if (mode2 === MODE_SPACE) {
             if (event2.altKey) {
               if (signX) e0 = e1 - dx * signX, w0 = w1 + dx * signX;
               if (signY) s0 = s1 - dy * signY, n0 = n1 + dy * signY;
-              mode = MODE_CENTER;
+              mode2 = MODE_CENTER;
             } else {
               if (signX < 0) e0 = e1;
               else if (signX > 0) w0 = w1;
               if (signY < 0) s0 = s1;
               else if (signY > 0) n0 = n1;
-              mode = MODE_HANDLE;
+              mode2 = MODE_HANDLE;
             }
             overlay.attr("cursor", cursors[type2]);
-            move();
+            move(event2);
           }
           break;
         }
@@ -4417,15 +4076,15 @@ function brush(dim) {
   }
   function initialize() {
     var state = this.__brush || { selection: null };
-    state.extent = number2(extent.apply(this, arguments));
+    state.extent = number2(extent2.apply(this, arguments));
     state.dim = dim;
     return state;
   }
   brush2.extent = function(_) {
-    return arguments.length ? (extent = typeof _ === "function" ? _ : constant_default4(number2(_)), brush2) : extent;
+    return arguments.length ? (extent2 = typeof _ === "function" ? _ : constant_default4(number2(_)), brush2) : extent2;
   };
   brush2.filter = function(_) {
-    return arguments.length ? (filter3 = typeof _ === "function" ? _ : constant_default4(!!_), brush2) : filter3;
+    return arguments.length ? (filter5 = typeof _ === "function" ? _ : constant_default4(!!_), brush2) : filter5;
   };
   brush2.touchable = function(_) {
     return arguments.length ? (touchable = typeof _ === "function" ? _ : constant_default4(!!_), brush2) : touchable;
@@ -4437,248 +4096,419 @@ function brush(dim) {
     return arguments.length ? (keys = !!_, brush2) : keys;
   };
   brush2.on = function() {
-    var value = listeners.on.apply(listeners, arguments);
-    return value === listeners ? brush2 : value;
+    var value2 = listeners.on.apply(listeners, arguments);
+    return value2 === listeners ? brush2 : value2;
   };
   return brush2;
 }
 
 // node_modules/d3-array/src/ascending.js
-function ascending_default(a2, b) {
-  return a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
+function ascending2(a3, b) {
+  return a3 == null || b == null ? NaN : a3 < b ? -1 : a3 > b ? 1 : a3 >= b ? 0 : NaN;
+}
+
+// node_modules/d3-array/src/descending.js
+function descending(a3, b) {
+  return a3 == null || b == null ? NaN : b < a3 ? -1 : b > a3 ? 1 : b >= a3 ? 0 : NaN;
 }
 
 // node_modules/d3-array/src/bisector.js
-function bisector_default(f) {
-  let delta = f;
-  let compare = f;
-  if (f.length === 1) {
-    delta = (d, x2) => f(d) - x2;
-    compare = ascendingComparator(f);
+function bisector(f) {
+  let compare1, compare2, delta;
+  if (f.length !== 2) {
+    compare1 = ascending2;
+    compare2 = (d, x3) => ascending2(f(d), x3);
+    delta = (d, x3) => f(d) - x3;
+  } else {
+    compare1 = f === ascending2 || f === descending ? f : zero2;
+    compare2 = f;
+    delta = f;
   }
-  function left(a2, x2, lo, hi) {
-    if (lo == null) lo = 0;
-    if (hi == null) hi = a2.length;
-    while (lo < hi) {
-      const mid = lo + hi >>> 1;
-      if (compare(a2[mid], x2) < 0) lo = mid + 1;
-      else hi = mid;
+  function left2(a3, x3, lo = 0, hi = a3.length) {
+    if (lo < hi) {
+      if (compare1(x3, x3) !== 0) return hi;
+      do {
+        const mid = lo + hi >>> 1;
+        if (compare2(a3[mid], x3) < 0) lo = mid + 1;
+        else hi = mid;
+      } while (lo < hi);
     }
     return lo;
   }
-  function right(a2, x2, lo, hi) {
-    if (lo == null) lo = 0;
-    if (hi == null) hi = a2.length;
-    while (lo < hi) {
-      const mid = lo + hi >>> 1;
-      if (compare(a2[mid], x2) > 0) hi = mid;
-      else lo = mid + 1;
+  function right2(a3, x3, lo = 0, hi = a3.length) {
+    if (lo < hi) {
+      if (compare1(x3, x3) !== 0) return hi;
+      do {
+        const mid = lo + hi >>> 1;
+        if (compare2(a3[mid], x3) <= 0) lo = mid + 1;
+        else hi = mid;
+      } while (lo < hi);
     }
     return lo;
   }
-  function center(a2, x2, lo, hi) {
-    if (lo == null) lo = 0;
-    if (hi == null) hi = a2.length;
-    const i = left(a2, x2, lo, hi - 1);
-    return i > lo && delta(a2[i - 1], x2) > -delta(a2[i], x2) ? i - 1 : i;
+  function center2(a3, x3, lo = 0, hi = a3.length) {
+    const i = left2(a3, x3, lo, hi - 1);
+    return i > lo && delta(a3[i - 1], x3) > -delta(a3[i], x3) ? i - 1 : i;
   }
-  return { left, center, right };
+  return { left: left2, center: center2, right: right2 };
 }
-function ascendingComparator(f) {
-  return (d, x2) => ascending_default(f(d), x2);
+function zero2() {
+  return 0;
 }
 
 // node_modules/d3-array/src/number.js
-function number_default2(x2) {
-  return x2 === null ? NaN : +x2;
+function number(x3) {
+  return x3 === null ? NaN : +x3;
 }
 function* numbers(values, valueof) {
   if (valueof === void 0) {
-    for (let value of values) {
-      if (value != null && (value = +value) >= value) {
-        yield value;
+    for (let value2 of values) {
+      if (value2 != null && (value2 = +value2) >= value2) {
+        yield value2;
       }
     }
   } else {
-    let index2 = -1;
-    for (let value of values) {
-      if ((value = valueof(value, ++index2, values)) != null && (value = +value) >= value) {
-        yield value;
+    let index4 = -1;
+    for (let value2 of values) {
+      if ((value2 = valueof(value2, ++index4, values)) != null && (value2 = +value2) >= value2) {
+        yield value2;
       }
     }
   }
 }
 
 // node_modules/d3-array/src/bisect.js
-var ascendingBisect = bisector_default(ascending_default);
+var ascendingBisect = bisector(ascending2);
 var bisectRight = ascendingBisect.right;
 var bisectLeft = ascendingBisect.left;
-var bisectCenter = bisector_default(number_default2).center;
+var bisectCenter = bisector(number).center;
 var bisect_default = bisectRight;
 
+// node_modules/d3-array/src/blur.js
+var blur2 = Blur2(blurf);
+var blurImage = Blur2(blurfImage);
+function Blur2(blur3) {
+  return function(data, rx, ry = rx) {
+    if (!((rx = +rx) >= 0)) throw new RangeError("invalid rx");
+    if (!((ry = +ry) >= 0)) throw new RangeError("invalid ry");
+    let { data: values, width, height } = data;
+    if (!((width = Math.floor(width)) >= 0)) throw new RangeError("invalid width");
+    if (!((height = Math.floor(height !== void 0 ? height : values.length / width)) >= 0)) throw new RangeError("invalid height");
+    if (!width || !height || !rx && !ry) return data;
+    const blurx = rx && blur3(rx);
+    const blury = ry && blur3(ry);
+    const temp = values.slice();
+    if (blurx && blury) {
+      blurh(blurx, temp, values, width, height);
+      blurh(blurx, values, temp, width, height);
+      blurh(blurx, temp, values, width, height);
+      blurv(blury, values, temp, width, height);
+      blurv(blury, temp, values, width, height);
+      blurv(blury, values, temp, width, height);
+    } else if (blurx) {
+      blurh(blurx, values, temp, width, height);
+      blurh(blurx, temp, values, width, height);
+      blurh(blurx, values, temp, width, height);
+    } else if (blury) {
+      blurv(blury, values, temp, width, height);
+      blurv(blury, temp, values, width, height);
+      blurv(blury, values, temp, width, height);
+    }
+    return data;
+  };
+}
+function blurh(blur3, T, S, w, h) {
+  for (let y3 = 0, n = w * h; y3 < n; ) {
+    blur3(T, S, y3, y3 += w, 1);
+  }
+}
+function blurv(blur3, T, S, w, h) {
+  for (let x3 = 0, n = w * h; x3 < w; ++x3) {
+    blur3(T, S, x3, x3 + n, w);
+  }
+}
+function blurfImage(radius) {
+  const blur3 = blurf(radius);
+  return (T, S, start2, stop, step) => {
+    start2 <<= 2, stop <<= 2, step <<= 2;
+    blur3(T, S, start2 + 0, stop + 0, step);
+    blur3(T, S, start2 + 1, stop + 1, step);
+    blur3(T, S, start2 + 2, stop + 2, step);
+    blur3(T, S, start2 + 3, stop + 3, step);
+  };
+}
+function blurf(radius) {
+  const radius0 = Math.floor(radius);
+  if (radius0 === radius) return bluri(radius);
+  const t = radius - radius0;
+  const w = 2 * radius + 1;
+  return (T, S, start2, stop, step) => {
+    if (!((stop -= step) >= start2)) return;
+    let sum6 = radius0 * S[start2];
+    const s0 = step * radius0;
+    const s1 = s0 + step;
+    for (let i = start2, j = start2 + s0; i < j; i += step) {
+      sum6 += S[Math.min(stop, i)];
+    }
+    for (let i = start2, j = stop; i <= j; i += step) {
+      sum6 += S[Math.min(stop, i + s0)];
+      T[i] = (sum6 + t * (S[Math.max(start2, i - s1)] + S[Math.min(stop, i + s1)])) / w;
+      sum6 -= S[Math.max(start2, i - s0)];
+    }
+  };
+}
+function bluri(radius) {
+  const w = 2 * radius + 1;
+  return (T, S, start2, stop, step) => {
+    if (!((stop -= step) >= start2)) return;
+    let sum6 = radius * S[start2];
+    const s3 = step * radius;
+    for (let i = start2, j = start2 + s3; i < j; i += step) {
+      sum6 += S[Math.min(stop, i)];
+    }
+    for (let i = start2, j = stop; i <= j; i += step) {
+      sum6 += S[Math.min(stop, i + s3)];
+      T[i] = sum6 / w;
+      sum6 -= S[Math.max(start2, i - s3)];
+    }
+  };
+}
+
+// node_modules/internmap/src/index.js
+var InternMap = class extends Map {
+  constructor(entries, key = keyof) {
+    super();
+    Object.defineProperties(this, { _intern: { value: /* @__PURE__ */ new Map() }, _key: { value: key } });
+    if (entries != null) for (const [key2, value2] of entries) this.set(key2, value2);
+  }
+  get(key) {
+    return super.get(intern_get(this, key));
+  }
+  has(key) {
+    return super.has(intern_get(this, key));
+  }
+  set(key, value2) {
+    return super.set(intern_set(this, key), value2);
+  }
+  delete(key) {
+    return super.delete(intern_delete(this, key));
+  }
+};
+function intern_get({ _intern, _key }, value2) {
+  const key = _key(value2);
+  return _intern.has(key) ? _intern.get(key) : value2;
+}
+function intern_set({ _intern, _key }, value2) {
+  const key = _key(value2);
+  if (_intern.has(key)) return _intern.get(key);
+  _intern.set(key, value2);
+  return value2;
+}
+function intern_delete({ _intern, _key }, value2) {
+  const key = _key(value2);
+  if (_intern.has(key)) {
+    value2 = _intern.get(value2);
+    _intern.delete(key);
+  }
+  return value2;
+}
+function keyof(value2) {
+  return value2 !== null && typeof value2 === "object" ? value2.valueOf() : value2;
+}
+
+// node_modules/d3-array/src/sort.js
+function compareDefined(compare = ascending2) {
+  if (compare === ascending2) return ascendingDefined;
+  if (typeof compare !== "function") throw new TypeError("compare is not a function");
+  return (a3, b) => {
+    const x3 = compare(a3, b);
+    if (x3 || x3 === 0) return x3;
+    return (compare(b, b) === 0) - (compare(a3, a3) === 0);
+  };
+}
+function ascendingDefined(a3, b) {
+  return (a3 == null || !(a3 >= a3)) - (b == null || !(b >= b)) || (a3 < b ? -1 : a3 > b ? 1 : 0);
+}
+
 // node_modules/d3-array/src/array.js
-var array = Array.prototype;
-var slice = array.slice;
-var map = array.map;
+var array2 = Array.prototype;
+var slice = array2.slice;
+var map = array2.map;
 
 // node_modules/d3-array/src/ticks.js
 var e10 = Math.sqrt(50);
 var e5 = Math.sqrt(10);
 var e2 = Math.sqrt(2);
-function ticks_default(start2, stop, count4) {
-  var reverse2, i = -1, n, ticks, step;
-  stop = +stop, start2 = +start2, count4 = +count4;
-  if (start2 === stop && count4 > 0) return [start2];
-  if (reverse2 = stop < start2) n = start2, start2 = stop, stop = n;
-  if ((step = tickIncrement(start2, stop, count4)) === 0 || !isFinite(step)) return [];
-  if (step > 0) {
-    let r0 = Math.round(start2 / step), r1 = Math.round(stop / step);
-    if (r0 * step < start2) ++r0;
-    if (r1 * step > stop) --r1;
-    ticks = new Array(n = r1 - r0 + 1);
-    while (++i < n) ticks[i] = (r0 + i) * step;
+function tickSpec(start2, stop, count6) {
+  const step = (stop - start2) / Math.max(0, count6), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power), factor = error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1;
+  let i1, i2, inc;
+  if (power < 0) {
+    inc = Math.pow(10, -power) / factor;
+    i1 = Math.round(start2 * inc);
+    i2 = Math.round(stop * inc);
+    if (i1 / inc < start2) ++i1;
+    if (i2 / inc > stop) --i2;
+    inc = -inc;
   } else {
-    step = -step;
-    let r0 = Math.round(start2 * step), r1 = Math.round(stop * step);
-    if (r0 / step < start2) ++r0;
-    if (r1 / step > stop) --r1;
-    ticks = new Array(n = r1 - r0 + 1);
-    while (++i < n) ticks[i] = (r0 + i) / step;
+    inc = Math.pow(10, power) * factor;
+    i1 = Math.round(start2 / inc);
+    i2 = Math.round(stop / inc);
+    if (i1 * inc < start2) ++i1;
+    if (i2 * inc > stop) --i2;
   }
-  if (reverse2) ticks.reverse();
-  return ticks;
+  if (i2 < i1 && 0.5 <= count6 && count6 < 2) return tickSpec(start2, stop, count6 * 2);
+  return [i1, i2, inc];
 }
-function tickIncrement(start2, stop, count4) {
-  var step = (stop - start2) / Math.max(0, count4), power = Math.floor(Math.log(step) / Math.LN10), error = step / Math.pow(10, power);
-  return power >= 0 ? (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1) * Math.pow(10, power) : -Math.pow(10, -power) / (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1);
+function ticks(start2, stop, count6) {
+  stop = +stop, start2 = +start2, count6 = +count6;
+  if (!(count6 > 0)) return [];
+  if (start2 === stop) return [start2];
+  const reverse4 = stop < start2, [i1, i2, inc] = reverse4 ? tickSpec(stop, start2, count6) : tickSpec(start2, stop, count6);
+  if (!(i2 >= i1)) return [];
+  const n = i2 - i1 + 1, ticks2 = new Array(n);
+  if (reverse4) {
+    if (inc < 0) for (let i = 0; i < n; ++i) ticks2[i] = (i2 - i) / -inc;
+    else for (let i = 0; i < n; ++i) ticks2[i] = (i2 - i) * inc;
+  } else {
+    if (inc < 0) for (let i = 0; i < n; ++i) ticks2[i] = (i1 + i) / -inc;
+    else for (let i = 0; i < n; ++i) ticks2[i] = (i1 + i) * inc;
+  }
+  return ticks2;
 }
-function tickStep(start2, stop, count4) {
-  var step0 = Math.abs(stop - start2) / Math.max(0, count4), step1 = Math.pow(10, Math.floor(Math.log(step0) / Math.LN10)), error = step0 / step1;
-  if (error >= e10) step1 *= 10;
-  else if (error >= e5) step1 *= 5;
-  else if (error >= e2) step1 *= 2;
-  return stop < start2 ? -step1 : step1;
+function tickIncrement(start2, stop, count6) {
+  stop = +stop, start2 = +start2, count6 = +count6;
+  return tickSpec(start2, stop, count6)[2];
+}
+function tickStep(start2, stop, count6) {
+  stop = +stop, start2 = +start2, count6 = +count6;
+  const reverse4 = stop < start2, inc = reverse4 ? tickIncrement(stop, start2, count6) : tickIncrement(start2, stop, count6);
+  return (reverse4 ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
 }
 
 // node_modules/d3-array/src/max.js
 function max2(values, valueof) {
-  let max4;
+  let max7;
   if (valueof === void 0) {
-    for (const value of values) {
-      if (value != null && (max4 < value || max4 === void 0 && value >= value)) {
-        max4 = value;
+    for (const value2 of values) {
+      if (value2 != null && (max7 < value2 || max7 === void 0 && value2 >= value2)) {
+        max7 = value2;
       }
     }
   } else {
-    let index2 = -1;
-    for (let value of values) {
-      if ((value = valueof(value, ++index2, values)) != null && (max4 < value || max4 === void 0 && value >= value)) {
-        max4 = value;
+    let index4 = -1;
+    for (let value2 of values) {
+      if ((value2 = valueof(value2, ++index4, values)) != null && (max7 < value2 || max7 === void 0 && value2 >= value2)) {
+        max7 = value2;
       }
     }
   }
-  return max4;
+  return max7;
 }
 
 // node_modules/d3-array/src/min.js
 function min2(values, valueof) {
-  let min4;
+  let min7;
   if (valueof === void 0) {
-    for (const value of values) {
-      if (value != null && (min4 > value || min4 === void 0 && value >= value)) {
-        min4 = value;
+    for (const value2 of values) {
+      if (value2 != null && (min7 > value2 || min7 === void 0 && value2 >= value2)) {
+        min7 = value2;
       }
     }
   } else {
-    let index2 = -1;
-    for (let value of values) {
-      if ((value = valueof(value, ++index2, values)) != null && (min4 > value || min4 === void 0 && value >= value)) {
-        min4 = value;
+    let index4 = -1;
+    for (let value2 of values) {
+      if ((value2 = valueof(value2, ++index4, values)) != null && (min7 > value2 || min7 === void 0 && value2 >= value2)) {
+        min7 = value2;
       }
     }
   }
-  return min4;
+  return min7;
 }
 
 // node_modules/d3-array/src/quickselect.js
-function quickselect(array2, k2, left = 0, right = array2.length - 1, compare = ascending_default) {
-  while (right > left) {
-    if (right - left > 600) {
-      const n = right - left + 1;
-      const m = k2 - left + 1;
+function quickselect(array5, k3, left2 = 0, right2 = Infinity, compare) {
+  k3 = Math.floor(k3);
+  left2 = Math.floor(Math.max(0, left2));
+  right2 = Math.floor(Math.min(array5.length - 1, right2));
+  if (!(left2 <= k3 && k3 <= right2)) return array5;
+  compare = compare === void 0 ? ascendingDefined : compareDefined(compare);
+  while (right2 > left2) {
+    if (right2 - left2 > 600) {
+      const n = right2 - left2 + 1;
+      const m = k3 - left2 + 1;
       const z = Math.log(n);
-      const s2 = 0.5 * Math.exp(2 * z / 3);
-      const sd = 0.5 * Math.sqrt(z * s2 * (n - s2) / n) * (m - n / 2 < 0 ? -1 : 1);
-      const newLeft = Math.max(left, Math.floor(k2 - m * s2 / n + sd));
-      const newRight = Math.min(right, Math.floor(k2 + (n - m) * s2 / n + sd));
-      quickselect(array2, k2, newLeft, newRight, compare);
+      const s3 = 0.5 * Math.exp(2 * z / 3);
+      const sd = 0.5 * Math.sqrt(z * s3 * (n - s3) / n) * (m - n / 2 < 0 ? -1 : 1);
+      const newLeft = Math.max(left2, Math.floor(k3 - m * s3 / n + sd));
+      const newRight = Math.min(right2, Math.floor(k3 + (n - m) * s3 / n + sd));
+      quickselect(array5, k3, newLeft, newRight, compare);
     }
-    const t = array2[k2];
-    let i = left;
-    let j = right;
-    swap(array2, left, k2);
-    if (compare(array2[right], t) > 0) swap(array2, left, right);
+    const t = array5[k3];
+    let i = left2;
+    let j = right2;
+    swap(array5, left2, k3);
+    if (compare(array5[right2], t) > 0) swap(array5, left2, right2);
     while (i < j) {
-      swap(array2, i, j), ++i, --j;
-      while (compare(array2[i], t) < 0) ++i;
-      while (compare(array2[j], t) > 0) --j;
+      swap(array5, i, j), ++i, --j;
+      while (compare(array5[i], t) < 0) ++i;
+      while (compare(array5[j], t) > 0) --j;
     }
-    if (compare(array2[left], t) === 0) swap(array2, left, j);
-    else ++j, swap(array2, j, right);
-    if (j <= k2) left = j + 1;
-    if (k2 <= j) right = j - 1;
+    if (compare(array5[left2], t) === 0) swap(array5, left2, j);
+    else ++j, swap(array5, j, right2);
+    if (j <= k3) left2 = j + 1;
+    if (k3 <= j) right2 = j - 1;
   }
-  return array2;
+  return array5;
 }
-function swap(array2, i, j) {
-  const t = array2[i];
-  array2[i] = array2[j];
-  array2[j] = t;
+function swap(array5, i, j) {
+  const t = array5[i];
+  array5[i] = array5[j];
+  array5[j] = t;
 }
 
 // node_modules/d3-array/src/quantile.js
 function quantile(values, p, valueof) {
   values = Float64Array.from(numbers(values, valueof));
-  if (!(n = values.length)) return;
-  if ((p = +p) <= 0 || n < 2) return min2(values);
+  if (!(n = values.length) || isNaN(p = +p)) return;
+  if (p <= 0 || n < 2) return min2(values);
   if (p >= 1) return max2(values);
   var n, i = (n - 1) * p, i0 = Math.floor(i), value0 = max2(quickselect(values, i0).subarray(0, i0 + 1)), value1 = min2(values.subarray(i0 + 1));
   return value0 + (value1 - value0) * (i - i0);
 }
-function quantileSorted(values, p, valueof = number_default2) {
-  if (!(n = values.length)) return;
-  if ((p = +p) <= 0 || n < 2) return +valueof(values[0], 0, values);
+function quantileSorted(values, p, valueof = number) {
+  if (!(n = values.length) || isNaN(p = +p)) return;
+  if (p <= 0 || n < 2) return +valueof(values[0], 0, values);
   if (p >= 1) return +valueof(values[n - 1], n - 1, values);
   var n, i = (n - 1) * p, i0 = Math.floor(i), value0 = +valueof(values[i0], i0, values), value1 = +valueof(values[i0 + 1], i0 + 1, values);
   return value0 + (value1 - value0) * (i - i0);
 }
 
 // node_modules/d3-array/src/range.js
-function range_default(start2, stop, step) {
+function range(start2, stop, step) {
   start2 = +start2, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start2, start2 = 0, 1) : n < 3 ? 1 : +step;
-  var i = -1, n = Math.max(0, Math.ceil((stop - start2) / step)) | 0, range = new Array(n);
+  var i = -1, n = Math.max(0, Math.ceil((stop - start2) / step)) | 0, range2 = new Array(n);
   while (++i < n) {
-    range[i] = start2 + i * step;
+    range2[i] = start2 + i * step;
   }
-  return range;
+  return range2;
 }
 
 // node_modules/d3-array/src/shuffle.js
 var shuffle_default = shuffler(Math.random);
 function shuffler(random) {
-  return function shuffle2(array2, i0 = 0, i1 = array2.length) {
+  return function shuffle2(array5, i0 = 0, i1 = array5.length) {
     let m = i1 - (i0 = +i0);
     while (m) {
-      const i = random() * m-- | 0, t = array2[m + i0];
-      array2[m + i0] = array2[i + i0];
-      array2[i + i0] = t;
+      const i = random() * m-- | 0, t = array5[m + i0];
+      array5[m + i0] = array5[i + i0];
+      array5[i + i0] = t;
     }
-    return array2;
+    return array5;
   };
 }
 
 // node_modules/d3-scale/src/init.js
-function initRange(domain, range) {
+function initRange(domain, range2) {
   switch (arguments.length) {
     case 0:
       break;
@@ -4686,7 +4516,7 @@ function initRange(domain, range) {
       this.range(domain);
       break;
     default:
-      this.range(range).domain(domain);
+      this.range(range2).domain(domain);
       break;
   }
   return this;
@@ -4695,33 +4525,32 @@ function initRange(domain, range) {
 // node_modules/d3-scale/src/ordinal.js
 var implicit = Symbol("implicit");
 function ordinal() {
-  var index2 = /* @__PURE__ */ new Map(), domain = [], range = [], unknown = implicit;
+  var index4 = new InternMap(), domain = [], range2 = [], unknown = implicit;
   function scale(d) {
-    var key = d + "", i = index2.get(key);
-    if (!i) {
+    let i = index4.get(d);
+    if (i === void 0) {
       if (unknown !== implicit) return unknown;
-      index2.set(key, i = domain.push(d));
+      index4.set(d, i = domain.push(d) - 1);
     }
-    return range[(i - 1) % range.length];
+    return range2[i % range2.length];
   }
   scale.domain = function(_) {
     if (!arguments.length) return domain.slice();
-    domain = [], index2 = /* @__PURE__ */ new Map();
-    for (const value of _) {
-      const key = value + "";
-      if (index2.has(key)) continue;
-      index2.set(key, domain.push(value));
+    domain = [], index4 = new InternMap();
+    for (const value2 of _) {
+      if (index4.has(value2)) continue;
+      index4.set(value2, domain.push(value2) - 1);
     }
     return scale;
   };
   scale.range = function(_) {
-    return arguments.length ? (range = Array.from(_), scale) : range.slice();
+    return arguments.length ? (range2 = Array.from(_), scale) : range2.slice();
   };
   scale.unknown = function(_) {
     return arguments.length ? (unknown = _, scale) : unknown;
   };
   scale.copy = function() {
-    return ordinal(domain, range).unknown(unknown);
+    return ordinal(domain, range2).unknown(unknown);
   };
   initRange.apply(scale, arguments);
   return scale;
@@ -4732,16 +4561,16 @@ function band() {
   var scale = ordinal().unknown(void 0), domain = scale.domain, ordinalRange = scale.range, r0 = 0, r1 = 1, step, bandwidth, round = false, paddingInner = 0, paddingOuter = 0, align = 0.5;
   delete scale.unknown;
   function rescale() {
-    var n = domain().length, reverse2 = r1 < r0, start2 = reverse2 ? r1 : r0, stop = reverse2 ? r0 : r1;
+    var n = domain().length, reverse4 = r1 < r0, start2 = reverse4 ? r1 : r0, stop = reverse4 ? r0 : r1;
     step = (stop - start2) / Math.max(1, n - paddingInner + paddingOuter * 2);
     if (round) step = Math.floor(step);
     start2 += (stop - start2 - step * (n - paddingInner)) * align;
     bandwidth = step * (1 - paddingInner);
     if (round) start2 = Math.round(start2), bandwidth = Math.round(bandwidth);
-    var values = range_default(n).map(function(i) {
+    var values = range(n).map(function(i) {
       return start2 + step * i;
     });
-    return ordinalRange(reverse2 ? values.reverse() : values);
+    return ordinalRange(reverse4 ? values.reverse() : values);
   }
   scale.domain = function(_) {
     return arguments.length ? (domain(_), rescale()) : domain();
@@ -4793,86 +4622,86 @@ function point() {
 }
 
 // node_modules/d3-scale/src/constant.js
-function constants(x2) {
+function constants(x3) {
   return function() {
-    return x2;
+    return x3;
   };
 }
 
 // node_modules/d3-scale/src/number.js
-function number(x2) {
-  return +x2;
+function number3(x3) {
+  return +x3;
 }
 
 // node_modules/d3-scale/src/continuous.js
 var unit = [0, 1];
-function identity2(x2) {
-  return x2;
+function identity3(x3) {
+  return x3;
 }
-function normalize(a2, b) {
-  return (b -= a2 = +a2) ? function(x2) {
-    return (x2 - a2) / b;
+function normalize(a3, b) {
+  return (b -= a3 = +a3) ? function(x3) {
+    return (x3 - a3) / b;
   } : constants(isNaN(b) ? NaN : 0.5);
 }
-function clamper(a2, b) {
+function clamper(a3, b) {
   var t;
-  if (a2 > b) t = a2, a2 = b, b = t;
-  return function(x2) {
-    return Math.max(a2, Math.min(b, x2));
+  if (a3 > b) t = a3, a3 = b, b = t;
+  return function(x3) {
+    return Math.max(a3, Math.min(b, x3));
   };
 }
-function bimap(domain, range, interpolate) {
-  var d0 = domain[0], d1 = domain[1], r0 = range[0], r1 = range[1];
+function bimap(domain, range2, interpolate) {
+  var d0 = domain[0], d1 = domain[1], r0 = range2[0], r1 = range2[1];
   if (d1 < d0) d0 = normalize(d1, d0), r0 = interpolate(r1, r0);
   else d0 = normalize(d0, d1), r0 = interpolate(r0, r1);
-  return function(x2) {
-    return r0(d0(x2));
+  return function(x3) {
+    return r0(d0(x3));
   };
 }
-function polymap(domain, range, interpolate) {
-  var j = Math.min(domain.length, range.length) - 1, d = new Array(j), r = new Array(j), i = -1;
+function polymap(domain, range2, interpolate) {
+  var j = Math.min(domain.length, range2.length) - 1, d = new Array(j), r = new Array(j), i = -1;
   if (domain[j] < domain[0]) {
     domain = domain.slice().reverse();
-    range = range.slice().reverse();
+    range2 = range2.slice().reverse();
   }
   while (++i < j) {
     d[i] = normalize(domain[i], domain[i + 1]);
-    r[i] = interpolate(range[i], range[i + 1]);
+    r[i] = interpolate(range2[i], range2[i + 1]);
   }
-  return function(x2) {
-    var i2 = bisect_default(domain, x2, 1, j) - 1;
-    return r[i2](d[i2](x2));
+  return function(x3) {
+    var i2 = bisect_default(domain, x3, 1, j) - 1;
+    return r[i2](d[i2](x3));
   };
 }
 function copy(source, target) {
   return target.domain(source.domain()).range(source.range()).interpolate(source.interpolate()).clamp(source.clamp()).unknown(source.unknown());
 }
 function transformer() {
-  var domain = unit, range = unit, interpolate = value_default, transform, untransform, unknown, clamp = identity2, piecewise2, output, input;
+  var domain = unit, range2 = unit, interpolate = value_default, transform, untransform, unknown, clamp = identity3, piecewise3, output, input;
   function rescale() {
-    var n = Math.min(domain.length, range.length);
-    if (clamp !== identity2) clamp = clamper(domain[0], domain[n - 1]);
-    piecewise2 = n > 2 ? polymap : bimap;
+    var n = Math.min(domain.length, range2.length);
+    if (clamp !== identity3) clamp = clamper(domain[0], domain[n - 1]);
+    piecewise3 = n > 2 ? polymap : bimap;
     output = input = null;
     return scale;
   }
-  function scale(x2) {
-    return x2 == null || isNaN(x2 = +x2) ? unknown : (output || (output = piecewise2(domain.map(transform), range, interpolate)))(transform(clamp(x2)));
+  function scale(x3) {
+    return x3 == null || isNaN(x3 = +x3) ? unknown : (output || (output = piecewise3(domain.map(transform), range2, interpolate)))(transform(clamp(x3)));
   }
-  scale.invert = function(y2) {
-    return clamp(untransform((input || (input = piecewise2(range, domain.map(transform), number_default)))(y2)));
+  scale.invert = function(y3) {
+    return clamp(untransform((input || (input = piecewise3(range2, domain.map(transform), number_default)))(y3)));
   };
   scale.domain = function(_) {
-    return arguments.length ? (domain = Array.from(_, number), rescale()) : domain.slice();
+    return arguments.length ? (domain = Array.from(_, number3), rescale()) : domain.slice();
   };
   scale.range = function(_) {
-    return arguments.length ? (range = Array.from(_), rescale()) : range.slice();
+    return arguments.length ? (range2 = Array.from(_), rescale()) : range2.slice();
   };
   scale.rangeRound = function(_) {
-    return range = Array.from(_), interpolate = round_default, rescale();
+    return range2 = Array.from(_), interpolate = round_default, rescale();
   };
   scale.clamp = function(_) {
-    return arguments.length ? (clamp = _ ? true : identity2, rescale()) : clamp !== identity2;
+    return arguments.length ? (clamp = _ ? true : identity3, rescale()) : clamp !== identity3;
   };
   scale.interpolate = function(_) {
     return arguments.length ? (interpolate = _, rescale()) : interpolate;
@@ -4886,34 +4715,34 @@ function transformer() {
   };
 }
 function continuous() {
-  return transformer()(identity2, identity2);
+  return transformer()(identity3, identity3);
 }
 
 // node_modules/d3-format/src/formatDecimal.js
-function formatDecimal_default(x2) {
-  return Math.abs(x2 = Math.round(x2)) >= 1e21 ? x2.toLocaleString("en").replace(/,/g, "") : x2.toString(10);
+function formatDecimal_default(x3) {
+  return Math.abs(x3 = Math.round(x3)) >= 1e21 ? x3.toLocaleString("en").replace(/,/g, "") : x3.toString(10);
 }
-function formatDecimalParts(x2, p) {
-  if ((i = (x2 = p ? x2.toExponential(p - 1) : x2.toExponential()).indexOf("e")) < 0) return null;
-  var i, coefficient = x2.slice(0, i);
+function formatDecimalParts(x3, p) {
+  if ((i = (x3 = p ? x3.toExponential(p - 1) : x3.toExponential()).indexOf("e")) < 0) return null;
+  var i, coefficient = x3.slice(0, i);
   return [
     coefficient.length > 1 ? coefficient[0] + coefficient.slice(2) : coefficient,
-    +x2.slice(i + 1)
+    +x3.slice(i + 1)
   ];
 }
 
 // node_modules/d3-format/src/exponent.js
-function exponent_default(x2) {
-  return x2 = formatDecimalParts(Math.abs(x2)), x2 ? x2[1] : NaN;
+function exponent_default(x3) {
+  return x3 = formatDecimalParts(Math.abs(x3)), x3 ? x3[1] : NaN;
 }
 
 // node_modules/d3-format/src/formatGroup.js
 function formatGroup_default(grouping, thousands) {
-  return function(value, width) {
-    var i = value.length, t = [], j = 0, g = grouping[0], length = 0;
+  return function(value2, width) {
+    var i = value2.length, t = [], j = 0, g = grouping[0], length = 0;
     while (i > 0 && g > 0) {
       if (length + g + 1 > width) g = Math.max(1, width - length);
-      t.push(value.substring(i -= g, i + g));
+      t.push(value2.substring(i -= g, i + g));
       if ((length += g + 1) > width) break;
       g = grouping[j = (j + 1) % grouping.length];
     }
@@ -4923,8 +4752,8 @@ function formatGroup_default(grouping, thousands) {
 
 // node_modules/d3-format/src/formatNumerals.js
 function formatNumerals_default(numerals) {
-  return function(value) {
-    return value.replace(/[0-9]/g, function(i) {
+  return function(value2) {
+    return value2.replace(/[0-9]/g, function(i) {
       return numerals[+i];
     });
   };
@@ -4966,9 +4795,9 @@ FormatSpecifier.prototype.toString = function() {
 };
 
 // node_modules/d3-format/src/formatTrim.js
-function formatTrim_default(s2) {
-  out: for (var n = s2.length, i = 1, i0 = -1, i1; i < n; ++i) {
-    switch (s2[i]) {
+function formatTrim_default(s3) {
+  out: for (var n = s3.length, i = 1, i0 = -1, i1; i < n; ++i) {
+    switch (s3[i]) {
       case ".":
         i0 = i1 = i;
         break;
@@ -4977,119 +4806,119 @@ function formatTrim_default(s2) {
         i1 = i;
         break;
       default:
-        if (!+s2[i]) break out;
+        if (!+s3[i]) break out;
         if (i0 > 0) i0 = 0;
         break;
     }
   }
-  return i0 > 0 ? s2.slice(0, i0) + s2.slice(i1 + 1) : s2;
+  return i0 > 0 ? s3.slice(0, i0) + s3.slice(i1 + 1) : s3;
 }
 
 // node_modules/d3-format/src/formatPrefixAuto.js
 var prefixExponent;
-function formatPrefixAuto_default(x2, p) {
-  var d = formatDecimalParts(x2, p);
-  if (!d) return x2 + "";
-  var coefficient = d[0], exponent3 = d[1], i = exponent3 - (prefixExponent = Math.max(-8, Math.min(8, Math.floor(exponent3 / 3))) * 3) + 1, n = coefficient.length;
-  return i === n ? coefficient : i > n ? coefficient + new Array(i - n + 1).join("0") : i > 0 ? coefficient.slice(0, i) + "." + coefficient.slice(i) : "0." + new Array(1 - i).join("0") + formatDecimalParts(x2, Math.max(0, p + i - 1))[0];
+function formatPrefixAuto_default(x3, p) {
+  var d = formatDecimalParts(x3, p);
+  if (!d) return x3 + "";
+  var coefficient = d[0], exponent2 = d[1], i = exponent2 - (prefixExponent = Math.max(-8, Math.min(8, Math.floor(exponent2 / 3))) * 3) + 1, n = coefficient.length;
+  return i === n ? coefficient : i > n ? coefficient + new Array(i - n + 1).join("0") : i > 0 ? coefficient.slice(0, i) + "." + coefficient.slice(i) : "0." + new Array(1 - i).join("0") + formatDecimalParts(x3, Math.max(0, p + i - 1))[0];
 }
 
 // node_modules/d3-format/src/formatRounded.js
-function formatRounded_default(x2, p) {
-  var d = formatDecimalParts(x2, p);
-  if (!d) return x2 + "";
-  var coefficient = d[0], exponent3 = d[1];
-  return exponent3 < 0 ? "0." + new Array(-exponent3).join("0") + coefficient : coefficient.length > exponent3 + 1 ? coefficient.slice(0, exponent3 + 1) + "." + coefficient.slice(exponent3 + 1) : coefficient + new Array(exponent3 - coefficient.length + 2).join("0");
+function formatRounded_default(x3, p) {
+  var d = formatDecimalParts(x3, p);
+  if (!d) return x3 + "";
+  var coefficient = d[0], exponent2 = d[1];
+  return exponent2 < 0 ? "0." + new Array(-exponent2).join("0") + coefficient : coefficient.length > exponent2 + 1 ? coefficient.slice(0, exponent2 + 1) + "." + coefficient.slice(exponent2 + 1) : coefficient + new Array(exponent2 - coefficient.length + 2).join("0");
 }
 
 // node_modules/d3-format/src/formatTypes.js
 var formatTypes_default = {
-  "%": (x2, p) => (x2 * 100).toFixed(p),
-  "b": (x2) => Math.round(x2).toString(2),
-  "c": (x2) => x2 + "",
+  "%": (x3, p) => (x3 * 100).toFixed(p),
+  "b": (x3) => Math.round(x3).toString(2),
+  "c": (x3) => x3 + "",
   "d": formatDecimal_default,
-  "e": (x2, p) => x2.toExponential(p),
-  "f": (x2, p) => x2.toFixed(p),
-  "g": (x2, p) => x2.toPrecision(p),
-  "o": (x2) => Math.round(x2).toString(8),
-  "p": (x2, p) => formatRounded_default(x2 * 100, p),
+  "e": (x3, p) => x3.toExponential(p),
+  "f": (x3, p) => x3.toFixed(p),
+  "g": (x3, p) => x3.toPrecision(p),
+  "o": (x3) => Math.round(x3).toString(8),
+  "p": (x3, p) => formatRounded_default(x3 * 100, p),
   "r": formatRounded_default,
   "s": formatPrefixAuto_default,
-  "X": (x2) => Math.round(x2).toString(16).toUpperCase(),
-  "x": (x2) => Math.round(x2).toString(16)
+  "X": (x3) => Math.round(x3).toString(16).toUpperCase(),
+  "x": (x3) => Math.round(x3).toString(16)
 };
 
 // node_modules/d3-format/src/identity.js
-function identity_default2(x2) {
-  return x2;
+function identity_default(x3) {
+  return x3;
 }
 
 // node_modules/d3-format/src/locale.js
 var map3 = Array.prototype.map;
 var prefixes = ["y", "z", "a", "f", "p", "n", "µ", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y"];
 function locale_default(locale3) {
-  var group2 = locale3.grouping === void 0 || locale3.thousands === void 0 ? identity_default2 : formatGroup_default(map3.call(locale3.grouping, Number), locale3.thousands + ""), currencyPrefix = locale3.currency === void 0 ? "" : locale3.currency[0] + "", currencySuffix = locale3.currency === void 0 ? "" : locale3.currency[1] + "", decimal = locale3.decimal === void 0 ? "." : locale3.decimal + "", numerals = locale3.numerals === void 0 ? identity_default2 : formatNumerals_default(map3.call(locale3.numerals, String)), percent = locale3.percent === void 0 ? "%" : locale3.percent + "", minus = locale3.minus === void 0 ? "−" : locale3.minus + "", nan = locale3.nan === void 0 ? "NaN" : locale3.nan + "";
+  var group4 = locale3.grouping === void 0 || locale3.thousands === void 0 ? identity_default : formatGroup_default(map3.call(locale3.grouping, Number), locale3.thousands + ""), currencyPrefix = locale3.currency === void 0 ? "" : locale3.currency[0] + "", currencySuffix = locale3.currency === void 0 ? "" : locale3.currency[1] + "", decimal = locale3.decimal === void 0 ? "." : locale3.decimal + "", numerals = locale3.numerals === void 0 ? identity_default : formatNumerals_default(map3.call(locale3.numerals, String)), percent = locale3.percent === void 0 ? "%" : locale3.percent + "", minus = locale3.minus === void 0 ? "−" : locale3.minus + "", nan = locale3.nan === void 0 ? "NaN" : locale3.nan + "";
   function newFormat(specifier) {
     specifier = formatSpecifier(specifier);
-    var fill = specifier.fill, align = specifier.align, sign2 = specifier.sign, symbol = specifier.symbol, zero2 = specifier.zero, width = specifier.width, comma = specifier.comma, precision = specifier.precision, trim = specifier.trim, type2 = specifier.type;
+    var fill = specifier.fill, align = specifier.align, sign3 = specifier.sign, symbol = specifier.symbol, zero4 = specifier.zero, width = specifier.width, comma = specifier.comma, precision = specifier.precision, trim = specifier.trim, type2 = specifier.type;
     if (type2 === "n") comma = true, type2 = "g";
     else if (!formatTypes_default[type2]) precision === void 0 && (precision = 12), trim = true, type2 = "g";
-    if (zero2 || fill === "0" && align === "=") zero2 = true, fill = "0", align = "=";
+    if (zero4 || fill === "0" && align === "=") zero4 = true, fill = "0", align = "=";
     var prefix = symbol === "$" ? currencyPrefix : symbol === "#" && /[boxX]/.test(type2) ? "0" + type2.toLowerCase() : "", suffix = symbol === "$" ? currencySuffix : /[%p]/.test(type2) ? percent : "";
     var formatType = formatTypes_default[type2], maybeSuffix = /[defgprs%]/.test(type2);
     precision = precision === void 0 ? 6 : /[gprs]/.test(type2) ? Math.max(1, Math.min(21, precision)) : Math.max(0, Math.min(20, precision));
-    function format2(value) {
+    function format2(value2) {
       var valuePrefix = prefix, valueSuffix = suffix, i, n, c;
       if (type2 === "c") {
-        valueSuffix = formatType(value) + valueSuffix;
-        value = "";
+        valueSuffix = formatType(value2) + valueSuffix;
+        value2 = "";
       } else {
-        value = +value;
-        var valueNegative = value < 0 || 1 / value < 0;
-        value = isNaN(value) ? nan : formatType(Math.abs(value), precision);
-        if (trim) value = formatTrim_default(value);
-        if (valueNegative && +value === 0 && sign2 !== "+") valueNegative = false;
-        valuePrefix = (valueNegative ? sign2 === "(" ? sign2 : minus : sign2 === "-" || sign2 === "(" ? "" : sign2) + valuePrefix;
-        valueSuffix = (type2 === "s" ? prefixes[8 + prefixExponent / 3] : "") + valueSuffix + (valueNegative && sign2 === "(" ? ")" : "");
+        value2 = +value2;
+        var valueNegative = value2 < 0 || 1 / value2 < 0;
+        value2 = isNaN(value2) ? nan : formatType(Math.abs(value2), precision);
+        if (trim) value2 = formatTrim_default(value2);
+        if (valueNegative && +value2 === 0 && sign3 !== "+") valueNegative = false;
+        valuePrefix = (valueNegative ? sign3 === "(" ? sign3 : minus : sign3 === "-" || sign3 === "(" ? "" : sign3) + valuePrefix;
+        valueSuffix = (type2 === "s" ? prefixes[8 + prefixExponent / 3] : "") + valueSuffix + (valueNegative && sign3 === "(" ? ")" : "");
         if (maybeSuffix) {
-          i = -1, n = value.length;
+          i = -1, n = value2.length;
           while (++i < n) {
-            if (c = value.charCodeAt(i), 48 > c || c > 57) {
-              valueSuffix = (c === 46 ? decimal + value.slice(i + 1) : value.slice(i)) + valueSuffix;
-              value = value.slice(0, i);
+            if (c = value2.charCodeAt(i), 48 > c || c > 57) {
+              valueSuffix = (c === 46 ? decimal + value2.slice(i + 1) : value2.slice(i)) + valueSuffix;
+              value2 = value2.slice(0, i);
               break;
             }
           }
         }
       }
-      if (comma && !zero2) value = group2(value, Infinity);
-      var length = valuePrefix.length + value.length + valueSuffix.length, padding = length < width ? new Array(width - length + 1).join(fill) : "";
-      if (comma && zero2) value = group2(padding + value, padding.length ? width - valueSuffix.length : Infinity), padding = "";
+      if (comma && !zero4) value2 = group4(value2, Infinity);
+      var length = valuePrefix.length + value2.length + valueSuffix.length, padding = length < width ? new Array(width - length + 1).join(fill) : "";
+      if (comma && zero4) value2 = group4(padding + value2, padding.length ? width - valueSuffix.length : Infinity), padding = "";
       switch (align) {
         case "<":
-          value = valuePrefix + value + valueSuffix + padding;
+          value2 = valuePrefix + value2 + valueSuffix + padding;
           break;
         case "=":
-          value = valuePrefix + padding + value + valueSuffix;
+          value2 = valuePrefix + padding + value2 + valueSuffix;
           break;
         case "^":
-          value = padding.slice(0, length = padding.length >> 1) + valuePrefix + value + valueSuffix + padding.slice(length);
+          value2 = padding.slice(0, length = padding.length >> 1) + valuePrefix + value2 + valueSuffix + padding.slice(length);
           break;
         default:
-          value = padding + valuePrefix + value + valueSuffix;
+          value2 = padding + valuePrefix + value2 + valueSuffix;
           break;
       }
-      return numerals(value);
+      return numerals(value2);
     }
     format2.toString = function() {
       return specifier + "";
     };
     return format2;
   }
-  function formatPrefix2(specifier, value) {
-    var f = newFormat((specifier = formatSpecifier(specifier), specifier.type = "f", specifier)), e = Math.max(-8, Math.min(8, Math.floor(exponent_default(value) / 3))) * 3, k2 = Math.pow(10, -e), prefix = prefixes[8 + e / 3];
-    return function(value2) {
-      return f(k2 * value2) + prefix;
+  function formatPrefix2(specifier, value2) {
+    var f = newFormat((specifier = formatSpecifier(specifier), specifier.type = "f", specifier)), e = Math.max(-8, Math.min(8, Math.floor(exponent_default(value2) / 3))) * 3, k3 = Math.pow(10, -e), prefix = prefixes[8 + e / 3];
+    return function(value3) {
+      return f(k3 * value3) + prefix;
     };
   }
   return {
@@ -5120,25 +4949,25 @@ function precisionFixed_default(step) {
 }
 
 // node_modules/d3-format/src/precisionPrefix.js
-function precisionPrefix_default(step, value) {
-  return Math.max(0, Math.max(-8, Math.min(8, Math.floor(exponent_default(value) / 3))) * 3 - exponent_default(Math.abs(step)));
+function precisionPrefix_default(step, value2) {
+  return Math.max(0, Math.max(-8, Math.min(8, Math.floor(exponent_default(value2) / 3))) * 3 - exponent_default(Math.abs(step)));
 }
 
 // node_modules/d3-format/src/precisionRound.js
-function precisionRound_default(step, max4) {
-  step = Math.abs(step), max4 = Math.abs(max4) - step;
-  return Math.max(0, exponent_default(max4) - exponent_default(step)) + 1;
+function precisionRound_default(step, max7) {
+  step = Math.abs(step), max7 = Math.abs(max7) - step;
+  return Math.max(0, exponent_default(max7) - exponent_default(step)) + 1;
 }
 
 // node_modules/d3-scale/src/tickFormat.js
-function tickFormat(start2, stop, count4, specifier) {
-  var step = tickStep(start2, stop, count4), precision;
+function tickFormat(start2, stop, count6, specifier) {
+  var step = tickStep(start2, stop, count6), precision;
   specifier = formatSpecifier(specifier == null ? ",f" : specifier);
   switch (specifier.type) {
     case "s": {
-      var value = Math.max(Math.abs(start2), Math.abs(stop));
-      if (specifier.precision == null && !isNaN(precision = precisionPrefix_default(step, value))) specifier.precision = precision;
-      return formatPrefix(specifier, value);
+      var value2 = Math.max(Math.abs(start2), Math.abs(stop));
+      if (specifier.precision == null && !isNaN(precision = precisionPrefix_default(step, value2))) specifier.precision = precision;
+      return formatPrefix(specifier, value2);
     }
     case "":
     case "e":
@@ -5160,16 +4989,16 @@ function tickFormat(start2, stop, count4, specifier) {
 // node_modules/d3-scale/src/linear.js
 function linearish(scale) {
   var domain = scale.domain;
-  scale.ticks = function(count4) {
+  scale.ticks = function(count6) {
     var d = domain();
-    return ticks_default(d[0], d[d.length - 1], count4 == null ? 10 : count4);
+    return ticks(d[0], d[d.length - 1], count6 == null ? 10 : count6);
   };
-  scale.tickFormat = function(count4, specifier) {
+  scale.tickFormat = function(count6, specifier) {
     var d = domain();
-    return tickFormat(d[0], d[d.length - 1], count4 == null ? 10 : count4, specifier);
+    return tickFormat(d[0], d[d.length - 1], count6 == null ? 10 : count6, specifier);
   };
-  scale.nice = function(count4) {
-    if (count4 == null) count4 = 10;
+  scale.nice = function(count6) {
+    if (count6 == null) count6 = 10;
     var d = domain();
     var i0 = 0;
     var i1 = d.length - 1;
@@ -5183,7 +5012,7 @@ function linearish(scale) {
       step = i0, i0 = i1, i1 = step;
     }
     while (maxIter-- > 0) {
-      step = tickIncrement(start2, stop, count4);
+      step = tickIncrement(start2, stop, count6);
       if (step === prestep) {
         d[i0] = start2;
         d[i1] = stop;
@@ -5227,18 +5056,18 @@ function nice2(domain, interval2) {
 
 // node_modules/d3-scale/src/quantile.js
 function quantile2() {
-  var domain = [], range = [], thresholds = [], unknown;
+  var domain = [], range2 = [], thresholds = [], unknown;
   function rescale() {
-    var i = 0, n = Math.max(1, range.length);
+    var i = 0, n = Math.max(1, range2.length);
     thresholds = new Array(n - 1);
     while (++i < n) thresholds[i - 1] = quantileSorted(domain, i / n);
     return scale;
   }
-  function scale(x2) {
-    return x2 == null || isNaN(x2 = +x2) ? unknown : range[bisect_default(thresholds, x2)];
+  function scale(x3) {
+    return x3 == null || isNaN(x3 = +x3) ? unknown : range2[bisect_default(thresholds, x3)];
   }
-  scale.invertExtent = function(y2) {
-    var i = range.indexOf(y2);
+  scale.invertExtent = function(y3) {
+    var i = range2.indexOf(y3);
     return i < 0 ? [NaN, NaN] : [
       i > 0 ? thresholds[i - 1] : domain[0],
       i < thresholds.length ? thresholds[i] : domain[domain.length - 1]
@@ -5248,11 +5077,11 @@ function quantile2() {
     if (!arguments.length) return domain.slice();
     domain = [];
     for (let d of _) if (d != null && !isNaN(d = +d)) domain.push(d);
-    domain.sort(ascending_default);
+    domain.sort(ascending2);
     return rescale();
   };
   scale.range = function(_) {
-    return arguments.length ? (range = Array.from(_), rescale()) : range.slice();
+    return arguments.length ? (range2 = Array.from(_), rescale()) : range2.slice();
   };
   scale.unknown = function(_) {
     return arguments.length ? (unknown = _, scale) : unknown;
@@ -5261,45 +5090,46 @@ function quantile2() {
     return thresholds.slice();
   };
   scale.copy = function() {
-    return quantile2().domain(domain).range(range).unknown(unknown);
+    return quantile2().domain(domain).range(range2).unknown(unknown);
   };
   return initRange.apply(scale, arguments);
 }
 
-// node_modules/d3-scale/node_modules/d3-time/src/interval.js
+// node_modules/d3-time/src/interval.js
 var t02 = /* @__PURE__ */ new Date();
 var t12 = /* @__PURE__ */ new Date();
-function newInterval(floori, offseti, count4, field) {
+function timeInterval(floori, offseti, count6, field) {
   function interval2(date2) {
     return floori(date2 = arguments.length === 0 ? /* @__PURE__ */ new Date() : /* @__PURE__ */ new Date(+date2)), date2;
   }
-  interval2.floor = function(date2) {
+  interval2.floor = (date2) => {
     return floori(date2 = /* @__PURE__ */ new Date(+date2)), date2;
   };
-  interval2.ceil = function(date2) {
+  interval2.ceil = (date2) => {
     return floori(date2 = new Date(date2 - 1)), offseti(date2, 1), floori(date2), date2;
   };
-  interval2.round = function(date2) {
-    var d0 = interval2(date2), d1 = interval2.ceil(date2);
+  interval2.round = (date2) => {
+    const d0 = interval2(date2), d1 = interval2.ceil(date2);
     return date2 - d0 < d1 - date2 ? d0 : d1;
   };
-  interval2.offset = function(date2, step) {
+  interval2.offset = (date2, step) => {
     return offseti(date2 = /* @__PURE__ */ new Date(+date2), step == null ? 1 : Math.floor(step)), date2;
   };
-  interval2.range = function(start2, stop, step) {
-    var range = [], previous;
+  interval2.range = (start2, stop, step) => {
+    const range2 = [];
     start2 = interval2.ceil(start2);
     step = step == null ? 1 : Math.floor(step);
-    if (!(start2 < stop) || !(step > 0)) return range;
+    if (!(start2 < stop) || !(step > 0)) return range2;
+    let previous;
     do
-      range.push(previous = /* @__PURE__ */ new Date(+start2)), offseti(start2, step), floori(start2);
+      range2.push(previous = /* @__PURE__ */ new Date(+start2)), offseti(start2, step), floori(start2);
     while (previous < start2 && start2 < stop);
-    return range;
+    return range2;
   };
-  interval2.filter = function(test) {
-    return newInterval(function(date2) {
+  interval2.filter = (test) => {
+    return timeInterval((date2) => {
       if (date2 >= date2) while (floori(date2), !test(date2)) date2.setTime(date2 - 1);
-    }, function(date2, step) {
+    }, (date2, step) => {
       if (date2 >= date2) {
         if (step < 0) while (++step <= 0) {
           while (offseti(date2, -1), !test(date2)) {
@@ -5312,47 +5142,42 @@ function newInterval(floori, offseti, count4, field) {
       }
     });
   };
-  if (count4) {
-    interval2.count = function(start2, end) {
+  if (count6) {
+    interval2.count = (start2, end) => {
       t02.setTime(+start2), t12.setTime(+end);
       floori(t02), floori(t12);
-      return Math.floor(count4(t02, t12));
+      return Math.floor(count6(t02, t12));
     };
-    interval2.every = function(step) {
+    interval2.every = (step) => {
       step = Math.floor(step);
-      return !isFinite(step) || !(step > 0) ? null : !(step > 1) ? interval2 : interval2.filter(field ? function(d) {
-        return field(d) % step === 0;
-      } : function(d) {
-        return interval2.count(0, d) % step === 0;
-      });
+      return !isFinite(step) || !(step > 0) ? null : !(step > 1) ? interval2 : interval2.filter(field ? (d) => field(d) % step === 0 : (d) => interval2.count(0, d) % step === 0);
     };
   }
   return interval2;
 }
 
-// node_modules/d3-scale/node_modules/d3-time/src/millisecond.js
-var millisecond = newInterval(function() {
-}, function(date2, step) {
+// node_modules/d3-time/src/millisecond.js
+var millisecond = timeInterval(() => {
+}, (date2, step) => {
   date2.setTime(+date2 + step);
-}, function(start2, end) {
+}, (start2, end) => {
   return end - start2;
 });
-millisecond.every = function(k2) {
-  k2 = Math.floor(k2);
-  if (!isFinite(k2) || !(k2 > 0)) return null;
-  if (!(k2 > 1)) return millisecond;
-  return newInterval(function(date2) {
-    date2.setTime(Math.floor(date2 / k2) * k2);
-  }, function(date2, step) {
-    date2.setTime(+date2 + step * k2);
-  }, function(start2, end) {
-    return (end - start2) / k2;
+millisecond.every = (k3) => {
+  k3 = Math.floor(k3);
+  if (!isFinite(k3) || !(k3 > 0)) return null;
+  if (!(k3 > 1)) return millisecond;
+  return timeInterval((date2) => {
+    date2.setTime(Math.floor(date2 / k3) * k3);
+  }, (date2, step) => {
+    date2.setTime(+date2 + step * k3);
+  }, (start2, end) => {
+    return (end - start2) / k3;
   });
 };
-var millisecond_default = millisecond;
 var milliseconds = millisecond.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/duration.js
+// node_modules/d3-time/src/duration.js
 var durationSecond = 1e3;
 var durationMinute = durationSecond * 60;
 var durationHour = durationMinute * 60;
@@ -5361,165 +5186,123 @@ var durationWeek = durationDay * 7;
 var durationMonth = durationDay * 30;
 var durationYear = durationDay * 365;
 
-// node_modules/d3-scale/node_modules/d3-time/src/second.js
-var second = newInterval(function(date2) {
+// node_modules/d3-time/src/second.js
+var second = timeInterval((date2) => {
   date2.setTime(date2 - date2.getMilliseconds());
-}, function(date2, step) {
+}, (date2, step) => {
   date2.setTime(+date2 + step * durationSecond);
-}, function(start2, end) {
+}, (start2, end) => {
   return (end - start2) / durationSecond;
-}, function(date2) {
+}, (date2) => {
   return date2.getUTCSeconds();
 });
-var second_default = second;
 var seconds = second.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/minute.js
-var minute = newInterval(function(date2) {
+// node_modules/d3-time/src/minute.js
+var timeMinute = timeInterval((date2) => {
   date2.setTime(date2 - date2.getMilliseconds() - date2.getSeconds() * durationSecond);
-}, function(date2, step) {
+}, (date2, step) => {
   date2.setTime(+date2 + step * durationMinute);
-}, function(start2, end) {
+}, (start2, end) => {
   return (end - start2) / durationMinute;
-}, function(date2) {
+}, (date2) => {
   return date2.getMinutes();
 });
-var minute_default = minute;
-var minutes = minute.range;
+var timeMinutes = timeMinute.range;
+var utcMinute = timeInterval((date2) => {
+  date2.setUTCSeconds(0, 0);
+}, (date2, step) => {
+  date2.setTime(+date2 + step * durationMinute);
+}, (start2, end) => {
+  return (end - start2) / durationMinute;
+}, (date2) => {
+  return date2.getUTCMinutes();
+});
+var utcMinutes = utcMinute.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/hour.js
-var hour = newInterval(function(date2) {
+// node_modules/d3-time/src/hour.js
+var timeHour = timeInterval((date2) => {
   date2.setTime(date2 - date2.getMilliseconds() - date2.getSeconds() * durationSecond - date2.getMinutes() * durationMinute);
-}, function(date2, step) {
+}, (date2, step) => {
   date2.setTime(+date2 + step * durationHour);
-}, function(start2, end) {
+}, (start2, end) => {
   return (end - start2) / durationHour;
-}, function(date2) {
+}, (date2) => {
   return date2.getHours();
 });
-var hour_default = hour;
-var hours = hour.range;
+var timeHours = timeHour.range;
+var utcHour = timeInterval((date2) => {
+  date2.setUTCMinutes(0, 0, 0);
+}, (date2, step) => {
+  date2.setTime(+date2 + step * durationHour);
+}, (start2, end) => {
+  return (end - start2) / durationHour;
+}, (date2) => {
+  return date2.getUTCHours();
+});
+var utcHours = utcHour.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/day.js
-var day = newInterval(
+// node_modules/d3-time/src/day.js
+var timeDay = timeInterval(
   (date2) => date2.setHours(0, 0, 0, 0),
   (date2, step) => date2.setDate(date2.getDate() + step),
   (start2, end) => (end - start2 - (end.getTimezoneOffset() - start2.getTimezoneOffset()) * durationMinute) / durationDay,
   (date2) => date2.getDate() - 1
 );
-var day_default = day;
-var days = day.range;
+var timeDays = timeDay.range;
+var utcDay = timeInterval((date2) => {
+  date2.setUTCHours(0, 0, 0, 0);
+}, (date2, step) => {
+  date2.setUTCDate(date2.getUTCDate() + step);
+}, (start2, end) => {
+  return (end - start2) / durationDay;
+}, (date2) => {
+  return date2.getUTCDate() - 1;
+});
+var utcDays = utcDay.range;
+var unixDay = timeInterval((date2) => {
+  date2.setUTCHours(0, 0, 0, 0);
+}, (date2, step) => {
+  date2.setUTCDate(date2.getUTCDate() + step);
+}, (start2, end) => {
+  return (end - start2) / durationDay;
+}, (date2) => {
+  return Math.floor(date2 / durationDay);
+});
+var unixDays = unixDay.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/week.js
-function weekday(i) {
-  return newInterval(function(date2) {
+// node_modules/d3-time/src/week.js
+function timeWeekday(i) {
+  return timeInterval((date2) => {
     date2.setDate(date2.getDate() - (date2.getDay() + 7 - i) % 7);
     date2.setHours(0, 0, 0, 0);
-  }, function(date2, step) {
+  }, (date2, step) => {
     date2.setDate(date2.getDate() + step * 7);
-  }, function(start2, end) {
+  }, (start2, end) => {
     return (end - start2 - (end.getTimezoneOffset() - start2.getTimezoneOffset()) * durationMinute) / durationWeek;
   });
 }
-var sunday = weekday(0);
-var monday = weekday(1);
-var tuesday = weekday(2);
-var wednesday = weekday(3);
-var thursday = weekday(4);
-var friday = weekday(5);
-var saturday = weekday(6);
-var sundays = sunday.range;
-var mondays = monday.range;
-var tuesdays = tuesday.range;
-var wednesdays = wednesday.range;
-var thursdays = thursday.range;
-var fridays = friday.range;
-var saturdays = saturday.range;
-
-// node_modules/d3-scale/node_modules/d3-time/src/month.js
-var month = newInterval(function(date2) {
-  date2.setDate(1);
-  date2.setHours(0, 0, 0, 0);
-}, function(date2, step) {
-  date2.setMonth(date2.getMonth() + step);
-}, function(start2, end) {
-  return end.getMonth() - start2.getMonth() + (end.getFullYear() - start2.getFullYear()) * 12;
-}, function(date2) {
-  return date2.getMonth();
-});
-var month_default = month;
-var months = month.range;
-
-// node_modules/d3-scale/node_modules/d3-time/src/year.js
-var year = newInterval(function(date2) {
-  date2.setMonth(0, 1);
-  date2.setHours(0, 0, 0, 0);
-}, function(date2, step) {
-  date2.setFullYear(date2.getFullYear() + step);
-}, function(start2, end) {
-  return end.getFullYear() - start2.getFullYear();
-}, function(date2) {
-  return date2.getFullYear();
-});
-year.every = function(k2) {
-  return !isFinite(k2 = Math.floor(k2)) || !(k2 > 0) ? null : newInterval(function(date2) {
-    date2.setFullYear(Math.floor(date2.getFullYear() / k2) * k2);
-    date2.setMonth(0, 1);
-    date2.setHours(0, 0, 0, 0);
-  }, function(date2, step) {
-    date2.setFullYear(date2.getFullYear() + step * k2);
-  });
-};
-var year_default = year;
-var years = year.range;
-
-// node_modules/d3-scale/node_modules/d3-time/src/utcMinute.js
-var utcMinute = newInterval(function(date2) {
-  date2.setUTCSeconds(0, 0);
-}, function(date2, step) {
-  date2.setTime(+date2 + step * durationMinute);
-}, function(start2, end) {
-  return (end - start2) / durationMinute;
-}, function(date2) {
-  return date2.getUTCMinutes();
-});
-var utcMinute_default = utcMinute;
-var utcMinutes = utcMinute.range;
-
-// node_modules/d3-scale/node_modules/d3-time/src/utcHour.js
-var utcHour = newInterval(function(date2) {
-  date2.setUTCMinutes(0, 0, 0);
-}, function(date2, step) {
-  date2.setTime(+date2 + step * durationHour);
-}, function(start2, end) {
-  return (end - start2) / durationHour;
-}, function(date2) {
-  return date2.getUTCHours();
-});
-var utcHour_default = utcHour;
-var utcHours = utcHour.range;
-
-// node_modules/d3-scale/node_modules/d3-time/src/utcDay.js
-var utcDay = newInterval(function(date2) {
-  date2.setUTCHours(0, 0, 0, 0);
-}, function(date2, step) {
-  date2.setUTCDate(date2.getUTCDate() + step);
-}, function(start2, end) {
-  return (end - start2) / durationDay;
-}, function(date2) {
-  return date2.getUTCDate() - 1;
-});
-var utcDay_default = utcDay;
-var utcDays = utcDay.range;
-
-// node_modules/d3-scale/node_modules/d3-time/src/utcWeek.js
+var timeSunday = timeWeekday(0);
+var timeMonday = timeWeekday(1);
+var timeTuesday = timeWeekday(2);
+var timeWednesday = timeWeekday(3);
+var timeThursday = timeWeekday(4);
+var timeFriday = timeWeekday(5);
+var timeSaturday = timeWeekday(6);
+var timeSundays = timeSunday.range;
+var timeMondays = timeMonday.range;
+var timeTuesdays = timeTuesday.range;
+var timeWednesdays = timeWednesday.range;
+var timeThursdays = timeThursday.range;
+var timeFridays = timeFriday.range;
+var timeSaturdays = timeSaturday.range;
 function utcWeekday(i) {
-  return newInterval(function(date2) {
+  return timeInterval((date2) => {
     date2.setUTCDate(date2.getUTCDate() - (date2.getUTCDay() + 7 - i) % 7);
     date2.setUTCHours(0, 0, 0, 0);
-  }, function(date2, step) {
+  }, (date2, step) => {
     date2.setUTCDate(date2.getUTCDate() + step * 7);
-  }, function(start2, end) {
+  }, (start2, end) => {
     return (end - start2) / durationWeek;
   });
 }
@@ -5538,89 +5321,118 @@ var utcThursdays = utcThursday.range;
 var utcFridays = utcFriday.range;
 var utcSaturdays = utcSaturday.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/utcMonth.js
-var utcMonth = newInterval(function(date2) {
+// node_modules/d3-time/src/month.js
+var timeMonth = timeInterval((date2) => {
+  date2.setDate(1);
+  date2.setHours(0, 0, 0, 0);
+}, (date2, step) => {
+  date2.setMonth(date2.getMonth() + step);
+}, (start2, end) => {
+  return end.getMonth() - start2.getMonth() + (end.getFullYear() - start2.getFullYear()) * 12;
+}, (date2) => {
+  return date2.getMonth();
+});
+var timeMonths = timeMonth.range;
+var utcMonth = timeInterval((date2) => {
   date2.setUTCDate(1);
   date2.setUTCHours(0, 0, 0, 0);
-}, function(date2, step) {
+}, (date2, step) => {
   date2.setUTCMonth(date2.getUTCMonth() + step);
-}, function(start2, end) {
+}, (start2, end) => {
   return end.getUTCMonth() - start2.getUTCMonth() + (end.getUTCFullYear() - start2.getUTCFullYear()) * 12;
-}, function(date2) {
+}, (date2) => {
   return date2.getUTCMonth();
 });
-var utcMonth_default = utcMonth;
 var utcMonths = utcMonth.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/utcYear.js
-var utcYear = newInterval(function(date2) {
-  date2.setUTCMonth(0, 1);
-  date2.setUTCHours(0, 0, 0, 0);
-}, function(date2, step) {
-  date2.setUTCFullYear(date2.getUTCFullYear() + step);
-}, function(start2, end) {
-  return end.getUTCFullYear() - start2.getUTCFullYear();
-}, function(date2) {
-  return date2.getUTCFullYear();
+// node_modules/d3-time/src/year.js
+var timeYear = timeInterval((date2) => {
+  date2.setMonth(0, 1);
+  date2.setHours(0, 0, 0, 0);
+}, (date2, step) => {
+  date2.setFullYear(date2.getFullYear() + step);
+}, (start2, end) => {
+  return end.getFullYear() - start2.getFullYear();
+}, (date2) => {
+  return date2.getFullYear();
 });
-utcYear.every = function(k2) {
-  return !isFinite(k2 = Math.floor(k2)) || !(k2 > 0) ? null : newInterval(function(date2) {
-    date2.setUTCFullYear(Math.floor(date2.getUTCFullYear() / k2) * k2);
-    date2.setUTCMonth(0, 1);
-    date2.setUTCHours(0, 0, 0, 0);
-  }, function(date2, step) {
-    date2.setUTCFullYear(date2.getUTCFullYear() + step * k2);
+timeYear.every = (k3) => {
+  return !isFinite(k3 = Math.floor(k3)) || !(k3 > 0) ? null : timeInterval((date2) => {
+    date2.setFullYear(Math.floor(date2.getFullYear() / k3) * k3);
+    date2.setMonth(0, 1);
+    date2.setHours(0, 0, 0, 0);
+  }, (date2, step) => {
+    date2.setFullYear(date2.getFullYear() + step * k3);
   });
 };
-var utcYear_default = utcYear;
+var timeYears = timeYear.range;
+var utcYear = timeInterval((date2) => {
+  date2.setUTCMonth(0, 1);
+  date2.setUTCHours(0, 0, 0, 0);
+}, (date2, step) => {
+  date2.setUTCFullYear(date2.getUTCFullYear() + step);
+}, (start2, end) => {
+  return end.getUTCFullYear() - start2.getUTCFullYear();
+}, (date2) => {
+  return date2.getUTCFullYear();
+});
+utcYear.every = (k3) => {
+  return !isFinite(k3 = Math.floor(k3)) || !(k3 > 0) ? null : timeInterval((date2) => {
+    date2.setUTCFullYear(Math.floor(date2.getUTCFullYear() / k3) * k3);
+    date2.setUTCMonth(0, 1);
+    date2.setUTCHours(0, 0, 0, 0);
+  }, (date2, step) => {
+    date2.setUTCFullYear(date2.getUTCFullYear() + step * k3);
+  });
+};
 var utcYears = utcYear.range;
 
-// node_modules/d3-scale/node_modules/d3-time/src/ticks.js
-function ticker(year3, month3, week, day3, hour3, minute3) {
+// node_modules/d3-time/src/ticks.js
+function ticker(year2, month2, week, day2, hour2, minute2) {
   const tickIntervals = [
-    [second_default, 1, durationSecond],
-    [second_default, 5, 5 * durationSecond],
-    [second_default, 15, 15 * durationSecond],
-    [second_default, 30, 30 * durationSecond],
-    [minute3, 1, durationMinute],
-    [minute3, 5, 5 * durationMinute],
-    [minute3, 15, 15 * durationMinute],
-    [minute3, 30, 30 * durationMinute],
-    [hour3, 1, durationHour],
-    [hour3, 3, 3 * durationHour],
-    [hour3, 6, 6 * durationHour],
-    [hour3, 12, 12 * durationHour],
-    [day3, 1, durationDay],
-    [day3, 2, 2 * durationDay],
+    [second, 1, durationSecond],
+    [second, 5, 5 * durationSecond],
+    [second, 15, 15 * durationSecond],
+    [second, 30, 30 * durationSecond],
+    [minute2, 1, durationMinute],
+    [minute2, 5, 5 * durationMinute],
+    [minute2, 15, 15 * durationMinute],
+    [minute2, 30, 30 * durationMinute],
+    [hour2, 1, durationHour],
+    [hour2, 3, 3 * durationHour],
+    [hour2, 6, 6 * durationHour],
+    [hour2, 12, 12 * durationHour],
+    [day2, 1, durationDay],
+    [day2, 2, 2 * durationDay],
     [week, 1, durationWeek],
-    [month3, 1, durationMonth],
-    [month3, 3, 3 * durationMonth],
-    [year3, 1, durationYear]
+    [month2, 1, durationMonth],
+    [month2, 3, 3 * durationMonth],
+    [year2, 1, durationYear]
   ];
-  function ticks(start2, stop, count4) {
-    const reverse2 = stop < start2;
-    if (reverse2) [start2, stop] = [stop, start2];
-    const interval2 = count4 && typeof count4.range === "function" ? count4 : tickInterval(start2, stop, count4);
-    const ticks2 = interval2 ? interval2.range(start2, +stop + 1) : [];
-    return reverse2 ? ticks2.reverse() : ticks2;
+  function ticks2(start2, stop, count6) {
+    const reverse4 = stop < start2;
+    if (reverse4) [start2, stop] = [stop, start2];
+    const interval2 = count6 && typeof count6.range === "function" ? count6 : tickInterval(start2, stop, count6);
+    const ticks3 = interval2 ? interval2.range(start2, +stop + 1) : [];
+    return reverse4 ? ticks3.reverse() : ticks3;
   }
-  function tickInterval(start2, stop, count4) {
-    const target = Math.abs(stop - start2) / count4;
-    const i = bisector_default(([, , step2]) => step2).right(tickIntervals, target);
-    if (i === tickIntervals.length) return year3.every(tickStep(start2 / durationYear, stop / durationYear, count4));
-    if (i === 0) return millisecond_default.every(Math.max(tickStep(start2, stop, count4), 1));
+  function tickInterval(start2, stop, count6) {
+    const target = Math.abs(stop - start2) / count6;
+    const i = bisector(([, , step2]) => step2).right(tickIntervals, target);
+    if (i === tickIntervals.length) return year2.every(tickStep(start2 / durationYear, stop / durationYear, count6));
+    if (i === 0) return millisecond.every(Math.max(tickStep(start2, stop, count6), 1));
     const [t, step] = tickIntervals[target / tickIntervals[i - 1][2] < tickIntervals[i][2] / target ? i - 1 : i];
     return t.every(step);
   }
-  return [ticks, tickInterval];
+  return [ticks2, tickInterval];
 }
-var [utcTicks, utcTickInterval] = ticker(utcYear_default, utcMonth_default, utcSunday, utcDay_default, utcHour_default, utcMinute_default);
-var [timeTicks, timeTickInterval] = ticker(year_default, month_default, sunday, day_default, hour_default, minute_default);
+var [utcTicks, utcTickInterval] = ticker(utcYear, utcMonth, utcSunday, unixDay, utcHour, utcMinute);
+var [timeTicks, timeTickInterval] = ticker(timeYear, timeMonth, timeSunday, timeDay, timeHour, timeMinute);
 
 // node_modules/d3-time-format/node_modules/d3-time/src/interval.js
 var t03 = /* @__PURE__ */ new Date();
 var t13 = /* @__PURE__ */ new Date();
-function newInterval2(floori, offseti, count4, field) {
+function newInterval(floori, offseti, count6, field) {
   function interval2(date2) {
     return floori(date2 = arguments.length === 0 ? /* @__PURE__ */ new Date() : /* @__PURE__ */ new Date(+date2)), date2;
   }
@@ -5638,17 +5450,17 @@ function newInterval2(floori, offseti, count4, field) {
     return offseti(date2 = /* @__PURE__ */ new Date(+date2), step == null ? 1 : Math.floor(step)), date2;
   };
   interval2.range = function(start2, stop, step) {
-    var range = [], previous;
+    var range2 = [], previous;
     start2 = interval2.ceil(start2);
     step = step == null ? 1 : Math.floor(step);
-    if (!(start2 < stop) || !(step > 0)) return range;
+    if (!(start2 < stop) || !(step > 0)) return range2;
     do
-      range.push(previous = /* @__PURE__ */ new Date(+start2)), offseti(start2, step), floori(start2);
+      range2.push(previous = /* @__PURE__ */ new Date(+start2)), offseti(start2, step), floori(start2);
     while (previous < start2 && start2 < stop);
-    return range;
+    return range2;
   };
   interval2.filter = function(test) {
-    return newInterval2(function(date2) {
+    return newInterval(function(date2) {
       if (date2 >= date2) while (floori(date2), !test(date2)) date2.setTime(date2 - 1);
     }, function(date2, step) {
       if (date2 >= date2) {
@@ -5663,11 +5475,11 @@ function newInterval2(floori, offseti, count4, field) {
       }
     });
   };
-  if (count4) {
+  if (count6) {
     interval2.count = function(start2, end) {
       t03.setTime(+start2), t13.setTime(+end);
       floori(t03), floori(t13);
-      return Math.floor(count4(t03, t13));
+      return Math.floor(count6(t03, t13));
     };
     interval2.every = function(step) {
       step = Math.floor(step);
@@ -5682,25 +5494,25 @@ function newInterval2(floori, offseti, count4, field) {
 }
 
 // node_modules/d3-time-format/node_modules/d3-time/src/millisecond.js
-var millisecond2 = newInterval2(function() {
+var millisecond2 = newInterval(function() {
 }, function(date2, step) {
   date2.setTime(+date2 + step);
 }, function(start2, end) {
   return end - start2;
 });
-millisecond2.every = function(k2) {
-  k2 = Math.floor(k2);
-  if (!isFinite(k2) || !(k2 > 0)) return null;
-  if (!(k2 > 1)) return millisecond2;
-  return newInterval2(function(date2) {
-    date2.setTime(Math.floor(date2 / k2) * k2);
+millisecond2.every = function(k3) {
+  k3 = Math.floor(k3);
+  if (!isFinite(k3) || !(k3 > 0)) return null;
+  if (!(k3 > 1)) return millisecond2;
+  return newInterval(function(date2) {
+    date2.setTime(Math.floor(date2 / k3) * k3);
   }, function(date2, step) {
-    date2.setTime(+date2 + step * k2);
+    date2.setTime(+date2 + step * k3);
   }, function(start2, end) {
-    return (end - start2) / k2;
+    return (end - start2) / k3;
   });
 };
-var millisecond_default2 = millisecond2;
+var millisecond_default = millisecond2;
 var milliseconds2 = millisecond2.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/duration.js
@@ -5713,7 +5525,7 @@ var durationMonth2 = durationDay2 * 30;
 var durationYear2 = durationDay2 * 365;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/second.js
-var second2 = newInterval2(function(date2) {
+var second2 = newInterval(function(date2) {
   date2.setTime(date2 - date2.getMilliseconds());
 }, function(date2, step) {
   date2.setTime(+date2 + step * durationSecond2);
@@ -5722,11 +5534,11 @@ var second2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getUTCSeconds();
 });
-var second_default2 = second2;
+var second_default = second2;
 var seconds2 = second2.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/minute.js
-var minute2 = newInterval2(function(date2) {
+var minute = newInterval(function(date2) {
   date2.setTime(date2 - date2.getMilliseconds() - date2.getSeconds() * durationSecond2);
 }, function(date2, step) {
   date2.setTime(+date2 + step * durationMinute2);
@@ -5735,11 +5547,11 @@ var minute2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getMinutes();
 });
-var minute_default2 = minute2;
-var minutes2 = minute2.range;
+var minute_default = minute;
+var minutes = minute.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/hour.js
-var hour2 = newInterval2(function(date2) {
+var hour = newInterval(function(date2) {
   date2.setTime(date2 - date2.getMilliseconds() - date2.getSeconds() * durationSecond2 - date2.getMinutes() * durationMinute2);
 }, function(date2, step) {
   date2.setTime(+date2 + step * durationHour2);
@@ -5748,22 +5560,22 @@ var hour2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getHours();
 });
-var hour_default2 = hour2;
-var hours2 = hour2.range;
+var hour_default = hour;
+var hours = hour.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/day.js
-var day2 = newInterval2(
+var day = newInterval(
   (date2) => date2.setHours(0, 0, 0, 0),
   (date2, step) => date2.setDate(date2.getDate() + step),
   (start2, end) => (end - start2 - (end.getTimezoneOffset() - start2.getTimezoneOffset()) * durationMinute2) / durationDay2,
   (date2) => date2.getDate() - 1
 );
-var day_default2 = day2;
-var days2 = day2.range;
+var day_default = day;
+var days = day.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/week.js
-function weekday2(i) {
-  return newInterval2(function(date2) {
+function weekday(i) {
+  return newInterval(function(date2) {
     date2.setDate(date2.getDate() - (date2.getDay() + 7 - i) % 7);
     date2.setHours(0, 0, 0, 0);
   }, function(date2, step) {
@@ -5772,23 +5584,23 @@ function weekday2(i) {
     return (end - start2 - (end.getTimezoneOffset() - start2.getTimezoneOffset()) * durationMinute2) / durationWeek2;
   });
 }
-var sunday2 = weekday2(0);
-var monday2 = weekday2(1);
-var tuesday2 = weekday2(2);
-var wednesday2 = weekday2(3);
-var thursday2 = weekday2(4);
-var friday2 = weekday2(5);
-var saturday2 = weekday2(6);
-var sundays2 = sunday2.range;
-var mondays2 = monday2.range;
-var tuesdays2 = tuesday2.range;
-var wednesdays2 = wednesday2.range;
-var thursdays2 = thursday2.range;
-var fridays2 = friday2.range;
-var saturdays2 = saturday2.range;
+var sunday = weekday(0);
+var monday = weekday(1);
+var tuesday = weekday(2);
+var wednesday = weekday(3);
+var thursday = weekday(4);
+var friday = weekday(5);
+var saturday = weekday(6);
+var sundays = sunday.range;
+var mondays = monday.range;
+var tuesdays = tuesday.range;
+var wednesdays = wednesday.range;
+var thursdays = thursday.range;
+var fridays = friday.range;
+var saturdays = saturday.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/month.js
-var month2 = newInterval2(function(date2) {
+var month = newInterval(function(date2) {
   date2.setDate(1);
   date2.setHours(0, 0, 0, 0);
 }, function(date2, step) {
@@ -5798,11 +5610,11 @@ var month2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getMonth();
 });
-var month_default2 = month2;
-var months2 = month2.range;
+var month_default = month;
+var months = month.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/year.js
-var year2 = newInterval2(function(date2) {
+var year = newInterval(function(date2) {
   date2.setMonth(0, 1);
   date2.setHours(0, 0, 0, 0);
 }, function(date2, step) {
@@ -5812,20 +5624,20 @@ var year2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getFullYear();
 });
-year2.every = function(k2) {
-  return !isFinite(k2 = Math.floor(k2)) || !(k2 > 0) ? null : newInterval2(function(date2) {
-    date2.setFullYear(Math.floor(date2.getFullYear() / k2) * k2);
+year.every = function(k3) {
+  return !isFinite(k3 = Math.floor(k3)) || !(k3 > 0) ? null : newInterval(function(date2) {
+    date2.setFullYear(Math.floor(date2.getFullYear() / k3) * k3);
     date2.setMonth(0, 1);
     date2.setHours(0, 0, 0, 0);
   }, function(date2, step) {
-    date2.setFullYear(date2.getFullYear() + step * k2);
+    date2.setFullYear(date2.getFullYear() + step * k3);
   });
 };
-var year_default2 = year2;
-var years2 = year2.range;
+var year_default = year;
+var years = year.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/utcMinute.js
-var utcMinute2 = newInterval2(function(date2) {
+var utcMinute2 = newInterval(function(date2) {
   date2.setUTCSeconds(0, 0);
 }, function(date2, step) {
   date2.setTime(+date2 + step * durationMinute2);
@@ -5834,11 +5646,11 @@ var utcMinute2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getUTCMinutes();
 });
-var utcMinute_default2 = utcMinute2;
+var utcMinute_default = utcMinute2;
 var utcMinutes2 = utcMinute2.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/utcHour.js
-var utcHour2 = newInterval2(function(date2) {
+var utcHour2 = newInterval(function(date2) {
   date2.setUTCMinutes(0, 0, 0);
 }, function(date2, step) {
   date2.setTime(+date2 + step * durationHour2);
@@ -5847,11 +5659,11 @@ var utcHour2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getUTCHours();
 });
-var utcHour_default2 = utcHour2;
+var utcHour_default = utcHour2;
 var utcHours2 = utcHour2.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/utcDay.js
-var utcDay2 = newInterval2(function(date2) {
+var utcDay2 = newInterval(function(date2) {
   date2.setUTCHours(0, 0, 0, 0);
 }, function(date2, step) {
   date2.setUTCDate(date2.getUTCDate() + step);
@@ -5860,12 +5672,12 @@ var utcDay2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getUTCDate() - 1;
 });
-var utcDay_default2 = utcDay2;
+var utcDay_default = utcDay2;
 var utcDays2 = utcDay2.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/utcWeek.js
 function utcWeekday2(i) {
-  return newInterval2(function(date2) {
+  return newInterval(function(date2) {
     date2.setUTCDate(date2.getUTCDate() - (date2.getUTCDay() + 7 - i) % 7);
     date2.setUTCHours(0, 0, 0, 0);
   }, function(date2, step) {
@@ -5890,7 +5702,7 @@ var utcFridays2 = utcFriday2.range;
 var utcSaturdays2 = utcSaturday2.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/utcMonth.js
-var utcMonth2 = newInterval2(function(date2) {
+var utcMonth2 = newInterval(function(date2) {
   date2.setUTCDate(1);
   date2.setUTCHours(0, 0, 0, 0);
 }, function(date2, step) {
@@ -5900,11 +5712,11 @@ var utcMonth2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getUTCMonth();
 });
-var utcMonth_default2 = utcMonth2;
+var utcMonth_default = utcMonth2;
 var utcMonths2 = utcMonth2.range;
 
 // node_modules/d3-time-format/node_modules/d3-time/src/utcYear.js
-var utcYear2 = newInterval2(function(date2) {
+var utcYear2 = newInterval(function(date2) {
   date2.setUTCMonth(0, 1);
   date2.setUTCHours(0, 0, 0, 0);
 }, function(date2, step) {
@@ -5914,59 +5726,146 @@ var utcYear2 = newInterval2(function(date2) {
 }, function(date2) {
   return date2.getUTCFullYear();
 });
-utcYear2.every = function(k2) {
-  return !isFinite(k2 = Math.floor(k2)) || !(k2 > 0) ? null : newInterval2(function(date2) {
-    date2.setUTCFullYear(Math.floor(date2.getUTCFullYear() / k2) * k2);
+utcYear2.every = function(k3) {
+  return !isFinite(k3 = Math.floor(k3)) || !(k3 > 0) ? null : newInterval(function(date2) {
+    date2.setUTCFullYear(Math.floor(date2.getUTCFullYear() / k3) * k3);
     date2.setUTCMonth(0, 1);
     date2.setUTCHours(0, 0, 0, 0);
   }, function(date2, step) {
-    date2.setUTCFullYear(date2.getUTCFullYear() + step * k2);
+    date2.setUTCFullYear(date2.getUTCFullYear() + step * k3);
   });
 };
-var utcYear_default2 = utcYear2;
+var utcYear_default = utcYear2;
 var utcYears2 = utcYear2.range;
 
-// node_modules/d3-time-format/node_modules/d3-time/src/ticks.js
-function ticker2(year3, month3, week, day3, hour3, minute3) {
-  const tickIntervals = [
-    [second_default2, 1, durationSecond2],
-    [second_default2, 5, 5 * durationSecond2],
-    [second_default2, 15, 15 * durationSecond2],
-    [second_default2, 30, 30 * durationSecond2],
-    [minute3, 1, durationMinute2],
-    [minute3, 5, 5 * durationMinute2],
-    [minute3, 15, 15 * durationMinute2],
-    [minute3, 30, 30 * durationMinute2],
-    [hour3, 1, durationHour2],
-    [hour3, 3, 3 * durationHour2],
-    [hour3, 6, 6 * durationHour2],
-    [hour3, 12, 12 * durationHour2],
-    [day3, 1, durationDay2],
-    [day3, 2, 2 * durationDay2],
-    [week, 1, durationWeek2],
-    [month3, 1, durationMonth2],
-    [month3, 3, 3 * durationMonth2],
-    [year3, 1, durationYear2]
-  ];
-  function ticks(start2, stop, count4) {
-    const reverse2 = stop < start2;
-    if (reverse2) [start2, stop] = [stop, start2];
-    const interval2 = count4 && typeof count4.range === "function" ? count4 : tickInterval(start2, stop, count4);
-    const ticks2 = interval2 ? interval2.range(start2, +stop + 1) : [];
-    return reverse2 ? ticks2.reverse() : ticks2;
+// node_modules/d3-time-format/node_modules/d3-array/src/ascending.js
+function ascending_default(a3, b) {
+  return a3 < b ? -1 : a3 > b ? 1 : a3 >= b ? 0 : NaN;
+}
+
+// node_modules/d3-time-format/node_modules/d3-array/src/bisector.js
+function bisector_default(f) {
+  let delta = f;
+  let compare = f;
+  if (f.length === 1) {
+    delta = (d, x3) => f(d) - x3;
+    compare = ascendingComparator(f);
   }
-  function tickInterval(start2, stop, count4) {
-    const target = Math.abs(stop - start2) / count4;
+  function left2(a3, x3, lo, hi) {
+    if (lo == null) lo = 0;
+    if (hi == null) hi = a3.length;
+    while (lo < hi) {
+      const mid = lo + hi >>> 1;
+      if (compare(a3[mid], x3) < 0) lo = mid + 1;
+      else hi = mid;
+    }
+    return lo;
+  }
+  function right2(a3, x3, lo, hi) {
+    if (lo == null) lo = 0;
+    if (hi == null) hi = a3.length;
+    while (lo < hi) {
+      const mid = lo + hi >>> 1;
+      if (compare(a3[mid], x3) > 0) hi = mid;
+      else lo = mid + 1;
+    }
+    return lo;
+  }
+  function center2(a3, x3, lo, hi) {
+    if (lo == null) lo = 0;
+    if (hi == null) hi = a3.length;
+    const i = left2(a3, x3, lo, hi - 1);
+    return i > lo && delta(a3[i - 1], x3) > -delta(a3[i], x3) ? i - 1 : i;
+  }
+  return { left: left2, center: center2, right: right2 };
+}
+function ascendingComparator(f) {
+  return (d, x3) => ascending_default(f(d), x3);
+}
+
+// node_modules/d3-time-format/node_modules/d3-array/src/number.js
+function number_default2(x3) {
+  return x3 === null ? NaN : +x3;
+}
+
+// node_modules/d3-time-format/node_modules/d3-array/src/bisect.js
+var ascendingBisect2 = bisector_default(ascending_default);
+var bisectRight2 = ascendingBisect2.right;
+var bisectLeft2 = ascendingBisect2.left;
+var bisectCenter2 = bisector_default(number_default2).center;
+
+// node_modules/d3-time-format/node_modules/d3-array/src/array.js
+var array3 = Array.prototype;
+var slice2 = array3.slice;
+var map4 = array3.map;
+
+// node_modules/d3-time-format/node_modules/d3-array/src/ticks.js
+var e102 = Math.sqrt(50);
+var e52 = Math.sqrt(10);
+var e22 = Math.sqrt(2);
+function tickStep2(start2, stop, count6) {
+  var step0 = Math.abs(stop - start2) / Math.max(0, count6), step1 = Math.pow(10, Math.floor(Math.log(step0) / Math.LN10)), error = step0 / step1;
+  if (error >= e102) step1 *= 10;
+  else if (error >= e52) step1 *= 5;
+  else if (error >= e22) step1 *= 2;
+  return stop < start2 ? -step1 : step1;
+}
+
+// node_modules/d3-time-format/node_modules/d3-array/src/shuffle.js
+var shuffle_default2 = shuffler2(Math.random);
+function shuffler2(random) {
+  return function shuffle2(array5, i0 = 0, i1 = array5.length) {
+    let m = i1 - (i0 = +i0);
+    while (m) {
+      const i = random() * m-- | 0, t = array5[m + i0];
+      array5[m + i0] = array5[i + i0];
+      array5[i + i0] = t;
+    }
+    return array5;
+  };
+}
+
+// node_modules/d3-time-format/node_modules/d3-time/src/ticks.js
+function ticker2(year2, month2, week, day2, hour2, minute2) {
+  const tickIntervals = [
+    [second_default, 1, durationSecond2],
+    [second_default, 5, 5 * durationSecond2],
+    [second_default, 15, 15 * durationSecond2],
+    [second_default, 30, 30 * durationSecond2],
+    [minute2, 1, durationMinute2],
+    [minute2, 5, 5 * durationMinute2],
+    [minute2, 15, 15 * durationMinute2],
+    [minute2, 30, 30 * durationMinute2],
+    [hour2, 1, durationHour2],
+    [hour2, 3, 3 * durationHour2],
+    [hour2, 6, 6 * durationHour2],
+    [hour2, 12, 12 * durationHour2],
+    [day2, 1, durationDay2],
+    [day2, 2, 2 * durationDay2],
+    [week, 1, durationWeek2],
+    [month2, 1, durationMonth2],
+    [month2, 3, 3 * durationMonth2],
+    [year2, 1, durationYear2]
+  ];
+  function ticks2(start2, stop, count6) {
+    const reverse4 = stop < start2;
+    if (reverse4) [start2, stop] = [stop, start2];
+    const interval2 = count6 && typeof count6.range === "function" ? count6 : tickInterval(start2, stop, count6);
+    const ticks3 = interval2 ? interval2.range(start2, +stop + 1) : [];
+    return reverse4 ? ticks3.reverse() : ticks3;
+  }
+  function tickInterval(start2, stop, count6) {
+    const target = Math.abs(stop - start2) / count6;
     const i = bisector_default(([, , step2]) => step2).right(tickIntervals, target);
-    if (i === tickIntervals.length) return year3.every(tickStep(start2 / durationYear2, stop / durationYear2, count4));
-    if (i === 0) return millisecond_default2.every(Math.max(tickStep(start2, stop, count4), 1));
+    if (i === tickIntervals.length) return year2.every(tickStep2(start2 / durationYear2, stop / durationYear2, count6));
+    if (i === 0) return millisecond_default.every(Math.max(tickStep2(start2, stop, count6), 1));
     const [t, step] = tickIntervals[target / tickIntervals[i - 1][2] < tickIntervals[i][2] / target ? i - 1 : i];
     return t.every(step);
   }
-  return [ticks, tickInterval];
+  return [ticks2, tickInterval];
 }
-var [utcTicks2, utcTickInterval2] = ticker2(utcYear_default2, utcMonth_default2, utcSunday2, utcDay_default2, utcHour_default2, utcMinute_default2);
-var [timeTicks2, timeTickInterval2] = ticker2(year_default2, month_default2, sunday2, day_default2, hour_default2, minute_default2);
+var [utcTicks2, utcTickInterval2] = ticker2(utcYear_default, utcMonth_default, utcSunday2, utcDay_default, utcHour_default, utcMinute_default);
+var [timeTicks2, timeTickInterval2] = ticker2(year_default, month_default, sunday, day_default, hour_default, minute_default);
 
 // node_modules/d3-time-format/src/locale.js
 function localDate(d) {
@@ -5985,8 +5884,8 @@ function utcDate(d) {
   }
   return new Date(Date.UTC(d.y, d.m, d.d, d.H, d.M, d.S, d.L));
 }
-function newDate(y2, m, d) {
-  return { y: y2, m, d, H: 0, M: 0, S: 0, L: 0 };
+function newDate(y3, m, d) {
+  return { y: y3, m, d, H: 0, M: 0, S: 0, L: 0 };
 }
 function formatLocale(locale3) {
   var locale_dateTime = locale3.dateTime, locale_date = locale3.date, locale_time = locale3.time, locale_periods = locale3.periods, locale_weekdays = locale3.days, locale_shortWeekdays = locale3.shortDays, locale_months = locale3.months, locale_shortMonths = locale3.shortMonths;
@@ -6119,7 +6018,7 @@ function formatLocale(locale3) {
   }
   function newParse(specifier, Z) {
     return function(string) {
-      var d = newDate(1900, void 0, 1), i = parseSpecifier(d, specifier, string += "", 0), week, day3;
+      var d = newDate(1900, void 0, 1), i = parseSpecifier(d, specifier, string += "", 0), week, day2;
       if (i != string.length) return null;
       if ("Q" in d) return new Date(d.Q);
       if ("s" in d) return new Date(d.s * 1e3 + ("L" in d ? d.L : 0));
@@ -6130,25 +6029,25 @@ function formatLocale(locale3) {
         if (d.V < 1 || d.V > 53) return null;
         if (!("w" in d)) d.w = 1;
         if ("Z" in d) {
-          week = utcDate(newDate(d.y, 0, 1)), day3 = week.getUTCDay();
-          week = day3 > 4 || day3 === 0 ? utcMonday2.ceil(week) : utcMonday2(week);
-          week = utcDay_default2.offset(week, (d.V - 1) * 7);
+          week = utcDate(newDate(d.y, 0, 1)), day2 = week.getUTCDay();
+          week = day2 > 4 || day2 === 0 ? utcMonday2.ceil(week) : utcMonday2(week);
+          week = utcDay_default.offset(week, (d.V - 1) * 7);
           d.y = week.getUTCFullYear();
           d.m = week.getUTCMonth();
           d.d = week.getUTCDate() + (d.w + 6) % 7;
         } else {
-          week = localDate(newDate(d.y, 0, 1)), day3 = week.getDay();
-          week = day3 > 4 || day3 === 0 ? monday2.ceil(week) : monday2(week);
-          week = day_default2.offset(week, (d.V - 1) * 7);
+          week = localDate(newDate(d.y, 0, 1)), day2 = week.getDay();
+          week = day2 > 4 || day2 === 0 ? monday.ceil(week) : monday(week);
+          week = day_default.offset(week, (d.V - 1) * 7);
           d.y = week.getFullYear();
           d.m = week.getMonth();
           d.d = week.getDate() + (d.w + 6) % 7;
         }
       } else if ("W" in d || "U" in d) {
         if (!("w" in d)) d.w = "u" in d ? d.u % 7 : "W" in d ? 1 : 0;
-        day3 = "Z" in d ? utcDate(newDate(d.y, 0, 1)).getUTCDay() : localDate(newDate(d.y, 0, 1)).getDay();
+        day2 = "Z" in d ? utcDate(newDate(d.y, 0, 1)).getUTCDay() : localDate(newDate(d.y, 0, 1)).getDay();
         d.m = 0;
-        d.d = "W" in d ? (d.w + 6) % 7 + d.W * 7 - (day3 + 5) % 7 : d.w + d.U * 7 - (day3 + 6) % 7;
+        d.d = "W" in d ? (d.w + 6) % 7 + d.W * 7 - (day2 + 5) % 7 : d.w + d.U * 7 - (day2 + 6) % 7;
       }
       if ("Z" in d) {
         d.H += d.Z / 100 | 0;
@@ -6273,12 +6172,12 @@ var pads = { "-": "", "_": " ", "0": "0" };
 var numberRe = /^\s*\d+/;
 var percentRe = /^%/;
 var requoteRe = /[\\^$*+?|[\]().{}]/g;
-function pad(value, fill, width) {
-  var sign2 = value < 0 ? "-" : "", string = (sign2 ? -value : value) + "", length = string.length;
-  return sign2 + (length < width ? new Array(width - length + 1).join(fill) + string : string);
+function pad(value2, fill, width) {
+  var sign3 = value2 < 0 ? "-" : "", string = (sign3 ? -value2 : value2) + "", length = string.length;
+  return sign3 + (length < width ? new Array(width - length + 1).join(fill) + string : string);
 }
-function requote(s2) {
-  return s2.replace(requoteRe, "\\$&");
+function requote(s3) {
+  return s3.replace(requoteRe, "\\$&");
 }
 function formatRe(names) {
   return new RegExp("^(?:" + names.map(requote).join("|") + ")", "i");
@@ -6376,7 +6275,7 @@ function formatHour12(d, p) {
   return pad(d.getHours() % 12 || 12, p, 2);
 }
 function formatDayOfYear(d, p) {
-  return pad(1 + day_default2.count(year_default2(d), d), p, 3);
+  return pad(1 + day_default.count(year_default(d), d), p, 3);
 }
 function formatMilliseconds(d, p) {
   return pad(d.getMilliseconds(), p, 3);
@@ -6394,25 +6293,25 @@ function formatSeconds(d, p) {
   return pad(d.getSeconds(), p, 2);
 }
 function formatWeekdayNumberMonday(d) {
-  var day3 = d.getDay();
-  return day3 === 0 ? 7 : day3;
+  var day2 = d.getDay();
+  return day2 === 0 ? 7 : day2;
 }
 function formatWeekNumberSunday(d, p) {
-  return pad(sunday2.count(year_default2(d) - 1, d), p, 2);
+  return pad(sunday.count(year_default(d) - 1, d), p, 2);
 }
 function dISO(d) {
-  var day3 = d.getDay();
-  return day3 >= 4 || day3 === 0 ? thursday2(d) : thursday2.ceil(d);
+  var day2 = d.getDay();
+  return day2 >= 4 || day2 === 0 ? thursday(d) : thursday.ceil(d);
 }
 function formatWeekNumberISO(d, p) {
   d = dISO(d);
-  return pad(thursday2.count(year_default2(d), d) + (year_default2(d).getDay() === 4), p, 2);
+  return pad(thursday.count(year_default(d), d) + (year_default(d).getDay() === 4), p, 2);
 }
 function formatWeekdayNumberSunday(d) {
   return d.getDay();
 }
 function formatWeekNumberMonday(d, p) {
-  return pad(monday2.count(year_default2(d) - 1, d), p, 2);
+  return pad(monday.count(year_default(d) - 1, d), p, 2);
 }
 function formatYear(d, p) {
   return pad(d.getFullYear() % 100, p, 2);
@@ -6425,8 +6324,8 @@ function formatFullYear(d, p) {
   return pad(d.getFullYear() % 1e4, p, 4);
 }
 function formatFullYearISO(d, p) {
-  var day3 = d.getDay();
-  d = day3 >= 4 || day3 === 0 ? thursday2(d) : thursday2.ceil(d);
+  var day2 = d.getDay();
+  d = day2 >= 4 || day2 === 0 ? thursday(d) : thursday.ceil(d);
   return pad(d.getFullYear() % 1e4, p, 4);
 }
 function formatZone(d) {
@@ -6443,7 +6342,7 @@ function formatUTCHour12(d, p) {
   return pad(d.getUTCHours() % 12 || 12, p, 2);
 }
 function formatUTCDayOfYear(d, p) {
-  return pad(1 + utcDay_default2.count(utcYear_default2(d), d), p, 3);
+  return pad(1 + utcDay_default.count(utcYear_default(d), d), p, 3);
 }
 function formatUTCMilliseconds(d, p) {
   return pad(d.getUTCMilliseconds(), p, 3);
@@ -6465,21 +6364,21 @@ function formatUTCWeekdayNumberMonday(d) {
   return dow === 0 ? 7 : dow;
 }
 function formatUTCWeekNumberSunday(d, p) {
-  return pad(utcSunday2.count(utcYear_default2(d) - 1, d), p, 2);
+  return pad(utcSunday2.count(utcYear_default(d) - 1, d), p, 2);
 }
 function UTCdISO(d) {
-  var day3 = d.getUTCDay();
-  return day3 >= 4 || day3 === 0 ? utcThursday2(d) : utcThursday2.ceil(d);
+  var day2 = d.getUTCDay();
+  return day2 >= 4 || day2 === 0 ? utcThursday2(d) : utcThursday2.ceil(d);
 }
 function formatUTCWeekNumberISO(d, p) {
   d = UTCdISO(d);
-  return pad(utcThursday2.count(utcYear_default2(d), d) + (utcYear_default2(d).getUTCDay() === 4), p, 2);
+  return pad(utcThursday2.count(utcYear_default(d), d) + (utcYear_default(d).getUTCDay() === 4), p, 2);
 }
 function formatUTCWeekdayNumberSunday(d) {
   return d.getUTCDay();
 }
 function formatUTCWeekNumberMonday(d, p) {
-  return pad(utcMonday2.count(utcYear_default2(d) - 1, d), p, 2);
+  return pad(utcMonday2.count(utcYear_default(d) - 1, d), p, 2);
 }
 function formatUTCYear(d, p) {
   return pad(d.getUTCFullYear() % 100, p, 2);
@@ -6492,8 +6391,8 @@ function formatUTCFullYear(d, p) {
   return pad(d.getUTCFullYear() % 1e4, p, 4);
 }
 function formatUTCFullYearISO(d, p) {
-  var day3 = d.getUTCDay();
-  d = day3 >= 4 || day3 === 0 ? utcThursday2(d) : utcThursday2.ceil(d);
+  var day2 = d.getUTCDay();
+  d = day2 >= 4 || day2 === 0 ? utcThursday2(d) : utcThursday2.ceil(d);
   return pad(d.getUTCFullYear() % 1e4, p, 4);
 }
 function formatUTCZone() {
@@ -6552,26 +6451,26 @@ var parseIso = +/* @__PURE__ */ new Date("2000-01-01T00:00:00.000Z") ? parseIsoN
 function date(t) {
   return new Date(t);
 }
-function number3(t) {
+function number4(t) {
   return t instanceof Date ? +t : +/* @__PURE__ */ new Date(+t);
 }
-function calendar(ticks, tickInterval, year3, month3, week, day3, hour3, minute3, second3, format2) {
+function calendar(ticks2, tickInterval, year2, month2, week, day2, hour2, minute2, second3, format2) {
   var scale = continuous(), invert = scale.invert, domain = scale.domain;
   var formatMillisecond = format2(".%L"), formatSecond = format2(":%S"), formatMinute = format2("%I:%M"), formatHour = format2("%I %p"), formatDay = format2("%a %d"), formatWeek = format2("%b %d"), formatMonth = format2("%B"), formatYear2 = format2("%Y");
   function tickFormat3(date2) {
-    return (second3(date2) < date2 ? formatMillisecond : minute3(date2) < date2 ? formatSecond : hour3(date2) < date2 ? formatMinute : day3(date2) < date2 ? formatHour : month3(date2) < date2 ? week(date2) < date2 ? formatDay : formatWeek : year3(date2) < date2 ? formatMonth : formatYear2)(date2);
+    return (second3(date2) < date2 ? formatMillisecond : minute2(date2) < date2 ? formatSecond : hour2(date2) < date2 ? formatMinute : day2(date2) < date2 ? formatHour : month2(date2) < date2 ? week(date2) < date2 ? formatDay : formatWeek : year2(date2) < date2 ? formatMonth : formatYear2)(date2);
   }
-  scale.invert = function(y2) {
-    return new Date(invert(y2));
+  scale.invert = function(y3) {
+    return new Date(invert(y3));
   };
   scale.domain = function(_) {
-    return arguments.length ? domain(Array.from(_, number3)) : domain().map(date);
+    return arguments.length ? domain(Array.from(_, number4)) : domain().map(date);
   };
   scale.ticks = function(interval2) {
     var d = domain();
-    return ticks(d[0], d[d.length - 1], interval2 == null ? 10 : interval2);
+    return ticks2(d[0], d[d.length - 1], interval2 == null ? 10 : interval2);
   };
-  scale.tickFormat = function(count4, specifier) {
+  scale.tickFormat = function(count6, specifier) {
     return specifier == null ? tickFormat3 : format2(specifier);
   };
   scale.nice = function(interval2) {
@@ -6580,94 +6479,18 @@ function calendar(ticks, tickInterval, year3, month3, week, day3, hour3, minute3
     return interval2 ? domain(nice2(d, interval2)) : scale;
   };
   scale.copy = function() {
-    return copy(scale, calendar(ticks, tickInterval, year3, month3, week, day3, hour3, minute3, second3, format2));
+    return copy(scale, calendar(ticks2, tickInterval, year2, month2, week, day2, hour2, minute2, second3, format2));
   };
   return scale;
 }
 function time() {
-  return initRange.apply(calendar(timeTicks, timeTickInterval, year_default, month_default, sunday, day_default, hour_default, minute_default, second_default, timeFormat).domain([new Date(2e3, 0, 1), new Date(2e3, 0, 2)]), arguments);
+  return initRange.apply(calendar(timeTicks, timeTickInterval, timeYear, timeMonth, timeSunday, timeDay, timeHour, timeMinute, second, timeFormat).domain([new Date(2e3, 0, 1), new Date(2e3, 0, 2)]), arguments);
 }
-
-// node_modules/d3-shape/node_modules/d3-path/src/path.js
-var pi2 = Math.PI;
-var tau2 = 2 * pi2;
-var epsilon = 1e-6;
-var tauEpsilon = tau2 - epsilon;
-function Path() {
-  this._x0 = this._y0 = // start of current subpath
-  this._x1 = this._y1 = null;
-  this._ = "";
-}
-function path() {
-  return new Path();
-}
-Path.prototype = path.prototype = {
-  constructor: Path,
-  moveTo: function(x2, y2) {
-    this._ += "M" + (this._x0 = this._x1 = +x2) + "," + (this._y0 = this._y1 = +y2);
-  },
-  closePath: function() {
-    if (this._x1 !== null) {
-      this._x1 = this._x0, this._y1 = this._y0;
-      this._ += "Z";
-    }
-  },
-  lineTo: function(x2, y2) {
-    this._ += "L" + (this._x1 = +x2) + "," + (this._y1 = +y2);
-  },
-  quadraticCurveTo: function(x1, y1, x2, y2) {
-    this._ += "Q" + +x1 + "," + +y1 + "," + (this._x1 = +x2) + "," + (this._y1 = +y2);
-  },
-  bezierCurveTo: function(x1, y1, x2, y2, x3, y3) {
-    this._ += "C" + +x1 + "," + +y1 + "," + +x2 + "," + +y2 + "," + (this._x1 = +x3) + "," + (this._y1 = +y3);
-  },
-  arcTo: function(x1, y1, x2, y2, r) {
-    x1 = +x1, y1 = +y1, x2 = +x2, y2 = +y2, r = +r;
-    var x0 = this._x1, y0 = this._y1, x21 = x2 - x1, y21 = y2 - y1, x01 = x0 - x1, y01 = y0 - y1, l01_2 = x01 * x01 + y01 * y01;
-    if (r < 0) throw new Error("negative radius: " + r);
-    if (this._x1 === null) {
-      this._ += "M" + (this._x1 = x1) + "," + (this._y1 = y1);
-    } else if (!(l01_2 > epsilon)) ;
-    else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon) || !r) {
-      this._ += "L" + (this._x1 = x1) + "," + (this._y1 = y1);
-    } else {
-      var x20 = x2 - x0, y20 = y2 - y0, l21_2 = x21 * x21 + y21 * y21, l20_2 = x20 * x20 + y20 * y20, l21 = Math.sqrt(l21_2), l01 = Math.sqrt(l01_2), l = r * Math.tan((pi2 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2), t01 = l / l01, t21 = l / l21;
-      if (Math.abs(t01 - 1) > epsilon) {
-        this._ += "L" + (x1 + t01 * x01) + "," + (y1 + t01 * y01);
-      }
-      this._ += "A" + r + "," + r + ",0,0," + +(y01 * x20 > x01 * y20) + "," + (this._x1 = x1 + t21 * x21) + "," + (this._y1 = y1 + t21 * y21);
-    }
-  },
-  arc: function(x2, y2, r, a0, a1, ccw) {
-    x2 = +x2, y2 = +y2, r = +r, ccw = !!ccw;
-    var dx = r * Math.cos(a0), dy = r * Math.sin(a0), x0 = x2 + dx, y0 = y2 + dy, cw = 1 ^ ccw, da = ccw ? a0 - a1 : a1 - a0;
-    if (r < 0) throw new Error("negative radius: " + r);
-    if (this._x1 === null) {
-      this._ += "M" + x0 + "," + y0;
-    } else if (Math.abs(this._x1 - x0) > epsilon || Math.abs(this._y1 - y0) > epsilon) {
-      this._ += "L" + x0 + "," + y0;
-    }
-    if (!r) return;
-    if (da < 0) da = da % tau2 + tau2;
-    if (da > tauEpsilon) {
-      this._ += "A" + r + "," + r + ",0,1," + cw + "," + (x2 - dx) + "," + (y2 - dy) + "A" + r + "," + r + ",0,1," + cw + "," + (this._x1 = x0) + "," + (this._y1 = y0);
-    } else if (da > epsilon) {
-      this._ += "A" + r + "," + r + ",0," + +(da >= pi2) + "," + cw + "," + (this._x1 = x2 + r * Math.cos(a1)) + "," + (this._y1 = y2 + r * Math.sin(a1));
-    }
-  },
-  rect: function(x2, y2, w, h) {
-    this._ += "M" + (this._x0 = this._x1 = +x2) + "," + (this._y0 = this._y1 = +y2) + "h" + +w + "v" + +h + "h" + -w + "Z";
-  },
-  toString: function() {
-    return this._;
-  }
-};
-var path_default = path;
 
 // node_modules/d3-shape/src/constant.js
-function constant_default6(x2) {
-  return function constant() {
-    return x2;
+function constant_default6(x3) {
+  return function constant3() {
+    return x3;
   };
 }
 
@@ -6675,19 +6498,130 @@ function constant_default6(x2) {
 var abs2 = Math.abs;
 var atan2 = Math.atan2;
 var cos = Math.cos;
-var max3 = Math.max;
-var min3 = Math.min;
+var max4 = Math.max;
+var min4 = Math.min;
 var sin = Math.sin;
 var sqrt2 = Math.sqrt;
-var epsilon3 = 1e-12;
-var pi3 = Math.PI;
-var halfPi2 = pi3 / 2;
-var tau3 = 2 * pi3;
-function acos(x2) {
-  return x2 > 1 ? 0 : x2 < -1 ? pi3 : Math.acos(x2);
+var epsilon = 1e-12;
+var pi2 = Math.PI;
+var halfPi2 = pi2 / 2;
+var tau2 = 2 * pi2;
+function acos(x3) {
+  return x3 > 1 ? 0 : x3 < -1 ? pi2 : Math.acos(x3);
 }
-function asin(x2) {
-  return x2 >= 1 ? halfPi2 : x2 <= -1 ? -halfPi2 : Math.asin(x2);
+function asin(x3) {
+  return x3 >= 1 ? halfPi2 : x3 <= -1 ? -halfPi2 : Math.asin(x3);
+}
+
+// node_modules/d3-path/src/path.js
+var pi3 = Math.PI;
+var tau3 = 2 * pi3;
+var epsilon3 = 1e-6;
+var tauEpsilon = tau3 - epsilon3;
+function append(strings) {
+  this._ += strings[0];
+  for (let i = 1, n = strings.length; i < n; ++i) {
+    this._ += arguments[i] + strings[i];
+  }
+}
+function appendRound(digits) {
+  let d = Math.floor(digits);
+  if (!(d >= 0)) throw new Error(`invalid digits: ${digits}`);
+  if (d > 15) return append;
+  const k3 = 10 ** d;
+  return function(strings) {
+    this._ += strings[0];
+    for (let i = 1, n = strings.length; i < n; ++i) {
+      this._ += Math.round(arguments[i] * k3) / k3 + strings[i];
+    }
+  };
+}
+var Path = class {
+  constructor(digits) {
+    this._x0 = this._y0 = // start of current subpath
+    this._x1 = this._y1 = null;
+    this._ = "";
+    this._append = digits == null ? append : appendRound(digits);
+  }
+  moveTo(x3, y3) {
+    this._append`M${this._x0 = this._x1 = +x3},${this._y0 = this._y1 = +y3}`;
+  }
+  closePath() {
+    if (this._x1 !== null) {
+      this._x1 = this._x0, this._y1 = this._y0;
+      this._append`Z`;
+    }
+  }
+  lineTo(x3, y3) {
+    this._append`L${this._x1 = +x3},${this._y1 = +y3}`;
+  }
+  quadraticCurveTo(x1, y1, x3, y3) {
+    this._append`Q${+x1},${+y1},${this._x1 = +x3},${this._y1 = +y3}`;
+  }
+  bezierCurveTo(x1, y1, x22, y22, x3, y3) {
+    this._append`C${+x1},${+y1},${+x22},${+y22},${this._x1 = +x3},${this._y1 = +y3}`;
+  }
+  arcTo(x1, y1, x22, y22, r) {
+    x1 = +x1, y1 = +y1, x22 = +x22, y22 = +y22, r = +r;
+    if (r < 0) throw new Error(`negative radius: ${r}`);
+    let x0 = this._x1, y0 = this._y1, x21 = x22 - x1, y21 = y22 - y1, x01 = x0 - x1, y01 = y0 - y1, l01_2 = x01 * x01 + y01 * y01;
+    if (this._x1 === null) {
+      this._append`M${this._x1 = x1},${this._y1 = y1}`;
+    } else if (!(l01_2 > epsilon3)) ;
+    else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon3) || !r) {
+      this._append`L${this._x1 = x1},${this._y1 = y1}`;
+    } else {
+      let x20 = x22 - x0, y20 = y22 - y0, l21_2 = x21 * x21 + y21 * y21, l20_2 = x20 * x20 + y20 * y20, l21 = Math.sqrt(l21_2), l01 = Math.sqrt(l01_2), l = r * Math.tan((pi3 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2), t01 = l / l01, t21 = l / l21;
+      if (Math.abs(t01 - 1) > epsilon3) {
+        this._append`L${x1 + t01 * x01},${y1 + t01 * y01}`;
+      }
+      this._append`A${r},${r},0,0,${+(y01 * x20 > x01 * y20)},${this._x1 = x1 + t21 * x21},${this._y1 = y1 + t21 * y21}`;
+    }
+  }
+  arc(x3, y3, r, a0, a1, ccw) {
+    x3 = +x3, y3 = +y3, r = +r, ccw = !!ccw;
+    if (r < 0) throw new Error(`negative radius: ${r}`);
+    let dx = r * Math.cos(a0), dy = r * Math.sin(a0), x0 = x3 + dx, y0 = y3 + dy, cw = 1 ^ ccw, da = ccw ? a0 - a1 : a1 - a0;
+    if (this._x1 === null) {
+      this._append`M${x0},${y0}`;
+    } else if (Math.abs(this._x1 - x0) > epsilon3 || Math.abs(this._y1 - y0) > epsilon3) {
+      this._append`L${x0},${y0}`;
+    }
+    if (!r) return;
+    if (da < 0) da = da % tau3 + tau3;
+    if (da > tauEpsilon) {
+      this._append`A${r},${r},0,1,${cw},${x3 - dx},${y3 - dy}A${r},${r},0,1,${cw},${this._x1 = x0},${this._y1 = y0}`;
+    } else if (da > epsilon3) {
+      this._append`A${r},${r},0,${+(da >= pi3)},${cw},${this._x1 = x3 + r * Math.cos(a1)},${this._y1 = y3 + r * Math.sin(a1)}`;
+    }
+  }
+  rect(x3, y3, w, h) {
+    this._append`M${this._x0 = this._x1 = +x3},${this._y0 = this._y1 = +y3}h${w = +w}v${+h}h${-w}Z`;
+  }
+  toString() {
+    return this._;
+  }
+};
+function path() {
+  return new Path();
+}
+path.prototype = Path.prototype;
+
+// node_modules/d3-shape/src/path.js
+function withPath(shape) {
+  let digits = 3;
+  shape.digits = function(_) {
+    if (!arguments.length) return digits;
+    if (_ == null) {
+      digits = null;
+    } else {
+      const d = Math.floor(_);
+      if (!(d >= 0)) throw new RangeError(`invalid digits: ${_}`);
+      digits = d;
+    }
+    return shape;
+  };
+  return () => new Path(digits);
 }
 
 // node_modules/d3-shape/src/arc.js
@@ -6706,14 +6640,14 @@ function arcEndAngle(d) {
 function arcPadAngle(d) {
   return d && d.padAngle;
 }
-function intersect(x0, y0, x1, y1, x2, y2, x3, y3) {
-  var x10 = x1 - x0, y10 = y1 - y0, x32 = x3 - x2, y32 = y3 - y2, t = y32 * x10 - x32 * y10;
-  if (t * t < epsilon3) return;
-  t = (x32 * (y0 - y2) - y32 * (x0 - x2)) / t;
+function intersect(x0, y0, x1, y1, x22, y22, x3, y3) {
+  var x10 = x1 - x0, y10 = y1 - y0, x32 = x3 - x22, y32 = y3 - y22, t = y32 * x10 - x32 * y10;
+  if (t * t < epsilon) return;
+  t = (x32 * (y0 - y22) - y32 * (x0 - x22)) / t;
   return [x0 + t * x10, y0 + t * y10];
 }
 function cornerTangents(x0, y0, x1, y1, r1, rc, cw) {
-  var x01 = x0 - x1, y01 = y0 - y1, lo = (cw ? rc : -rc) / sqrt2(x01 * x01 + y01 * y01), ox = lo * y01, oy = -lo * x01, x11 = x0 + ox, y11 = y0 + oy, x10 = x1 + ox, y10 = y1 + oy, x00 = (x11 + x10) / 2, y00 = (y11 + y10) / 2, dx = x10 - x11, dy = y10 - y11, d2 = dx * dx + dy * dy, r = r1 - rc, D2 = x11 * y10 - x10 * y11, d = (dy < 0 ? -1 : 1) * sqrt2(max3(0, r * r * d2 - D2 * D2)), cx0 = (D2 * dy - dx * d) / d2, cy0 = (-D2 * dx - dy * d) / d2, cx1 = (D2 * dy + dx * d) / d2, cy1 = (-D2 * dx + dy * d) / d2, dx0 = cx0 - x00, dy0 = cy0 - y00, dx1 = cx1 - x00, dy1 = cy1 - y00;
+  var x01 = x0 - x1, y01 = y0 - y1, lo = (cw ? rc : -rc) / sqrt2(x01 * x01 + y01 * y01), ox = lo * y01, oy = -lo * x01, x11 = x0 + ox, y11 = y0 + oy, x10 = x1 + ox, y10 = y1 + oy, x00 = (x11 + x10) / 2, y00 = (y11 + y10) / 2, dx = x10 - x11, dy = y10 - y11, d2 = dx * dx + dy * dy, r = r1 - rc, D3 = x11 * y10 - x10 * y11, d = (dy < 0 ? -1 : 1) * sqrt2(max4(0, r * r * d2 - D3 * D3)), cx0 = (D3 * dy - dx * d) / d2, cy0 = (-D3 * dx - dy * d) / d2, cx1 = (D3 * dy + dx * d) / d2, cy1 = (-D3 * dx + dy * d) / d2, dx0 = cx0 - x00, dy0 = cy0 - y00, dx1 = cx1 - x00, dy1 = cy1 - y00;
   if (dx0 * dx0 + dy0 * dy0 > dx1 * dx1 + dy1 * dy1) cx0 = cx1, cy0 = cy1;
   return {
     cx: cx0,
@@ -6725,59 +6659,63 @@ function cornerTangents(x0, y0, x1, y1, r1, rc, cw) {
   };
 }
 function arc_default() {
-  var innerRadius = arcInnerRadius, outerRadius = arcOuterRadius, cornerRadius = constant_default6(0), padRadius = null, startAngle = arcStartAngle, endAngle = arcEndAngle, padAngle = arcPadAngle, context = null;
+  var innerRadius = arcInnerRadius, outerRadius = arcOuterRadius, cornerRadius = constant_default6(0), padRadius = null, startAngle = arcStartAngle, endAngle = arcEndAngle, padAngle = arcPadAngle, context = null, path3 = withPath(arc);
   function arc() {
     var buffer, r, r0 = +innerRadius.apply(this, arguments), r1 = +outerRadius.apply(this, arguments), a0 = startAngle.apply(this, arguments) - halfPi2, a1 = endAngle.apply(this, arguments) - halfPi2, da = abs2(a1 - a0), cw = a1 > a0;
-    if (!context) context = buffer = path_default();
+    if (!context) context = buffer = path3();
     if (r1 < r0) r = r1, r1 = r0, r0 = r;
-    if (!(r1 > epsilon3)) context.moveTo(0, 0);
-    else if (da > tau3 - epsilon3) {
+    if (!(r1 > epsilon)) context.moveTo(0, 0);
+    else if (da > tau2 - epsilon) {
       context.moveTo(r1 * cos(a0), r1 * sin(a0));
       context.arc(0, 0, r1, a0, a1, !cw);
-      if (r0 > epsilon3) {
+      if (r0 > epsilon) {
         context.moveTo(r0 * cos(a1), r0 * sin(a1));
         context.arc(0, 0, r0, a1, a0, cw);
       }
     } else {
-      var a01 = a0, a11 = a1, a00 = a0, a10 = a1, da0 = da, da1 = da, ap = padAngle.apply(this, arguments) / 2, rp = ap > epsilon3 && (padRadius ? +padRadius.apply(this, arguments) : sqrt2(r0 * r0 + r1 * r1)), rc = min3(abs2(r1 - r0) / 2, +cornerRadius.apply(this, arguments)), rc0 = rc, rc1 = rc, t04, t14;
-      if (rp > epsilon3) {
+      var a01 = a0, a11 = a1, a00 = a0, a10 = a1, da0 = da, da1 = da, ap = padAngle.apply(this, arguments) / 2, rp = ap > epsilon && (padRadius ? +padRadius.apply(this, arguments) : sqrt2(r0 * r0 + r1 * r1)), rc = min4(abs2(r1 - r0) / 2, +cornerRadius.apply(this, arguments)), rc0 = rc, rc1 = rc, t05, t15;
+      if (rp > epsilon) {
         var p0 = asin(rp / r0 * sin(ap)), p1 = asin(rp / r1 * sin(ap));
-        if ((da0 -= p0 * 2) > epsilon3) p0 *= cw ? 1 : -1, a00 += p0, a10 -= p0;
+        if ((da0 -= p0 * 2) > epsilon) p0 *= cw ? 1 : -1, a00 += p0, a10 -= p0;
         else da0 = 0, a00 = a10 = (a0 + a1) / 2;
-        if ((da1 -= p1 * 2) > epsilon3) p1 *= cw ? 1 : -1, a01 += p1, a11 -= p1;
+        if ((da1 -= p1 * 2) > epsilon) p1 *= cw ? 1 : -1, a01 += p1, a11 -= p1;
         else da1 = 0, a01 = a11 = (a0 + a1) / 2;
       }
       var x01 = r1 * cos(a01), y01 = r1 * sin(a01), x10 = r0 * cos(a10), y10 = r0 * sin(a10);
-      if (rc > epsilon3) {
+      if (rc > epsilon) {
         var x11 = r1 * cos(a11), y11 = r1 * sin(a11), x00 = r0 * cos(a00), y00 = r0 * sin(a00), oc;
-        if (da < pi3 && (oc = intersect(x01, y01, x00, y00, x11, y11, x10, y10))) {
-          var ax = x01 - oc[0], ay = y01 - oc[1], bx = x11 - oc[0], by = y11 - oc[1], kc = 1 / sin(acos((ax * bx + ay * by) / (sqrt2(ax * ax + ay * ay) * sqrt2(bx * bx + by * by))) / 2), lc = sqrt2(oc[0] * oc[0] + oc[1] * oc[1]);
-          rc0 = min3(rc, (r0 - lc) / (kc - 1));
-          rc1 = min3(rc, (r1 - lc) / (kc + 1));
+        if (da < pi2) {
+          if (oc = intersect(x01, y01, x00, y00, x11, y11, x10, y10)) {
+            var ax = x01 - oc[0], ay = y01 - oc[1], bx = x11 - oc[0], by = y11 - oc[1], kc = 1 / sin(acos((ax * bx + ay * by) / (sqrt2(ax * ax + ay * ay) * sqrt2(bx * bx + by * by))) / 2), lc = sqrt2(oc[0] * oc[0] + oc[1] * oc[1]);
+            rc0 = min4(rc, (r0 - lc) / (kc - 1));
+            rc1 = min4(rc, (r1 - lc) / (kc + 1));
+          } else {
+            rc0 = rc1 = 0;
+          }
         }
       }
-      if (!(da1 > epsilon3)) context.moveTo(x01, y01);
-      else if (rc1 > epsilon3) {
-        t04 = cornerTangents(x00, y00, x01, y01, r1, rc1, cw);
-        t14 = cornerTangents(x11, y11, x10, y10, r1, rc1, cw);
-        context.moveTo(t04.cx + t04.x01, t04.cy + t04.y01);
-        if (rc1 < rc) context.arc(t04.cx, t04.cy, rc1, atan2(t04.y01, t04.x01), atan2(t14.y01, t14.x01), !cw);
+      if (!(da1 > epsilon)) context.moveTo(x01, y01);
+      else if (rc1 > epsilon) {
+        t05 = cornerTangents(x00, y00, x01, y01, r1, rc1, cw);
+        t15 = cornerTangents(x11, y11, x10, y10, r1, rc1, cw);
+        context.moveTo(t05.cx + t05.x01, t05.cy + t05.y01);
+        if (rc1 < rc) context.arc(t05.cx, t05.cy, rc1, atan2(t05.y01, t05.x01), atan2(t15.y01, t15.x01), !cw);
         else {
-          context.arc(t04.cx, t04.cy, rc1, atan2(t04.y01, t04.x01), atan2(t04.y11, t04.x11), !cw);
-          context.arc(0, 0, r1, atan2(t04.cy + t04.y11, t04.cx + t04.x11), atan2(t14.cy + t14.y11, t14.cx + t14.x11), !cw);
-          context.arc(t14.cx, t14.cy, rc1, atan2(t14.y11, t14.x11), atan2(t14.y01, t14.x01), !cw);
+          context.arc(t05.cx, t05.cy, rc1, atan2(t05.y01, t05.x01), atan2(t05.y11, t05.x11), !cw);
+          context.arc(0, 0, r1, atan2(t05.cy + t05.y11, t05.cx + t05.x11), atan2(t15.cy + t15.y11, t15.cx + t15.x11), !cw);
+          context.arc(t15.cx, t15.cy, rc1, atan2(t15.y11, t15.x11), atan2(t15.y01, t15.x01), !cw);
         }
       } else context.moveTo(x01, y01), context.arc(0, 0, r1, a01, a11, !cw);
-      if (!(r0 > epsilon3) || !(da0 > epsilon3)) context.lineTo(x10, y10);
-      else if (rc0 > epsilon3) {
-        t04 = cornerTangents(x10, y10, x11, y11, r0, -rc0, cw);
-        t14 = cornerTangents(x01, y01, x00, y00, r0, -rc0, cw);
-        context.lineTo(t04.cx + t04.x01, t04.cy + t04.y01);
-        if (rc0 < rc) context.arc(t04.cx, t04.cy, rc0, atan2(t04.y01, t04.x01), atan2(t14.y01, t14.x01), !cw);
+      if (!(r0 > epsilon) || !(da0 > epsilon)) context.lineTo(x10, y10);
+      else if (rc0 > epsilon) {
+        t05 = cornerTangents(x10, y10, x11, y11, r0, -rc0, cw);
+        t15 = cornerTangents(x01, y01, x00, y00, r0, -rc0, cw);
+        context.lineTo(t05.cx + t05.x01, t05.cy + t05.y01);
+        if (rc0 < rc) context.arc(t05.cx, t05.cy, rc0, atan2(t05.y01, t05.x01), atan2(t15.y01, t15.x01), !cw);
         else {
-          context.arc(t04.cx, t04.cy, rc0, atan2(t04.y01, t04.x01), atan2(t04.y11, t04.x11), !cw);
-          context.arc(0, 0, r0, atan2(t04.cy + t04.y11, t04.cx + t04.x11), atan2(t14.cy + t14.y11, t14.cx + t14.x11), cw);
-          context.arc(t14.cx, t14.cy, rc0, atan2(t14.y11, t14.x11), atan2(t14.y01, t14.x01), !cw);
+          context.arc(t05.cx, t05.cy, rc0, atan2(t05.y01, t05.x01), atan2(t05.y11, t05.x11), !cw);
+          context.arc(0, 0, r0, atan2(t05.cy + t05.y11, t05.cx + t05.x11), atan2(t15.cy + t15.y11, t15.cx + t15.x11), cw);
+          context.arc(t15.cx, t15.cy, rc0, atan2(t15.y11, t15.x11), atan2(t15.y01, t15.x01), !cw);
         }
       } else context.arc(0, 0, r0, a10, a00, cw);
     }
@@ -6785,8 +6723,8 @@ function arc_default() {
     if (buffer) return context = null, buffer + "" || null;
   }
   arc.centroid = function() {
-    var r = (+innerRadius.apply(this, arguments) + +outerRadius.apply(this, arguments)) / 2, a2 = (+startAngle.apply(this, arguments) + +endAngle.apply(this, arguments)) / 2 - pi3 / 2;
-    return [cos(a2) * r, sin(a2) * r];
+    var r = (+innerRadius.apply(this, arguments) + +outerRadius.apply(this, arguments)) / 2, a3 = (+startAngle.apply(this, arguments) + +endAngle.apply(this, arguments)) / 2 - pi2 / 2;
+    return [cos(a3) * r, sin(a3) * r];
   };
   arc.innerRadius = function(_) {
     return arguments.length ? (innerRadius = typeof _ === "function" ? _ : constant_default6(+_), arc) : innerRadius;
@@ -6816,9 +6754,9 @@ function arc_default() {
 }
 
 // node_modules/d3-shape/src/array.js
-var slice2 = Array.prototype.slice;
-function array_default3(x2) {
-  return typeof x2 === "object" && "length" in x2 ? x2 : Array.from(x2);
+var slice3 = Array.prototype.slice;
+function array_default2(x3) {
+  return typeof x3 === "object" && "length" in x3 ? x3 : Array.from(x3);
 }
 
 // node_modules/d3-shape/src/curve/linear.js
@@ -6839,17 +6777,17 @@ Linear.prototype = {
     if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
         break;
       case 1:
         this._point = 2;
       default:
-        this._context.lineTo(x2, y2);
+        this._context.lineTo(x3, y3);
         break;
     }
   }
@@ -6867,27 +6805,27 @@ function y(p) {
 }
 
 // node_modules/d3-shape/src/line.js
-function line_default(x2, y2) {
-  var defined = constant_default6(true), context = null, curve = linear_default, output = null;
-  x2 = typeof x2 === "function" ? x2 : x2 === void 0 ? x : constant_default6(x2);
-  y2 = typeof y2 === "function" ? y2 : y2 === void 0 ? y : constant_default6(y2);
+function line_default(x3, y3) {
+  var defined = constant_default6(true), context = null, curve = linear_default, output = null, path3 = withPath(line);
+  x3 = typeof x3 === "function" ? x3 : x3 === void 0 ? x : constant_default6(x3);
+  y3 = typeof y3 === "function" ? y3 : y3 === void 0 ? y : constant_default6(y3);
   function line(data) {
-    var i, n = (data = array_default3(data)).length, d, defined0 = false, buffer;
-    if (context == null) output = curve(buffer = path_default());
+    var i, n = (data = array_default2(data)).length, d, defined0 = false, buffer;
+    if (context == null) output = curve(buffer = path3());
     for (i = 0; i <= n; ++i) {
       if (!(i < n && defined(d = data[i], i, data)) === defined0) {
         if (defined0 = !defined0) output.lineStart();
         else output.lineEnd();
       }
-      if (defined0) output.point(+x2(d, i, data), +y2(d, i, data));
+      if (defined0) output.point(+x3(d, i, data), +y3(d, i, data));
     }
     if (buffer) return output = null, buffer + "" || null;
   }
   line.x = function(_) {
-    return arguments.length ? (x2 = typeof _ === "function" ? _ : constant_default6(+_), line) : x2;
+    return arguments.length ? (x3 = typeof _ === "function" ? _ : constant_default6(+_), line) : x3;
   };
   line.y = function(_) {
-    return arguments.length ? (y2 = typeof _ === "function" ? _ : constant_default6(+_), line) : y2;
+    return arguments.length ? (y3 = typeof _ === "function" ? _ : constant_default6(+_), line) : y3;
   };
   line.defined = function(_) {
     return arguments.length ? (defined = typeof _ === "function" ? _ : constant_default6(!!_), line) : defined;
@@ -6903,13 +6841,13 @@ function line_default(x2, y2) {
 
 // node_modules/d3-shape/src/area.js
 function area_default(x0, y0, y1) {
-  var x1 = null, defined = constant_default6(true), context = null, curve = linear_default, output = null;
+  var x1 = null, defined = constant_default6(true), context = null, curve = linear_default, output = null, path3 = withPath(area);
   x0 = typeof x0 === "function" ? x0 : x0 === void 0 ? x : constant_default6(+x0);
   y0 = typeof y0 === "function" ? y0 : y0 === void 0 ? constant_default6(0) : constant_default6(+y0);
   y1 = typeof y1 === "function" ? y1 : y1 === void 0 ? y : constant_default6(+y1);
   function area(data) {
-    var i, j, k2, n = (data = array_default3(data)).length, d, defined0 = false, buffer, x0z = new Array(n), y0z = new Array(n);
-    if (context == null) output = curve(buffer = path_default());
+    var i, j, k3, n = (data = array_default2(data)).length, d, defined0 = false, buffer, x0z = new Array(n), y0z = new Array(n);
+    if (context == null) output = curve(buffer = path3());
     for (i = 0; i <= n; ++i) {
       if (!(i < n && defined(d = data[i], i, data)) === defined0) {
         if (defined0 = !defined0) {
@@ -6919,8 +6857,8 @@ function area_default(x0, y0, y1) {
         } else {
           output.lineEnd();
           output.lineStart();
-          for (k2 = i - 1; k2 >= j; --k2) {
-            output.point(x0z[k2], y0z[k2]);
+          for (k3 = i - 1; k3 >= j; --k3) {
+            output.point(x0z[k3], y0z[k3]);
           }
           output.lineEnd();
           output.areaEnd();
@@ -6976,8 +6914,8 @@ function area_default(x0, y0, y1) {
 }
 
 // node_modules/d3-shape/src/descending.js
-function descending_default2(a2, b) {
-  return b < a2 ? -1 : b > a2 ? 1 : b >= a2 ? 0 : NaN;
+function descending_default2(a3, b) {
+  return b < a3 ? -1 : b > a3 ? 1 : b >= a3 ? 0 : NaN;
 }
 
 // node_modules/d3-shape/src/identity.js
@@ -6987,22 +6925,22 @@ function identity_default3(d) {
 
 // node_modules/d3-shape/src/pie.js
 function pie_default() {
-  var value = identity_default3, sortValues = descending_default2, sort2 = null, startAngle = constant_default6(0), endAngle = constant_default6(tau3), padAngle = constant_default6(0);
+  var value2 = identity_default3, sortValues = descending_default2, sort4 = null, startAngle = constant_default6(0), endAngle = constant_default6(tau2), padAngle = constant_default6(0);
   function pie(data) {
-    var i, n = (data = array_default3(data)).length, j, k2, sum3 = 0, index2 = new Array(n), arcs = new Array(n), a0 = +startAngle.apply(this, arguments), da = Math.min(tau3, Math.max(-tau3, endAngle.apply(this, arguments) - a0)), a1, p = Math.min(Math.abs(da) / n, padAngle.apply(this, arguments)), pa = p * (da < 0 ? -1 : 1), v;
+    var i, n = (data = array_default2(data)).length, j, k3, sum6 = 0, index4 = new Array(n), arcs = new Array(n), a0 = +startAngle.apply(this, arguments), da = Math.min(tau2, Math.max(-tau2, endAngle.apply(this, arguments) - a0)), a1, p = Math.min(Math.abs(da) / n, padAngle.apply(this, arguments)), pa = p * (da < 0 ? -1 : 1), v;
     for (i = 0; i < n; ++i) {
-      if ((v = arcs[index2[i] = i] = +value(data[i], i, data)) > 0) {
-        sum3 += v;
+      if ((v = arcs[index4[i] = i] = +value2(data[i], i, data)) > 0) {
+        sum6 += v;
       }
     }
-    if (sortValues != null) index2.sort(function(i2, j2) {
+    if (sortValues != null) index4.sort(function(i2, j2) {
       return sortValues(arcs[i2], arcs[j2]);
     });
-    else if (sort2 != null) index2.sort(function(i2, j2) {
-      return sort2(data[i2], data[j2]);
+    else if (sort4 != null) index4.sort(function(i2, j2) {
+      return sort4(data[i2], data[j2]);
     });
-    for (i = 0, k2 = sum3 ? (da - n * pa) / sum3 : 0; i < n; ++i, a0 = a1) {
-      j = index2[i], v = arcs[j], a1 = a0 + (v > 0 ? v * k2 : 0) + pa, arcs[j] = {
+    for (i = 0, k3 = sum6 ? (da - n * pa) / sum6 : 0; i < n; ++i, a0 = a1) {
+      j = index4[i], v = arcs[j], a1 = a0 + (v > 0 ? v * k3 : 0) + pa, arcs[j] = {
         data: data[j],
         index: i,
         value: v,
@@ -7014,13 +6952,13 @@ function pie_default() {
     return arcs;
   }
   pie.value = function(_) {
-    return arguments.length ? (value = typeof _ === "function" ? _ : constant_default6(+_), pie) : value;
+    return arguments.length ? (value2 = typeof _ === "function" ? _ : constant_default6(+_), pie) : value2;
   };
   pie.sortValues = function(_) {
-    return arguments.length ? (sortValues = _, sort2 = null, pie) : sortValues;
+    return arguments.length ? (sortValues = _, sort4 = null, pie) : sortValues;
   };
   pie.sort = function(_) {
-    return arguments.length ? (sort2 = _, sortValues = null, pie) : sort2;
+    return arguments.length ? (sort4 = _, sortValues = null, pie) : sort4;
   };
   pie.startAngle = function(_) {
     return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant_default6(+_), pie) : startAngle;
@@ -7052,8 +6990,8 @@ Radial.prototype = {
   lineEnd: function() {
     this._curve.lineEnd();
   },
-  point: function(a2, r) {
-    this._curve.point(r * Math.sin(a2), r * -Math.cos(a2));
+  point: function(a3, r) {
+    this._curve.point(r * Math.sin(a3), r * -Math.cos(a3));
   }
 };
 function curveRadial(curve) {
@@ -7078,21 +7016,27 @@ function lineRadial_default() {
   return lineRadial(line_default().curve(curveRadialLinear));
 }
 
+// node_modules/d3-shape/src/symbol/asterisk.js
+var sqrt3 = sqrt2(3);
+
 // node_modules/d3-shape/src/symbol/diamond.js
-var tan30 = Math.sqrt(1 / 3);
+var tan30 = sqrt2(1 / 3);
 var tan30_2 = tan30 * 2;
 
 // node_modules/d3-shape/src/symbol/star.js
-var kr = Math.sin(pi3 / 10) / Math.sin(7 * pi3 / 10);
-var kx = Math.sin(tau3 / 10) * kr;
-var ky = -Math.cos(tau3 / 10) * kr;
+var kr = sin(pi2 / 10) / sin(7 * pi2 / 10);
+var kx = sin(tau2 / 10) * kr;
+var ky = -cos(tau2 / 10) * kr;
 
 // node_modules/d3-shape/src/symbol/triangle.js
-var sqrt3 = Math.sqrt(3);
+var sqrt32 = sqrt2(3);
+
+// node_modules/d3-shape/src/symbol/triangle2.js
+var sqrt33 = sqrt2(3);
 
 // node_modules/d3-shape/src/symbol/wye.js
-var s = Math.sqrt(3) / 2;
-var k = 1 / Math.sqrt(12);
+var s = sqrt2(3) / 2;
+var k = 1 / sqrt2(12);
 var a = (k / 2 + 1) * 3;
 
 // node_modules/d3-shape/src/noop.js
@@ -7100,14 +7044,14 @@ function noop_default() {
 }
 
 // node_modules/d3-shape/src/curve/basis.js
-function point2(that, x2, y2) {
+function point2(that, x3, y3) {
   that._context.bezierCurveTo(
     (2 * that._x0 + that._x1) / 3,
     (2 * that._y0 + that._y1) / 3,
     (that._x0 + 2 * that._x1) / 3,
     (that._y0 + 2 * that._y1) / 3,
-    (that._x0 + 4 * that._x1 + x2) / 6,
-    (that._y0 + 4 * that._y1 + y2) / 6
+    (that._x0 + 4 * that._x1 + x3) / 6,
+    (that._y0 + 4 * that._y1 + y3) / 6
   );
 }
 function Basis(context) {
@@ -7135,12 +7079,12 @@ Basis.prototype = {
     if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
         break;
       case 1:
         this._point = 2;
@@ -7149,11 +7093,11 @@ Basis.prototype = {
         this._point = 3;
         this._context.lineTo((5 * this._x0 + this._x1) / 6, (5 * this._y0 + this._y1) / 6);
       default:
-        point2(this, x2, y2);
+        point2(this, x3, y3);
         break;
     }
-    this._x0 = this._x1, this._x1 = x2;
-    this._y0 = this._y1, this._y1 = y2;
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
   }
 };
 
@@ -7189,28 +7133,28 @@ BasisClosed.prototype = {
       }
     }
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._x2 = x2, this._y2 = y2;
+        this._x2 = x3, this._y2 = y3;
         break;
       case 1:
         this._point = 2;
-        this._x3 = x2, this._y3 = y2;
+        this._x3 = x3, this._y3 = y3;
         break;
       case 2:
         this._point = 3;
-        this._x4 = x2, this._y4 = y2;
-        this._context.moveTo((this._x0 + 4 * this._x1 + x2) / 6, (this._y0 + 4 * this._y1 + y2) / 6);
+        this._x4 = x3, this._y4 = y3;
+        this._context.moveTo((this._x0 + 4 * this._x1 + x3) / 6, (this._y0 + 4 * this._y1 + y3) / 6);
         break;
       default:
-        point2(this, x2, y2);
+        point2(this, x3, y3);
         break;
     }
-    this._x0 = this._x1, this._x1 = x2;
-    this._y0 = this._y1, this._y1 = y2;
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
   }
 };
 
@@ -7233,8 +7177,8 @@ BasisOpen.prototype = {
     if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
@@ -7244,17 +7188,17 @@ BasisOpen.prototype = {
         break;
       case 2:
         this._point = 3;
-        var x0 = (this._x0 + 4 * this._x1 + x2) / 6, y0 = (this._y0 + 4 * this._y1 + y2) / 6;
+        var x0 = (this._x0 + 4 * this._x1 + x3) / 6, y0 = (this._y0 + 4 * this._y1 + y3) / 6;
         this._line ? this._context.lineTo(x0, y0) : this._context.moveTo(x0, y0);
         break;
       case 3:
         this._point = 4;
       default:
-        point2(this, x2, y2);
+        point2(this, x3, y3);
         break;
     }
-    this._x0 = this._x1, this._x1 = x2;
-    this._y0 = this._y1, this._y1 = y2;
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
   }
 };
 
@@ -7270,23 +7214,23 @@ Bundle.prototype = {
     this._basis.lineStart();
   },
   lineEnd: function() {
-    var x2 = this._x, y2 = this._y, j = x2.length - 1;
+    var x3 = this._x, y3 = this._y, j = x3.length - 1;
     if (j > 0) {
-      var x0 = x2[0], y0 = y2[0], dx = x2[j] - x0, dy = y2[j] - y0, i = -1, t;
+      var x0 = x3[0], y0 = y3[0], dx = x3[j] - x0, dy = y3[j] - y0, i = -1, t;
       while (++i <= j) {
         t = i / j;
         this._basis.point(
-          this._beta * x2[i] + (1 - this._beta) * (x0 + t * dx),
-          this._beta * y2[i] + (1 - this._beta) * (y0 + t * dy)
+          this._beta * x3[i] + (1 - this._beta) * (x0 + t * dx),
+          this._beta * y3[i] + (1 - this._beta) * (y0 + t * dy)
         );
       }
     }
     this._x = this._y = null;
     this._basis.lineEnd();
   },
-  point: function(x2, y2) {
-    this._x.push(+x2);
-    this._y.push(+y2);
+  point: function(x3, y3) {
+    this._x.push(+x3);
+    this._y.push(+y3);
   }
 };
 var bundle_default = function custom10(beta) {
@@ -7300,12 +7244,12 @@ var bundle_default = function custom10(beta) {
 }(0.85);
 
 // node_modules/d3-shape/src/curve/cardinal.js
-function point3(that, x2, y2) {
+function point3(that, x3, y3) {
   that._context.bezierCurveTo(
     that._x1 + that._k * (that._x2 - that._x0),
     that._y1 + that._k * (that._y2 - that._y0),
-    that._x2 + that._k * (that._x1 - x2),
-    that._y2 + that._k * (that._y1 - y2),
+    that._x2 + that._k * (that._x1 - x3),
+    that._y2 + that._k * (that._y1 - y3),
     that._x2,
     that._y2
   );
@@ -7337,25 +7281,25 @@ Cardinal.prototype = {
     if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
         break;
       case 1:
         this._point = 2;
-        this._x1 = x2, this._y1 = y2;
+        this._x1 = x3, this._y1 = y3;
         break;
       case 2:
         this._point = 3;
       default:
-        point3(this, x2, y2);
+        point3(this, x3, y3);
         break;
     }
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x2;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y2;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
   }
 };
 var cardinal_default = function custom11(tension) {
@@ -7400,27 +7344,27 @@ CardinalClosed.prototype = {
       }
     }
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._x3 = x2, this._y3 = y2;
+        this._x3 = x3, this._y3 = y3;
         break;
       case 1:
         this._point = 2;
-        this._context.moveTo(this._x4 = x2, this._y4 = y2);
+        this._context.moveTo(this._x4 = x3, this._y4 = y3);
         break;
       case 2:
         this._point = 3;
-        this._x5 = x2, this._y5 = y2;
+        this._x5 = x3, this._y5 = y3;
         break;
       default:
-        point3(this, x2, y2);
+        point3(this, x3, y3);
         break;
     }
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x2;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y2;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
   }
 };
 var cardinalClosed_default = function custom12(tension) {
@@ -7453,8 +7397,8 @@ CardinalOpen.prototype = {
     if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
@@ -7469,11 +7413,11 @@ CardinalOpen.prototype = {
       case 3:
         this._point = 4;
       default:
-        point3(this, x2, y2);
+        point3(this, x3, y3);
         break;
     }
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x2;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y2;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
   }
 };
 var cardinalOpen_default = function custom13(tension) {
@@ -7487,17 +7431,17 @@ var cardinalOpen_default = function custom13(tension) {
 }(0);
 
 // node_modules/d3-shape/src/curve/catmullRom.js
-function point4(that, x2, y2) {
+function point4(that, x3, y3) {
   var x1 = that._x1, y1 = that._y1, x22 = that._x2, y22 = that._y2;
-  if (that._l01_a > epsilon3) {
-    var a2 = 2 * that._l01_2a + 3 * that._l01_a * that._l12_a + that._l12_2a, n = 3 * that._l01_a * (that._l01_a + that._l12_a);
-    x1 = (x1 * a2 - that._x0 * that._l12_2a + that._x2 * that._l01_2a) / n;
-    y1 = (y1 * a2 - that._y0 * that._l12_2a + that._y2 * that._l01_2a) / n;
+  if (that._l01_a > epsilon) {
+    var a3 = 2 * that._l01_2a + 3 * that._l01_a * that._l12_a + that._l12_2a, n = 3 * that._l01_a * (that._l01_a + that._l12_a);
+    x1 = (x1 * a3 - that._x0 * that._l12_2a + that._x2 * that._l01_2a) / n;
+    y1 = (y1 * a3 - that._y0 * that._l12_2a + that._y2 * that._l01_2a) / n;
   }
-  if (that._l23_a > epsilon3) {
+  if (that._l23_a > epsilon) {
     var b = 2 * that._l23_2a + 3 * that._l23_a * that._l12_a + that._l12_2a, m = 3 * that._l23_a * (that._l23_a + that._l12_a);
-    x22 = (x22 * b + that._x1 * that._l23_2a - x2 * that._l12_2a) / m;
-    y22 = (y22 * b + that._y1 * that._l23_2a - y2 * that._l12_2a) / m;
+    x22 = (x22 * b + that._x1 * that._l23_2a - x3 * that._l12_2a) / m;
+    y22 = (y22 * b + that._y1 * that._l23_2a - y3 * that._l12_2a) / m;
   }
   that._context.bezierCurveTo(x1, y1, x22, y22, that._x2, that._y2);
 }
@@ -7528,16 +7472,16 @@ CatmullRom.prototype = {
     if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     if (this._point) {
-      var x23 = this._x2 - x2, y23 = this._y2 - y2;
+      var x23 = this._x2 - x3, y23 = this._y2 - y3;
       this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
     }
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
         break;
       case 1:
         this._point = 2;
@@ -7545,13 +7489,13 @@ CatmullRom.prototype = {
       case 2:
         this._point = 3;
       default:
-        point4(this, x2, y2);
+        point4(this, x3, y3);
         break;
     }
     this._l01_a = this._l12_a, this._l12_a = this._l23_a;
     this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x2;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y2;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
   }
 };
 var catmullRom_default = function custom14(alpha) {
@@ -7596,33 +7540,33 @@ CatmullRomClosed.prototype = {
       }
     }
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     if (this._point) {
-      var x23 = this._x2 - x2, y23 = this._y2 - y2;
+      var x23 = this._x2 - x3, y23 = this._y2 - y3;
       this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
     }
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._x3 = x2, this._y3 = y2;
+        this._x3 = x3, this._y3 = y3;
         break;
       case 1:
         this._point = 2;
-        this._context.moveTo(this._x4 = x2, this._y4 = y2);
+        this._context.moveTo(this._x4 = x3, this._y4 = y3);
         break;
       case 2:
         this._point = 3;
-        this._x5 = x2, this._y5 = y2;
+        this._x5 = x3, this._y5 = y3;
         break;
       default:
-        point4(this, x2, y2);
+        point4(this, x3, y3);
         break;
     }
     this._l01_a = this._l12_a, this._l12_a = this._l23_a;
     this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x2;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y2;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
   }
 };
 var catmullRomClosed_default = function custom15(alpha) {
@@ -7655,10 +7599,10 @@ CatmullRomOpen.prototype = {
     if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     if (this._point) {
-      var x23 = this._x2 - x2, y23 = this._y2 - y2;
+      var x23 = this._x2 - x3, y23 = this._y2 - y3;
       this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
     }
     switch (this._point) {
@@ -7675,13 +7619,13 @@ CatmullRomOpen.prototype = {
       case 3:
         this._point = 4;
       default:
-        point4(this, x2, y2);
+        point4(this, x3, y3);
         break;
     }
     this._l01_a = this._l12_a, this._l12_a = this._l23_a;
     this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
-    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x2;
-    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y2;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
   }
 };
 var catmullRomOpen_default = function custom16(alpha) {
@@ -7707,28 +7651,28 @@ LinearClosed.prototype = {
   lineEnd: function() {
     if (this._point) this._context.closePath();
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
-    if (this._point) this._context.lineTo(x2, y2);
-    else this._point = 1, this._context.moveTo(x2, y2);
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    if (this._point) this._context.lineTo(x3, y3);
+    else this._point = 1, this._context.moveTo(x3, y3);
   }
 };
 
 // node_modules/d3-shape/src/curve/monotone.js
-function sign(x2) {
-  return x2 < 0 ? -1 : 1;
+function sign(x3) {
+  return x3 < 0 ? -1 : 1;
 }
-function slope3(that, x2, y2) {
-  var h0 = that._x1 - that._x0, h1 = x2 - that._x1, s0 = (that._y1 - that._y0) / (h0 || h1 < 0 && -0), s1 = (y2 - that._y1) / (h1 || h0 < 0 && -0), p = (s0 * h1 + s1 * h0) / (h0 + h1);
+function slope3(that, x22, y22) {
+  var h0 = that._x1 - that._x0, h1 = x22 - that._x1, s0 = (that._y1 - that._y0) / (h0 || h1 < 0 && -0), s1 = (y22 - that._y1) / (h1 || h0 < 0 && -0), p = (s0 * h1 + s1 * h0) / (h0 + h1);
   return (sign(s0) + sign(s1)) * Math.min(Math.abs(s0), Math.abs(s1), 0.5 * Math.abs(p)) || 0;
 }
 function slope2(that, t) {
   var h = that._x1 - that._x0;
   return h ? (3 * (that._y1 - that._y0) / h - t) / 2 : t;
 }
-function point5(that, t04, t14) {
+function point5(that, t05, t15) {
   var x0 = that._x0, y0 = that._y0, x1 = that._x1, y1 = that._y1, dx = (x1 - x0) / 3;
-  that._context.bezierCurveTo(x0 + dx, y0 + dx * t04, x1 - dx, y1 - dx * t14, x1, y1);
+  that._context.bezierCurveTo(x0 + dx, y0 + dx * t05, x1 - dx, y1 - dx * t15, x1, y1);
 }
 function MonotoneX(context) {
   this._context = context;
@@ -7756,52 +7700,52 @@ MonotoneX.prototype = {
     if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
     this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    var t14 = NaN;
-    x2 = +x2, y2 = +y2;
-    if (x2 === this._x1 && y2 === this._y1) return;
+  point: function(x3, y3) {
+    var t15 = NaN;
+    x3 = +x3, y3 = +y3;
+    if (x3 === this._x1 && y3 === this._y1) return;
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
         break;
       case 1:
         this._point = 2;
         break;
       case 2:
         this._point = 3;
-        point5(this, slope2(this, t14 = slope3(this, x2, y2)), t14);
+        point5(this, slope2(this, t15 = slope3(this, x3, y3)), t15);
         break;
       default:
-        point5(this, this._t0, t14 = slope3(this, x2, y2));
+        point5(this, this._t0, t15 = slope3(this, x3, y3));
         break;
     }
-    this._x0 = this._x1, this._x1 = x2;
-    this._y0 = this._y1, this._y1 = y2;
-    this._t0 = t14;
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
+    this._t0 = t15;
   }
 };
 function MonotoneY(context) {
   this._context = new ReflectContext(context);
 }
-(MonotoneY.prototype = Object.create(MonotoneX.prototype)).point = function(x2, y2) {
-  MonotoneX.prototype.point.call(this, y2, x2);
+(MonotoneY.prototype = Object.create(MonotoneX.prototype)).point = function(x3, y3) {
+  MonotoneX.prototype.point.call(this, y3, x3);
 };
 function ReflectContext(context) {
   this._context = context;
 }
 ReflectContext.prototype = {
-  moveTo: function(x2, y2) {
-    this._context.moveTo(y2, x2);
+  moveTo: function(x3, y3) {
+    this._context.moveTo(y3, x3);
   },
   closePath: function() {
     this._context.closePath();
   },
-  lineTo: function(x2, y2) {
-    this._context.lineTo(y2, x2);
+  lineTo: function(x3, y3) {
+    this._context.lineTo(y3, x3);
   },
-  bezierCurveTo: function(x1, y1, x2, y2, x3, y3) {
-    this._context.bezierCurveTo(y1, x1, y2, x2, y3, x3);
+  bezierCurveTo: function(x1, y1, x22, y22, x3, y3) {
+    this._context.bezierCurveTo(y1, x1, y22, x22, y3, x3);
   }
 };
 
@@ -7821,15 +7765,15 @@ Natural.prototype = {
     this._y = [];
   },
   lineEnd: function() {
-    var x2 = this._x, y2 = this._y, n = x2.length;
+    var x3 = this._x, y3 = this._y, n = x3.length;
     if (n) {
-      this._line ? this._context.lineTo(x2[0], y2[0]) : this._context.moveTo(x2[0], y2[0]);
+      this._line ? this._context.lineTo(x3[0], y3[0]) : this._context.moveTo(x3[0], y3[0]);
       if (n === 2) {
-        this._context.lineTo(x2[1], y2[1]);
+        this._context.lineTo(x3[1], y3[1]);
       } else {
-        var px = controlPoints(x2), py = controlPoints(y2);
+        var px = controlPoints(x3), py = controlPoints(y3);
         for (var i0 = 0, i1 = 1; i1 < n; ++i0, ++i1) {
-          this._context.bezierCurveTo(px[0][i0], py[0][i0], px[1][i0], py[1][i0], x2[i1], y2[i1]);
+          this._context.bezierCurveTo(px[0][i0], py[0][i0], px[1][i0], py[1][i0], x3[i1], y3[i1]);
         }
       }
     }
@@ -7837,22 +7781,22 @@ Natural.prototype = {
     this._line = 1 - this._line;
     this._x = this._y = null;
   },
-  point: function(x2, y2) {
-    this._x.push(+x2);
-    this._y.push(+y2);
+  point: function(x3, y3) {
+    this._x.push(+x3);
+    this._y.push(+y3);
   }
 };
-function controlPoints(x2) {
-  var i, n = x2.length - 1, m, a2 = new Array(n), b = new Array(n), r = new Array(n);
-  a2[0] = 0, b[0] = 2, r[0] = x2[0] + 2 * x2[1];
-  for (i = 1; i < n - 1; ++i) a2[i] = 1, b[i] = 4, r[i] = 4 * x2[i] + 2 * x2[i + 1];
-  a2[n - 1] = 2, b[n - 1] = 7, r[n - 1] = 8 * x2[n - 1] + x2[n];
-  for (i = 1; i < n; ++i) m = a2[i] / b[i - 1], b[i] -= m, r[i] -= m * r[i - 1];
-  a2[n - 1] = r[n - 1] / b[n - 1];
-  for (i = n - 2; i >= 0; --i) a2[i] = (r[i] - a2[i + 1]) / b[i];
-  b[n - 1] = (x2[n] + a2[n - 1]) / 2;
-  for (i = 0; i < n - 1; ++i) b[i] = 2 * x2[i + 1] - a2[i + 1];
-  return [a2, b];
+function controlPoints(x3) {
+  var i, n = x3.length - 1, m, a3 = new Array(n), b = new Array(n), r = new Array(n);
+  a3[0] = 0, b[0] = 2, r[0] = x3[0] + 2 * x3[1];
+  for (i = 1; i < n - 1; ++i) a3[i] = 1, b[i] = 4, r[i] = 4 * x3[i] + 2 * x3[i + 1];
+  a3[n - 1] = 2, b[n - 1] = 7, r[n - 1] = 8 * x3[n - 1] + x3[n];
+  for (i = 1; i < n; ++i) m = a3[i] / b[i - 1], b[i] -= m, r[i] -= m * r[i - 1];
+  a3[n - 1] = r[n - 1] / b[n - 1];
+  for (i = n - 2; i >= 0; --i) a3[i] = (r[i] - a3[i + 1]) / b[i];
+  b[n - 1] = (x3[n] + a3[n - 1]) / 2;
+  for (i = 0; i < n - 1; ++i) b[i] = 2 * x3[i + 1] - a3[i + 1];
+  return [a3, b];
 }
 
 // node_modules/d3-shape/src/curve/step.js
@@ -7876,181 +7820,939 @@ Step.prototype = {
     if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
     if (this._line >= 0) this._t = 1 - this._t, this._line = 1 - this._line;
   },
-  point: function(x2, y2) {
-    x2 = +x2, y2 = +y2;
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
     switch (this._point) {
       case 0:
         this._point = 1;
-        this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
         break;
       case 1:
         this._point = 2;
       default: {
         if (this._t <= 0) {
-          this._context.lineTo(this._x, y2);
-          this._context.lineTo(x2, y2);
+          this._context.lineTo(this._x, y3);
+          this._context.lineTo(x3, y3);
         } else {
-          var x1 = this._x * (1 - this._t) + x2 * this._t;
+          var x1 = this._x * (1 - this._t) + x3 * this._t;
           this._context.lineTo(x1, this._y);
-          this._context.lineTo(x1, y2);
+          this._context.lineTo(x1, y3);
         }
         break;
       }
     }
-    this._x = x2, this._y = y2;
+    this._x = x3, this._y = y3;
   }
 };
 
-// node_modules/d3-ease/src/poly.js
-var exponent2 = 3;
-var polyIn2 = function custom17(e) {
-  e = +e;
-  function polyIn3(t) {
-    return Math.pow(t, e);
-  }
-  polyIn3.exponent = custom17;
-  return polyIn3;
-}(exponent2);
-var polyOut2 = function custom18(e) {
-  e = +e;
-  function polyOut3(t) {
-    return 1 - Math.pow(1 - t, e);
-  }
-  polyOut3.exponent = custom18;
-  return polyOut3;
-}(exponent2);
-var polyInOut2 = function custom19(e) {
-  e = +e;
-  function polyInOut3(t) {
-    return ((t *= 2) <= 1 ? Math.pow(t, e) : 2 - Math.pow(2 - t, e)) / 2;
-  }
-  polyInOut3.exponent = custom19;
-  return polyInOut3;
-}(exponent2);
-
-// node_modules/d3-ease/src/sin.js
-var pi4 = Math.PI;
-var halfPi3 = pi4 / 2;
-function sinInOut2(t) {
-  return (1 - Math.cos(pi4 * t)) / 2;
+// node_modules/@swimlane/ngx-charts/node_modules/d3-color/src/define.js
+function define_default2(constructor, factory, prototype) {
+  constructor.prototype = factory.prototype = prototype;
+  prototype.constructor = constructor;
+}
+function extend2(parent, definition) {
+  var prototype = Object.create(parent.prototype);
+  for (var key in definition) prototype[key] = definition[key];
+  return prototype;
 }
 
-// node_modules/d3-ease/src/math.js
-function tpmt2(x2) {
-  return (Math.pow(2, -10 * x2) - 9765625e-10) * 1.0009775171065494;
+// node_modules/@swimlane/ngx-charts/node_modules/d3-color/src/color.js
+function Color2() {
+}
+var darker2 = 0.7;
+var brighter2 = 1 / darker2;
+var reI2 = "\\s*([+-]?\\d+)\\s*";
+var reN2 = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*";
+var reP2 = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*";
+var reHex2 = /^#([0-9a-f]{3,8})$/;
+var reRgbInteger2 = new RegExp(`^rgb\\(${reI2},${reI2},${reI2}\\)$`);
+var reRgbPercent2 = new RegExp(`^rgb\\(${reP2},${reP2},${reP2}\\)$`);
+var reRgbaInteger2 = new RegExp(`^rgba\\(${reI2},${reI2},${reI2},${reN2}\\)$`);
+var reRgbaPercent2 = new RegExp(`^rgba\\(${reP2},${reP2},${reP2},${reN2}\\)$`);
+var reHslPercent2 = new RegExp(`^hsl\\(${reN2},${reP2},${reP2}\\)$`);
+var reHslaPercent2 = new RegExp(`^hsla\\(${reN2},${reP2},${reP2},${reN2}\\)$`);
+var named2 = {
+  aliceblue: 15792383,
+  antiquewhite: 16444375,
+  aqua: 65535,
+  aquamarine: 8388564,
+  azure: 15794175,
+  beige: 16119260,
+  bisque: 16770244,
+  black: 0,
+  blanchedalmond: 16772045,
+  blue: 255,
+  blueviolet: 9055202,
+  brown: 10824234,
+  burlywood: 14596231,
+  cadetblue: 6266528,
+  chartreuse: 8388352,
+  chocolate: 13789470,
+  coral: 16744272,
+  cornflowerblue: 6591981,
+  cornsilk: 16775388,
+  crimson: 14423100,
+  cyan: 65535,
+  darkblue: 139,
+  darkcyan: 35723,
+  darkgoldenrod: 12092939,
+  darkgray: 11119017,
+  darkgreen: 25600,
+  darkgrey: 11119017,
+  darkkhaki: 12433259,
+  darkmagenta: 9109643,
+  darkolivegreen: 5597999,
+  darkorange: 16747520,
+  darkorchid: 10040012,
+  darkred: 9109504,
+  darksalmon: 15308410,
+  darkseagreen: 9419919,
+  darkslateblue: 4734347,
+  darkslategray: 3100495,
+  darkslategrey: 3100495,
+  darkturquoise: 52945,
+  darkviolet: 9699539,
+  deeppink: 16716947,
+  deepskyblue: 49151,
+  dimgray: 6908265,
+  dimgrey: 6908265,
+  dodgerblue: 2003199,
+  firebrick: 11674146,
+  floralwhite: 16775920,
+  forestgreen: 2263842,
+  fuchsia: 16711935,
+  gainsboro: 14474460,
+  ghostwhite: 16316671,
+  gold: 16766720,
+  goldenrod: 14329120,
+  gray: 8421504,
+  green: 32768,
+  greenyellow: 11403055,
+  grey: 8421504,
+  honeydew: 15794160,
+  hotpink: 16738740,
+  indianred: 13458524,
+  indigo: 4915330,
+  ivory: 16777200,
+  khaki: 15787660,
+  lavender: 15132410,
+  lavenderblush: 16773365,
+  lawngreen: 8190976,
+  lemonchiffon: 16775885,
+  lightblue: 11393254,
+  lightcoral: 15761536,
+  lightcyan: 14745599,
+  lightgoldenrodyellow: 16448210,
+  lightgray: 13882323,
+  lightgreen: 9498256,
+  lightgrey: 13882323,
+  lightpink: 16758465,
+  lightsalmon: 16752762,
+  lightseagreen: 2142890,
+  lightskyblue: 8900346,
+  lightslategray: 7833753,
+  lightslategrey: 7833753,
+  lightsteelblue: 11584734,
+  lightyellow: 16777184,
+  lime: 65280,
+  limegreen: 3329330,
+  linen: 16445670,
+  magenta: 16711935,
+  maroon: 8388608,
+  mediumaquamarine: 6737322,
+  mediumblue: 205,
+  mediumorchid: 12211667,
+  mediumpurple: 9662683,
+  mediumseagreen: 3978097,
+  mediumslateblue: 8087790,
+  mediumspringgreen: 64154,
+  mediumturquoise: 4772300,
+  mediumvioletred: 13047173,
+  midnightblue: 1644912,
+  mintcream: 16121850,
+  mistyrose: 16770273,
+  moccasin: 16770229,
+  navajowhite: 16768685,
+  navy: 128,
+  oldlace: 16643558,
+  olive: 8421376,
+  olivedrab: 7048739,
+  orange: 16753920,
+  orangered: 16729344,
+  orchid: 14315734,
+  palegoldenrod: 15657130,
+  palegreen: 10025880,
+  paleturquoise: 11529966,
+  palevioletred: 14381203,
+  papayawhip: 16773077,
+  peachpuff: 16767673,
+  peru: 13468991,
+  pink: 16761035,
+  plum: 14524637,
+  powderblue: 11591910,
+  purple: 8388736,
+  rebeccapurple: 6697881,
+  red: 16711680,
+  rosybrown: 12357519,
+  royalblue: 4286945,
+  saddlebrown: 9127187,
+  salmon: 16416882,
+  sandybrown: 16032864,
+  seagreen: 3050327,
+  seashell: 16774638,
+  sienna: 10506797,
+  silver: 12632256,
+  skyblue: 8900331,
+  slateblue: 6970061,
+  slategray: 7372944,
+  slategrey: 7372944,
+  snow: 16775930,
+  springgreen: 65407,
+  steelblue: 4620980,
+  tan: 13808780,
+  teal: 32896,
+  thistle: 14204888,
+  tomato: 16737095,
+  turquoise: 4251856,
+  violet: 15631086,
+  wheat: 16113331,
+  white: 16777215,
+  whitesmoke: 16119285,
+  yellow: 16776960,
+  yellowgreen: 10145074
+};
+define_default2(Color2, color2, {
+  copy(channels) {
+    return Object.assign(new this.constructor(), this, channels);
+  },
+  displayable() {
+    return this.rgb().displayable();
+  },
+  hex: color_formatHex2,
+  // Deprecated! Use color.formatHex.
+  formatHex: color_formatHex2,
+  formatHex8: color_formatHex8,
+  formatHsl: color_formatHsl2,
+  formatRgb: color_formatRgb2,
+  toString: color_formatRgb2
+});
+function color_formatHex2() {
+  return this.rgb().formatHex();
+}
+function color_formatHex8() {
+  return this.rgb().formatHex8();
+}
+function color_formatHsl2() {
+  return hslConvert2(this).formatHsl();
+}
+function color_formatRgb2() {
+  return this.rgb().formatRgb();
+}
+function color2(format2) {
+  var m, l;
+  format2 = (format2 + "").trim().toLowerCase();
+  return (m = reHex2.exec(format2)) ? (l = m[1].length, m = parseInt(m[1], 16), l === 6 ? rgbn2(m) : l === 3 ? new Rgb2(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l === 8 ? rgba2(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l === 4 ? rgba2(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger2.exec(format2)) ? new Rgb2(m[1], m[2], m[3], 1) : (m = reRgbPercent2.exec(format2)) ? new Rgb2(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger2.exec(format2)) ? rgba2(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent2.exec(format2)) ? rgba2(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent2.exec(format2)) ? hsla2(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent2.exec(format2)) ? hsla2(m[1], m[2] / 100, m[3] / 100, m[4]) : named2.hasOwnProperty(format2) ? rgbn2(named2[format2]) : format2 === "transparent" ? new Rgb2(NaN, NaN, NaN, 0) : null;
+}
+function rgbn2(n) {
+  return new Rgb2(n >> 16 & 255, n >> 8 & 255, n & 255, 1);
+}
+function rgba2(r, g, b, a3) {
+  if (a3 <= 0) r = g = b = NaN;
+  return new Rgb2(r, g, b, a3);
+}
+function rgbConvert2(o) {
+  if (!(o instanceof Color2)) o = color2(o);
+  if (!o) return new Rgb2();
+  o = o.rgb();
+  return new Rgb2(o.r, o.g, o.b, o.opacity);
+}
+function rgb2(r, g, b, opacity) {
+  return arguments.length === 1 ? rgbConvert2(r) : new Rgb2(r, g, b, opacity == null ? 1 : opacity);
+}
+function Rgb2(r, g, b, opacity) {
+  this.r = +r;
+  this.g = +g;
+  this.b = +b;
+  this.opacity = +opacity;
+}
+define_default2(Rgb2, rgb2, extend2(Color2, {
+  brighter(k3) {
+    k3 = k3 == null ? brighter2 : Math.pow(brighter2, k3);
+    return new Rgb2(this.r * k3, this.g * k3, this.b * k3, this.opacity);
+  },
+  darker(k3) {
+    k3 = k3 == null ? darker2 : Math.pow(darker2, k3);
+    return new Rgb2(this.r * k3, this.g * k3, this.b * k3, this.opacity);
+  },
+  rgb() {
+    return this;
+  },
+  clamp() {
+    return new Rgb2(clampi(this.r), clampi(this.g), clampi(this.b), clampa(this.opacity));
+  },
+  displayable() {
+    return -0.5 <= this.r && this.r < 255.5 && (-0.5 <= this.g && this.g < 255.5) && (-0.5 <= this.b && this.b < 255.5) && (0 <= this.opacity && this.opacity <= 1);
+  },
+  hex: rgb_formatHex2,
+  // Deprecated! Use color.formatHex.
+  formatHex: rgb_formatHex2,
+  formatHex8: rgb_formatHex8,
+  formatRgb: rgb_formatRgb2,
+  toString: rgb_formatRgb2
+}));
+function rgb_formatHex2() {
+  return `#${hex2(this.r)}${hex2(this.g)}${hex2(this.b)}`;
+}
+function rgb_formatHex8() {
+  return `#${hex2(this.r)}${hex2(this.g)}${hex2(this.b)}${hex2((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
+}
+function rgb_formatRgb2() {
+  const a3 = clampa(this.opacity);
+  return `${a3 === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a3 === 1 ? ")" : `, ${a3})`}`;
+}
+function clampa(opacity) {
+  return isNaN(opacity) ? 1 : Math.max(0, Math.min(1, opacity));
+}
+function clampi(value2) {
+  return Math.max(0, Math.min(255, Math.round(value2) || 0));
+}
+function hex2(value2) {
+  value2 = clampi(value2);
+  return (value2 < 16 ? "0" : "") + value2.toString(16);
+}
+function hsla2(h, s3, l, a3) {
+  if (a3 <= 0) h = s3 = l = NaN;
+  else if (l <= 0 || l >= 1) h = s3 = NaN;
+  else if (s3 <= 0) h = NaN;
+  return new Hsl2(h, s3, l, a3);
+}
+function hslConvert2(o) {
+  if (o instanceof Hsl2) return new Hsl2(o.h, o.s, o.l, o.opacity);
+  if (!(o instanceof Color2)) o = color2(o);
+  if (!o) return new Hsl2();
+  if (o instanceof Hsl2) return o;
+  o = o.rgb();
+  var r = o.r / 255, g = o.g / 255, b = o.b / 255, min7 = Math.min(r, g, b), max7 = Math.max(r, g, b), h = NaN, s3 = max7 - min7, l = (max7 + min7) / 2;
+  if (s3) {
+    if (r === max7) h = (g - b) / s3 + (g < b) * 6;
+    else if (g === max7) h = (b - r) / s3 + 2;
+    else h = (r - g) / s3 + 4;
+    s3 /= l < 0.5 ? max7 + min7 : 2 - max7 - min7;
+    h *= 60;
+  } else {
+    s3 = l > 0 && l < 1 ? 0 : h;
+  }
+  return new Hsl2(h, s3, l, o.opacity);
+}
+function hsl3(h, s3, l, opacity) {
+  return arguments.length === 1 ? hslConvert2(h) : new Hsl2(h, s3, l, opacity == null ? 1 : opacity);
+}
+function Hsl2(h, s3, l, opacity) {
+  this.h = +h;
+  this.s = +s3;
+  this.l = +l;
+  this.opacity = +opacity;
+}
+define_default2(Hsl2, hsl3, extend2(Color2, {
+  brighter(k3) {
+    k3 = k3 == null ? brighter2 : Math.pow(brighter2, k3);
+    return new Hsl2(this.h, this.s, this.l * k3, this.opacity);
+  },
+  darker(k3) {
+    k3 = k3 == null ? darker2 : Math.pow(darker2, k3);
+    return new Hsl2(this.h, this.s, this.l * k3, this.opacity);
+  },
+  rgb() {
+    var h = this.h % 360 + (this.h < 0) * 360, s3 = isNaN(h) || isNaN(this.s) ? 0 : this.s, l = this.l, m2 = l + (l < 0.5 ? l : 1 - l) * s3, m1 = 2 * l - m2;
+    return new Rgb2(
+      hsl2rgb2(h >= 240 ? h - 240 : h + 120, m1, m2),
+      hsl2rgb2(h, m1, m2),
+      hsl2rgb2(h < 120 ? h + 240 : h - 120, m1, m2),
+      this.opacity
+    );
+  },
+  clamp() {
+    return new Hsl2(clamph(this.h), clampt(this.s), clampt(this.l), clampa(this.opacity));
+  },
+  displayable() {
+    return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && (0 <= this.l && this.l <= 1) && (0 <= this.opacity && this.opacity <= 1);
+  },
+  formatHsl() {
+    const a3 = clampa(this.opacity);
+    return `${a3 === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a3 === 1 ? ")" : `, ${a3})`}`;
+  }
+}));
+function clamph(value2) {
+  value2 = (value2 || 0) % 360;
+  return value2 < 0 ? value2 + 360 : value2;
+}
+function clampt(value2) {
+  return Math.max(0, Math.min(1, value2 || 0));
+}
+function hsl2rgb2(h, m1, m2) {
+  return (h < 60 ? m1 + (m2 - m1) * h / 60 : h < 180 ? m2 : h < 240 ? m1 + (m2 - m1) * (240 - h) / 60 : m1) * 255;
 }
 
-// node_modules/d3-ease/src/bounce.js
-var b12 = 4 / 11;
-var b22 = 6 / 11;
-var b32 = 8 / 11;
-var b42 = 3 / 4;
-var b52 = 9 / 11;
-var b62 = 10 / 11;
-var b72 = 15 / 16;
-var b82 = 21 / 22;
-var b92 = 63 / 64;
-var b02 = 1 / b12 / b12;
+// node_modules/@swimlane/ngx-charts/node_modules/d3-color/src/math.js
+var radians2 = Math.PI / 180;
+var degrees3 = 180 / Math.PI;
 
-// node_modules/d3-ease/src/back.js
-var overshoot2 = 1.70158;
-var backIn2 = function custom20(s2) {
-  s2 = +s2;
-  function backIn3(t) {
-    return (t = +t) * t * (s2 * (t - 1) + t);
+// node_modules/@swimlane/ngx-charts/node_modules/d3-color/src/lab.js
+var K2 = 18;
+var Xn2 = 0.96422;
+var Yn2 = 1;
+var Zn2 = 0.82521;
+var t04 = 4 / 29;
+var t14 = 6 / 29;
+var t22 = 3 * t14 * t14;
+var t32 = t14 * t14 * t14;
+function labConvert2(o) {
+  if (o instanceof Lab2) return new Lab2(o.l, o.a, o.b, o.opacity);
+  if (o instanceof Hcl2) return hcl2lab2(o);
+  if (!(o instanceof Rgb2)) o = rgbConvert2(o);
+  var r = rgb2lrgb2(o.r), g = rgb2lrgb2(o.g), b = rgb2lrgb2(o.b), y3 = xyz2lab2((0.2225045 * r + 0.7168786 * g + 0.0606169 * b) / Yn2), x3, z;
+  if (r === g && g === b) x3 = z = y3;
+  else {
+    x3 = xyz2lab2((0.4360747 * r + 0.3850649 * g + 0.1430804 * b) / Xn2);
+    z = xyz2lab2((0.0139322 * r + 0.0971045 * g + 0.7141733 * b) / Zn2);
   }
-  backIn3.overshoot = custom20;
-  return backIn3;
-}(overshoot2);
-var backOut2 = function custom21(s2) {
-  s2 = +s2;
-  function backOut3(t) {
-    return --t * t * ((t + 1) * s2 + t) + 1;
+  return new Lab2(116 * y3 - 16, 500 * (x3 - y3), 200 * (y3 - z), o.opacity);
+}
+function lab3(l, a3, b, opacity) {
+  return arguments.length === 1 ? labConvert2(l) : new Lab2(l, a3, b, opacity == null ? 1 : opacity);
+}
+function Lab2(l, a3, b, opacity) {
+  this.l = +l;
+  this.a = +a3;
+  this.b = +b;
+  this.opacity = +opacity;
+}
+define_default2(Lab2, lab3, extend2(Color2, {
+  brighter(k3) {
+    return new Lab2(this.l + K2 * (k3 == null ? 1 : k3), this.a, this.b, this.opacity);
+  },
+  darker(k3) {
+    return new Lab2(this.l - K2 * (k3 == null ? 1 : k3), this.a, this.b, this.opacity);
+  },
+  rgb() {
+    var y3 = (this.l + 16) / 116, x3 = isNaN(this.a) ? y3 : y3 + this.a / 500, z = isNaN(this.b) ? y3 : y3 - this.b / 200;
+    x3 = Xn2 * lab2xyz2(x3);
+    y3 = Yn2 * lab2xyz2(y3);
+    z = Zn2 * lab2xyz2(z);
+    return new Rgb2(
+      lrgb2rgb2(3.1338561 * x3 - 1.6168667 * y3 - 0.4906146 * z),
+      lrgb2rgb2(-0.9787684 * x3 + 1.9161415 * y3 + 0.033454 * z),
+      lrgb2rgb2(0.0719453 * x3 - 0.2289914 * y3 + 1.4052427 * z),
+      this.opacity
+    );
   }
-  backOut3.overshoot = custom21;
-  return backOut3;
-}(overshoot2);
-var backInOut2 = function custom22(s2) {
-  s2 = +s2;
-  function backInOut3(t) {
-    return ((t *= 2) < 1 ? t * t * ((s2 + 1) * t - s2) : (t -= 2) * t * ((s2 + 1) * t + s2) + 2) / 2;
+}));
+function xyz2lab2(t) {
+  return t > t32 ? Math.pow(t, 1 / 3) : t / t22 + t04;
+}
+function lab2xyz2(t) {
+  return t > t14 ? t * t * t : t22 * (t - t04);
+}
+function lrgb2rgb2(x3) {
+  return 255 * (x3 <= 31308e-7 ? 12.92 * x3 : 1.055 * Math.pow(x3, 1 / 2.4) - 0.055);
+}
+function rgb2lrgb2(x3) {
+  return (x3 /= 255) <= 0.04045 ? x3 / 12.92 : Math.pow((x3 + 0.055) / 1.055, 2.4);
+}
+function hclConvert2(o) {
+  if (o instanceof Hcl2) return new Hcl2(o.h, o.c, o.l, o.opacity);
+  if (!(o instanceof Lab2)) o = labConvert2(o);
+  if (o.a === 0 && o.b === 0) return new Hcl2(NaN, 0 < o.l && o.l < 100 ? 0 : NaN, o.l, o.opacity);
+  var h = Math.atan2(o.b, o.a) * degrees3;
+  return new Hcl2(h < 0 ? h + 360 : h, Math.sqrt(o.a * o.a + o.b * o.b), o.l, o.opacity);
+}
+function hcl3(h, c, l, opacity) {
+  return arguments.length === 1 ? hclConvert2(h) : new Hcl2(h, c, l, opacity == null ? 1 : opacity);
+}
+function Hcl2(h, c, l, opacity) {
+  this.h = +h;
+  this.c = +c;
+  this.l = +l;
+  this.opacity = +opacity;
+}
+function hcl2lab2(o) {
+  if (isNaN(o.h)) return new Lab2(o.l, 0, 0, o.opacity);
+  var h = o.h * radians2;
+  return new Lab2(o.l, Math.cos(h) * o.c, Math.sin(h) * o.c, o.opacity);
+}
+define_default2(Hcl2, hcl3, extend2(Color2, {
+  brighter(k3) {
+    return new Hcl2(this.h, this.c, this.l + K2 * (k3 == null ? 1 : k3), this.opacity);
+  },
+  darker(k3) {
+    return new Hcl2(this.h, this.c, this.l - K2 * (k3 == null ? 1 : k3), this.opacity);
+  },
+  rgb() {
+    return hcl2lab2(this).rgb();
   }
-  backInOut3.overshoot = custom22;
-  return backInOut3;
-}(overshoot2);
+}));
 
-// node_modules/d3-ease/src/elastic.js
-var tau4 = 2 * Math.PI;
-var amplitude2 = 1;
-var period2 = 0.3;
-var elasticIn2 = function custom23(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau4);
-  function elasticIn3(t) {
-    return a2 * tpmt2(- --t) * Math.sin((s2 - t) / p);
+// node_modules/@swimlane/ngx-charts/node_modules/d3-color/src/cubehelix.js
+var A2 = -0.14861;
+var B2 = 1.78277;
+var C2 = -0.29227;
+var D2 = -0.90649;
+var E2 = 1.97294;
+var ED2 = E2 * D2;
+var EB2 = E2 * B2;
+var BC_DA2 = B2 * C2 - D2 * A2;
+function cubehelixConvert2(o) {
+  if (o instanceof Cubehelix2) return new Cubehelix2(o.h, o.s, o.l, o.opacity);
+  if (!(o instanceof Rgb2)) o = rgbConvert2(o);
+  var r = o.r / 255, g = o.g / 255, b = o.b / 255, l = (BC_DA2 * b + ED2 * r - EB2 * g) / (BC_DA2 + ED2 - EB2), bl = b - l, k3 = (E2 * (g - l) - C2 * bl) / D2, s3 = Math.sqrt(k3 * k3 + bl * bl) / (E2 * l * (1 - l)), h = s3 ? Math.atan2(k3, bl) * degrees3 - 120 : NaN;
+  return new Cubehelix2(h < 0 ? h + 360 : h, s3, l, o.opacity);
+}
+function cubehelix3(h, s3, l, opacity) {
+  return arguments.length === 1 ? cubehelixConvert2(h) : new Cubehelix2(h, s3, l, opacity == null ? 1 : opacity);
+}
+function Cubehelix2(h, s3, l, opacity) {
+  this.h = +h;
+  this.s = +s3;
+  this.l = +l;
+  this.opacity = +opacity;
+}
+define_default2(Cubehelix2, cubehelix3, extend2(Color2, {
+  brighter(k3) {
+    k3 = k3 == null ? brighter2 : Math.pow(brighter2, k3);
+    return new Cubehelix2(this.h, this.s, this.l * k3, this.opacity);
+  },
+  darker(k3) {
+    k3 = k3 == null ? darker2 : Math.pow(darker2, k3);
+    return new Cubehelix2(this.h, this.s, this.l * k3, this.opacity);
+  },
+  rgb() {
+    var h = isNaN(this.h) ? 0 : (this.h + 120) * radians2, l = +this.l, a3 = isNaN(this.s) ? 0 : this.s * l * (1 - l), cosh3 = Math.cos(h), sinh3 = Math.sin(h);
+    return new Rgb2(
+      255 * (l + a3 * (A2 * cosh3 + B2 * sinh3)),
+      255 * (l + a3 * (C2 * cosh3 + D2 * sinh3)),
+      255 * (l + a3 * (E2 * cosh3)),
+      this.opacity
+    );
   }
-  elasticIn3.amplitude = function(a3) {
-    return custom23(a3, p * tau4);
+}));
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/basis.js
+function basis2(t15, v0, v1, v2, v3) {
+  var t23 = t15 * t15, t33 = t23 * t15;
+  return ((1 - 3 * t15 + 3 * t23 - t33) * v0 + (4 - 6 * t23 + 3 * t33) * v1 + (1 + 3 * t15 + 3 * t23 - 3 * t33) * v2 + t33 * v3) / 6;
+}
+function basis_default3(values) {
+  var n = values.length - 1;
+  return function(t) {
+    var i = t <= 0 ? t = 0 : t >= 1 ? (t = 1, n - 1) : Math.floor(t * n), v1 = values[i], v2 = values[i + 1], v0 = i > 0 ? values[i - 1] : 2 * v1 - v2, v3 = i < n - 1 ? values[i + 2] : 2 * v2 - v1;
+    return basis2((t - i / n) * n, v0, v1, v2, v3);
   };
-  elasticIn3.period = function(p2) {
-    return custom23(a2, p2);
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/basisClosed.js
+function basisClosed_default3(values) {
+  var n = values.length;
+  return function(t) {
+    var i = Math.floor(((t %= 1) < 0 ? ++t : t) * n), v0 = values[(i + n - 1) % n], v1 = values[i % n], v2 = values[(i + 1) % n], v3 = values[(i + 2) % n];
+    return basis2((t - i / n) * n, v0, v1, v2, v3);
   };
-  return elasticIn3;
-}(amplitude2, period2);
-var elasticOut2 = function custom24(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau4);
-  function elasticOut3(t) {
-    return 1 - a2 * tpmt2(t = +t) * Math.sin((t + s2) / p);
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/constant.js
+var constant_default7 = (x3) => () => x3;
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/color.js
+function linear4(a3, d) {
+  return function(t) {
+    return a3 + t * d;
+  };
+}
+function exponential2(a3, b, y3) {
+  return a3 = Math.pow(a3, y3), b = Math.pow(b, y3) - a3, y3 = 1 / y3, function(t) {
+    return Math.pow(a3 + t * b, y3);
+  };
+}
+function hue2(a3, b) {
+  var d = b - a3;
+  return d ? linear4(a3, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant_default7(isNaN(a3) ? b : a3);
+}
+function gamma2(y3) {
+  return (y3 = +y3) === 1 ? nogamma2 : function(a3, b) {
+    return b - a3 ? exponential2(a3, b, y3) : constant_default7(isNaN(a3) ? b : a3);
+  };
+}
+function nogamma2(a3, b) {
+  var d = b - a3;
+  return d ? linear4(a3, d) : constant_default7(isNaN(a3) ? b : a3);
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/rgb.js
+var rgb_default2 = function rgbGamma2(y3) {
+  var color3 = gamma2(y3);
+  function rgb3(start2, end) {
+    var r = color3((start2 = rgb2(start2)).r, (end = rgb2(end)).r), g = color3(start2.g, end.g), b = color3(start2.b, end.b), opacity = nogamma2(start2.opacity, end.opacity);
+    return function(t) {
+      start2.r = r(t);
+      start2.g = g(t);
+      start2.b = b(t);
+      start2.opacity = opacity(t);
+      return start2 + "";
+    };
   }
-  elasticOut3.amplitude = function(a3) {
-    return custom24(a3, p * tau4);
+  rgb3.gamma = rgbGamma2;
+  return rgb3;
+}(1);
+function rgbSpline2(spline) {
+  return function(colors) {
+    var n = colors.length, r = new Array(n), g = new Array(n), b = new Array(n), i, color3;
+    for (i = 0; i < n; ++i) {
+      color3 = rgb2(colors[i]);
+      r[i] = color3.r || 0;
+      g[i] = color3.g || 0;
+      b[i] = color3.b || 0;
+    }
+    r = spline(r);
+    g = spline(g);
+    b = spline(b);
+    color3.opacity = 1;
+    return function(t) {
+      color3.r = r(t);
+      color3.g = g(t);
+      color3.b = b(t);
+      return color3 + "";
+    };
   };
-  elasticOut3.period = function(p2) {
-    return custom24(a2, p2);
+}
+var rgbBasis2 = rgbSpline2(basis_default3);
+var rgbBasisClosed2 = rgbSpline2(basisClosed_default3);
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/numberArray.js
+function numberArray_default2(a3, b) {
+  if (!b) b = [];
+  var n = a3 ? Math.min(b.length, a3.length) : 0, c = b.slice(), i;
+  return function(t) {
+    for (i = 0; i < n; ++i) c[i] = a3[i] * (1 - t) + b[i] * t;
+    return c;
   };
-  return elasticOut3;
-}(amplitude2, period2);
-var elasticInOut2 = function custom25(a2, p) {
-  var s2 = Math.asin(1 / (a2 = Math.max(1, a2))) * (p /= tau4);
-  function elasticInOut3(t) {
-    return ((t = t * 2 - 1) < 0 ? a2 * tpmt2(-t) * Math.sin((s2 - t) / p) : 2 - a2 * tpmt2(t) * Math.sin((s2 + t) / p)) / 2;
+}
+function isNumberArray2(x3) {
+  return ArrayBuffer.isView(x3) && !(x3 instanceof DataView);
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/array.js
+function genericArray2(a3, b) {
+  var nb = b ? b.length : 0, na = a3 ? Math.min(nb, a3.length) : 0, x3 = new Array(na), c = new Array(nb), i;
+  for (i = 0; i < na; ++i) x3[i] = value_default2(a3[i], b[i]);
+  for (; i < nb; ++i) c[i] = b[i];
+  return function(t) {
+    for (i = 0; i < na; ++i) c[i] = x3[i](t);
+    return c;
+  };
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/date.js
+function date_default2(a3, b) {
+  var d = /* @__PURE__ */ new Date();
+  return a3 = +a3, b = +b, function(t) {
+    return d.setTime(a3 * (1 - t) + b * t), d;
+  };
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/number.js
+function number_default3(a3, b) {
+  return a3 = +a3, b = +b, function(t) {
+    return a3 * (1 - t) + b * t;
+  };
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/object.js
+function object_default2(a3, b) {
+  var i = {}, c = {}, k3;
+  if (a3 === null || typeof a3 !== "object") a3 = {};
+  if (b === null || typeof b !== "object") b = {};
+  for (k3 in b) {
+    if (k3 in a3) {
+      i[k3] = value_default2(a3[k3], b[k3]);
+    } else {
+      c[k3] = b[k3];
+    }
   }
-  elasticInOut3.amplitude = function(a3) {
-    return custom25(a3, p * tau4);
+  return function(t) {
+    for (k3 in i) c[k3] = i[k3](t);
+    return c;
   };
-  elasticInOut3.period = function(p2) {
-    return custom25(a2, p2);
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/string.js
+var reA2 = /[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g;
+var reB2 = new RegExp(reA2.source, "g");
+function zero3(b) {
+  return function() {
+    return b;
   };
-  return elasticInOut3;
-}(amplitude2, period2);
+}
+function one2(b) {
+  return function(t) {
+    return b(t) + "";
+  };
+}
+function string_default2(a3, b) {
+  var bi = reA2.lastIndex = reB2.lastIndex = 0, am, bm, bs, i = -1, s3 = [], q = [];
+  a3 = a3 + "", b = b + "";
+  while ((am = reA2.exec(a3)) && (bm = reB2.exec(b))) {
+    if ((bs = bm.index) > bi) {
+      bs = b.slice(bi, bs);
+      if (s3[i]) s3[i] += bs;
+      else s3[++i] = bs;
+    }
+    if ((am = am[0]) === (bm = bm[0])) {
+      if (s3[i]) s3[i] += bm;
+      else s3[++i] = bm;
+    } else {
+      s3[++i] = null;
+      q.push({ i, x: number_default3(am, bm) });
+    }
+    bi = reB2.lastIndex;
+  }
+  if (bi < b.length) {
+    bs = b.slice(bi);
+    if (s3[i]) s3[i] += bs;
+    else s3[++i] = bs;
+  }
+  return s3.length < 2 ? q[0] ? one2(q[0].x) : zero3(b) : (b = q.length, function(t) {
+    for (var i2 = 0, o; i2 < b; ++i2) s3[(o = q[i2]).i] = o.x(t);
+    return s3.join("");
+  });
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/value.js
+function value_default2(a3, b) {
+  var t = typeof b, c;
+  return b == null || t === "boolean" ? constant_default7(b) : (t === "number" ? number_default3 : t === "string" ? (c = color2(b)) ? (b = c, rgb_default2) : string_default2 : b instanceof color2 ? rgb_default2 : b instanceof Date ? date_default2 : isNumberArray2(b) ? numberArray_default2 : Array.isArray(b) ? genericArray2 : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object_default2 : number_default3)(a3, b);
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/transform/decompose.js
+var degrees4 = 180 / Math.PI;
+var identity5 = {
+  translateX: 0,
+  translateY: 0,
+  rotate: 0,
+  skewX: 0,
+  scaleX: 1,
+  scaleY: 1
+};
+function decompose_default2(a3, b, c, d, e, f) {
+  var scaleX, scaleY, skewX;
+  if (scaleX = Math.sqrt(a3 * a3 + b * b)) a3 /= scaleX, b /= scaleX;
+  if (skewX = a3 * c + b * d) c -= a3 * skewX, d -= b * skewX;
+  if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
+  if (a3 * d < b * c) a3 = -a3, b = -b, skewX = -skewX, scaleX = -scaleX;
+  return {
+    translateX: e,
+    translateY: f,
+    rotate: Math.atan2(b, a3) * degrees4,
+    skewX: Math.atan(skewX) * degrees4,
+    scaleX,
+    scaleY
+  };
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/transform/parse.js
+var svgNode2;
+function parseCss2(value2) {
+  const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value2 + "");
+  return m.isIdentity ? identity5 : decompose_default2(m.a, m.b, m.c, m.d, m.e, m.f);
+}
+function parseSvg2(value2) {
+  if (value2 == null) return identity5;
+  if (!svgNode2) svgNode2 = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  svgNode2.setAttribute("transform", value2);
+  if (!(value2 = svgNode2.transform.baseVal.consolidate())) return identity5;
+  value2 = value2.matrix;
+  return decompose_default2(value2.a, value2.b, value2.c, value2.d, value2.e, value2.f);
+}
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/transform/index.js
+function interpolateTransform2(parse, pxComma, pxParen, degParen) {
+  function pop(s3) {
+    return s3.length ? s3.pop() + " " : "";
+  }
+  function translate(xa, ya, xb, yb, s3, q) {
+    if (xa !== xb || ya !== yb) {
+      var i = s3.push("translate(", null, pxComma, null, pxParen);
+      q.push({ i: i - 4, x: number_default3(xa, xb) }, { i: i - 2, x: number_default3(ya, yb) });
+    } else if (xb || yb) {
+      s3.push("translate(" + xb + pxComma + yb + pxParen);
+    }
+  }
+  function rotate(a3, b, s3, q) {
+    if (a3 !== b) {
+      if (a3 - b > 180) b += 360;
+      else if (b - a3 > 180) a3 += 360;
+      q.push({ i: s3.push(pop(s3) + "rotate(", null, degParen) - 2, x: number_default3(a3, b) });
+    } else if (b) {
+      s3.push(pop(s3) + "rotate(" + b + degParen);
+    }
+  }
+  function skewX(a3, b, s3, q) {
+    if (a3 !== b) {
+      q.push({ i: s3.push(pop(s3) + "skewX(", null, degParen) - 2, x: number_default3(a3, b) });
+    } else if (b) {
+      s3.push(pop(s3) + "skewX(" + b + degParen);
+    }
+  }
+  function scale(xa, ya, xb, yb, s3, q) {
+    if (xa !== xb || ya !== yb) {
+      var i = s3.push(pop(s3) + "scale(", null, ",", null, ")");
+      q.push({ i: i - 4, x: number_default3(xa, xb) }, { i: i - 2, x: number_default3(ya, yb) });
+    } else if (xb !== 1 || yb !== 1) {
+      s3.push(pop(s3) + "scale(" + xb + "," + yb + ")");
+    }
+  }
+  return function(a3, b) {
+    var s3 = [], q = [];
+    a3 = parse(a3), b = parse(b);
+    translate(a3.translateX, a3.translateY, b.translateX, b.translateY, s3, q);
+    rotate(a3.rotate, b.rotate, s3, q);
+    skewX(a3.skewX, b.skewX, s3, q);
+    scale(a3.scaleX, a3.scaleY, b.scaleX, b.scaleY, s3, q);
+    a3 = b = null;
+    return function(t) {
+      var i = -1, n = q.length, o;
+      while (++i < n) s3[(o = q[i]).i] = o.x(t);
+      return s3.join("");
+    };
+  };
+}
+var interpolateTransformCss2 = interpolateTransform2(parseCss2, "px, ", "px)", "deg)");
+var interpolateTransformSvg2 = interpolateTransform2(parseSvg2, ", ", ")", ")");
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/zoom.js
+var epsilon22 = 1e-12;
+function cosh2(x3) {
+  return ((x3 = Math.exp(x3)) + 1 / x3) / 2;
+}
+function sinh2(x3) {
+  return ((x3 = Math.exp(x3)) - 1 / x3) / 2;
+}
+function tanh2(x3) {
+  return ((x3 = Math.exp(2 * x3)) - 1) / (x3 + 1);
+}
+var zoom_default2 = function zoomRho2(rho, rho2, rho4) {
+  function zoom(p0, p1) {
+    var ux0 = p0[0], uy0 = p0[1], w0 = p0[2], ux1 = p1[0], uy1 = p1[1], w1 = p1[2], dx = ux1 - ux0, dy = uy1 - uy0, d2 = dx * dx + dy * dy, i, S;
+    if (d2 < epsilon22) {
+      S = Math.log(w1 / w0) / rho;
+      i = function(t) {
+        return [
+          ux0 + t * dx,
+          uy0 + t * dy,
+          w0 * Math.exp(rho * t * S)
+        ];
+      };
+    } else {
+      var d1 = Math.sqrt(d2), b02 = (w1 * w1 - w0 * w0 + rho4 * d2) / (2 * w0 * rho2 * d1), b12 = (w1 * w1 - w0 * w0 - rho4 * d2) / (2 * w1 * rho2 * d1), r0 = Math.log(Math.sqrt(b02 * b02 + 1) - b02), r1 = Math.log(Math.sqrt(b12 * b12 + 1) - b12);
+      S = (r1 - r0) / rho;
+      i = function(t) {
+        var s3 = t * S, coshr0 = cosh2(r0), u = w0 / (rho2 * d1) * (coshr0 * tanh2(rho * s3 + r0) - sinh2(r0));
+        return [
+          ux0 + u * dx,
+          uy0 + u * dy,
+          w0 * coshr0 / cosh2(rho * s3 + r0)
+        ];
+      };
+    }
+    i.duration = S * 1e3 * rho / Math.SQRT2;
+    return i;
+  }
+  zoom.rho = function(_) {
+    var _1 = Math.max(1e-3, +_), _2 = _1 * _1, _4 = _2 * _2;
+    return zoomRho2(_1, _2, _4);
+  };
+  return zoom;
+}(Math.SQRT2, 2, 4);
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/hsl.js
+function hsl4(hue3) {
+  return function(start2, end) {
+    var h = hue3((start2 = hsl3(start2)).h, (end = hsl3(end)).h), s3 = nogamma2(start2.s, end.s), l = nogamma2(start2.l, end.l), opacity = nogamma2(start2.opacity, end.opacity);
+    return function(t) {
+      start2.h = h(t);
+      start2.s = s3(t);
+      start2.l = l(t);
+      start2.opacity = opacity(t);
+      return start2 + "";
+    };
+  };
+}
+var hsl_default2 = hsl4(hue2);
+var hslLong2 = hsl4(nogamma2);
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/hcl.js
+function hcl4(hue3) {
+  return function(start2, end) {
+    var h = hue3((start2 = hcl3(start2)).h, (end = hcl3(end)).h), c = nogamma2(start2.c, end.c), l = nogamma2(start2.l, end.l), opacity = nogamma2(start2.opacity, end.opacity);
+    return function(t) {
+      start2.h = h(t);
+      start2.c = c(t);
+      start2.l = l(t);
+      start2.opacity = opacity(t);
+      return start2 + "";
+    };
+  };
+}
+var hcl_default2 = hcl4(hue2);
+var hclLong2 = hcl4(nogamma2);
+
+// node_modules/@swimlane/ngx-charts/node_modules/d3-interpolate/src/cubehelix.js
+function cubehelix4(hue3) {
+  return function cubehelixGamma(y3) {
+    y3 = +y3;
+    function cubehelix5(start2, end) {
+      var h = hue3((start2 = cubehelix3(start2)).h, (end = cubehelix3(end)).h), s3 = nogamma2(start2.s, end.s), l = nogamma2(start2.l, end.l), opacity = nogamma2(start2.opacity, end.opacity);
+      return function(t) {
+        start2.h = h(t);
+        start2.s = s3(t);
+        start2.l = l(Math.pow(t, y3));
+        start2.opacity = opacity(t);
+        return start2 + "";
+      };
+    }
+    cubehelix5.gamma = cubehelixGamma;
+    return cubehelix5;
+  }(1);
+}
+var cubehelix_default2 = cubehelix4(hue2);
+var cubehelixLong2 = cubehelix4(nogamma2);
 
 // node_modules/@swimlane/ngx-charts/fesm2020/swimlane-ngx-charts.mjs
-var import_clone_deep = __toESM(require_clone_deep(), 1);
+var import_rfdc = __toESM(require_rfdc(), 1);
 
 // node_modules/d3-hierarchy/src/hierarchy/count.js
-function count2(node) {
-  var sum3 = 0, children2 = node.children, i = children2 && children2.length;
-  if (!i) sum3 = 1;
-  else while (--i >= 0) sum3 += children2[i].value;
-  node.value = sum3;
+function count3(node) {
+  var sum6 = 0, children2 = node.children, i = children2 && children2.length;
+  if (!i) sum6 = 1;
+  else while (--i >= 0) sum6 += children2[i].value;
+  node.value = sum6;
 }
 function count_default() {
-  return this.eachAfter(count2);
+  return this.eachAfter(count3);
 }
 
 // node_modules/d3-hierarchy/src/hierarchy/each.js
 function each_default2(callback, that) {
-  let index2 = -1;
+  let index4 = -1;
   for (const node of this) {
-    callback.call(that, node, ++index2, this);
+    callback.call(that, node, ++index4, this);
   }
   return this;
 }
 
 // node_modules/d3-hierarchy/src/hierarchy/eachBefore.js
 function eachBefore_default(callback, that) {
-  var node = this, nodes = [node], children2, i, index2 = -1;
+  var node = this, nodes = [node], children2, i, index4 = -1;
   while (node = nodes.pop()) {
-    callback.call(that, node, ++index2, this);
+    callback.call(that, node, ++index4, this);
     if (children2 = node.children) {
       for (i = children2.length - 1; i >= 0; --i) {
         nodes.push(children2[i]);
@@ -8062,7 +8764,7 @@ function eachBefore_default(callback, that) {
 
 // node_modules/d3-hierarchy/src/hierarchy/eachAfter.js
 function eachAfter_default(callback, that) {
-  var node = this, nodes = [node], next = [], children2, i, n, index2 = -1;
+  var node = this, nodes = [node], next = [], children2, i, n, index4 = -1;
   while (node = nodes.pop()) {
     next.push(node);
     if (children2 = node.children) {
@@ -8072,27 +8774,27 @@ function eachAfter_default(callback, that) {
     }
   }
   while (node = next.pop()) {
-    callback.call(that, node, ++index2, this);
+    callback.call(that, node, ++index4, this);
   }
   return this;
 }
 
 // node_modules/d3-hierarchy/src/hierarchy/find.js
 function find_default(callback, that) {
-  let index2 = -1;
+  let index4 = -1;
   for (const node of this) {
-    if (callback.call(that, node, ++index2, this)) {
+    if (callback.call(that, node, ++index4, this)) {
       return node;
     }
   }
 }
 
 // node_modules/d3-hierarchy/src/hierarchy/sum.js
-function sum_default(value) {
+function sum_default(value2) {
   return this.eachAfter(function(node) {
-    var sum3 = +value(node.data) || 0, children2 = node.children, i = children2 && children2.length;
-    while (--i >= 0) sum3 += children2[i].value;
-    node.value = sum3;
+    var sum6 = +value2(node.data) || 0, children2 = node.children, i = children2 && children2.length;
+    while (--i >= 0) sum6 += children2[i].value;
+    node.value = sum6;
   });
 }
 
@@ -8106,27 +8808,27 @@ function sort_default2(compare) {
 }
 
 // node_modules/d3-hierarchy/src/hierarchy/path.js
-function path_default2(end) {
+function path_default(end) {
   var start2 = this, ancestor = leastCommonAncestor(start2, end), nodes = [start2];
   while (start2 !== ancestor) {
     start2 = start2.parent;
     nodes.push(start2);
   }
-  var k2 = nodes.length;
+  var k3 = nodes.length;
   while (end !== ancestor) {
-    nodes.splice(k2, 0, end);
+    nodes.splice(k3, 0, end);
     end = end.parent;
   }
   return nodes;
 }
-function leastCommonAncestor(a2, b) {
-  if (a2 === b) return a2;
-  var aNodes = a2.ancestors(), bNodes = b.ancestors(), c = null;
-  a2 = aNodes.pop();
+function leastCommonAncestor(a3, b) {
+  if (a3 === b) return a3;
+  var aNodes = a3.ancestors(), bNodes = b.ancestors(), c = null;
+  a3 = aNodes.pop();
   b = bNodes.pop();
-  while (a2 === b) {
-    c = a2;
-    a2 = aNodes.pop();
+  while (a3 === b) {
+    c = a3;
+    a3 = aNodes.pop();
     b = bNodes.pop();
   }
   return c;
@@ -8238,7 +8940,7 @@ Node.prototype = hierarchy.prototype = {
   find: find_default,
   sum: sum_default,
   sort: sort_default2,
-  path: path_default2,
+  path: path_default,
   ancestors: ancestors_default,
   descendants: descendants_default,
   leaves: leaves_default,
@@ -8248,6 +8950,9 @@ Node.prototype = hierarchy.prototype = {
 };
 
 // node_modules/d3-hierarchy/src/accessors.js
+function optional(f) {
+  return f == null ? null : required(f);
+}
 function required(f) {
   if (typeof f !== "function") throw new Error();
   return f;
@@ -8257,14 +8962,14 @@ function required(f) {
 function constantZero() {
   return 0;
 }
-function constant_default7(x2) {
+function constant_default8(x3) {
   return function() {
-    return x2;
+    return x3;
   };
 }
 
 // node_modules/d3-hierarchy/src/treemap/round.js
-function round_default2(node) {
+function round_default3(node) {
   node.x0 = Math.round(node.x0);
   node.y0 = Math.round(node.y0);
   node.x1 = Math.round(node.x1);
@@ -8273,16 +8978,17 @@ function round_default2(node) {
 
 // node_modules/d3-hierarchy/src/treemap/dice.js
 function dice_default(parent, x0, y0, x1, y1) {
-  var nodes = parent.children, node, i = -1, n = nodes.length, k2 = parent.value && (x1 - x0) / parent.value;
+  var nodes = parent.children, node, i = -1, n = nodes.length, k3 = parent.value && (x1 - x0) / parent.value;
   while (++i < n) {
     node = nodes[i], node.y0 = y0, node.y1 = y1;
-    node.x0 = x0, node.x1 = x0 += node.value * k2;
+    node.x0 = x0, node.x1 = x0 += node.value * k3;
   }
 }
 
 // node_modules/d3-hierarchy/src/stratify.js
 var preroot = { depth: -1 };
 var ambiguous = {};
+var imputed = {};
 function defaultId(d) {
   return d.id;
 }
@@ -8290,16 +8996,31 @@ function defaultParentId(d) {
   return d.parentId;
 }
 function stratify_default() {
-  var id3 = defaultId, parentId = defaultParentId;
+  var id3 = defaultId, parentId = defaultParentId, path3;
   function stratify(data) {
-    var nodes = Array.from(data), n = nodes.length, d, i, root3, parent, node, nodeId, nodeKey, nodeByKey = /* @__PURE__ */ new Map();
-    for (i = 0; i < n; ++i) {
+    var nodes = Array.from(data), currentId = id3, currentParentId = parentId, n, d, i, root3, parent, node, nodeId, nodeKey, nodeByKey = /* @__PURE__ */ new Map();
+    if (path3 != null) {
+      const I = nodes.map((d2, i2) => normalize2(path3(d2, i2, data)));
+      const P = I.map(parentof);
+      const S = new Set(I).add("");
+      for (const i2 of P) {
+        if (!S.has(i2)) {
+          S.add(i2);
+          I.push(i2);
+          P.push(parentof(i2));
+          nodes.push(imputed);
+        }
+      }
+      currentId = (_, i2) => I[i2];
+      currentParentId = (_, i2) => P[i2];
+    }
+    for (i = 0, n = nodes.length; i < n; ++i) {
       d = nodes[i], node = nodes[i] = new Node(d);
-      if ((nodeId = id3(d, i, data)) != null && (nodeId += "")) {
+      if ((nodeId = currentId(d, i, data)) != null && (nodeId += "")) {
         nodeKey = node.id = nodeId;
         nodeByKey.set(nodeKey, nodeByKey.has(nodeKey) ? ambiguous : node);
       }
-      if ((nodeId = parentId(d, i, data)) != null && (nodeId += "")) {
+      if ((nodeId = currentParentId(d, i, data)) != null && (nodeId += "")) {
         node.parent = nodeId;
       }
     }
@@ -8318,6 +9039,16 @@ function stratify_default() {
       }
     }
     if (!root3) throw new Error("no root");
+    if (path3 != null) {
+      while (root3.data === imputed && root3.children.length === 1) {
+        root3 = root3.children[0], --n;
+      }
+      for (let i2 = nodes.length - 1; i2 >= 0; --i2) {
+        node = nodes[i2];
+        if (node.data !== imputed) break;
+        node.data = null;
+      }
+    }
     root3.parent = preroot;
     root3.eachBefore(function(node2) {
       node2.depth = node2.parent.depth + 1;
@@ -8327,13 +9058,36 @@ function stratify_default() {
     if (n > 0) throw new Error("cycle");
     return root3;
   }
-  stratify.id = function(x2) {
-    return arguments.length ? (id3 = required(x2), stratify) : id3;
+  stratify.id = function(x3) {
+    return arguments.length ? (id3 = optional(x3), stratify) : id3;
   };
-  stratify.parentId = function(x2) {
-    return arguments.length ? (parentId = required(x2), stratify) : parentId;
+  stratify.parentId = function(x3) {
+    return arguments.length ? (parentId = optional(x3), stratify) : parentId;
+  };
+  stratify.path = function(x3) {
+    return arguments.length ? (path3 = optional(x3), stratify) : path3;
   };
   return stratify;
+}
+function normalize2(path3) {
+  path3 = `${path3}`;
+  let i = path3.length;
+  if (slash(path3, i - 1) && !slash(path3, i - 2)) path3 = path3.slice(0, -1);
+  return path3[0] === "/" ? path3 : `/${path3}`;
+}
+function parentof(path3) {
+  let i = path3.length;
+  if (i < 2) return "";
+  while (--i > 1) if (slash(path3, i)) break;
+  return path3.slice(0, i);
+}
+function slash(path3, i) {
+  if (path3[i] === "/") {
+    let k3 = 0;
+    while (i > 0 && path3[--i] === "\\") ++k3;
+    if ((k3 & 1) === 0) return true;
+  }
+  return false;
 }
 
 // node_modules/d3-hierarchy/src/tree.js
@@ -8354,24 +9108,24 @@ TreeNode.prototype = Object.create(Node.prototype);
 
 // node_modules/d3-hierarchy/src/treemap/slice.js
 function slice_default(parent, x0, y0, x1, y1) {
-  var nodes = parent.children, node, i = -1, n = nodes.length, k2 = parent.value && (y1 - y0) / parent.value;
+  var nodes = parent.children, node, i = -1, n = nodes.length, k3 = parent.value && (y1 - y0) / parent.value;
   while (++i < n) {
     node = nodes[i], node.x0 = x0, node.x1 = x1;
-    node.y0 = y0, node.y1 = y0 += node.value * k2;
+    node.y0 = y0, node.y1 = y0 += node.value * k3;
   }
 }
 
 // node_modules/d3-hierarchy/src/treemap/squarify.js
 var phi = (1 + Math.sqrt(5)) / 2;
 function squarifyRatio(ratio, parent, x0, y0, x1, y1) {
-  var rows = [], nodes = parent.children, row, nodeValue, i0 = 0, i1 = 0, n = nodes.length, dx, dy, value = parent.value, sumValue, minValue, maxValue, newRatio, minRatio, alpha, beta;
+  var rows = [], nodes = parent.children, row, nodeValue, i0 = 0, i1 = 0, n = nodes.length, dx, dy, value2 = parent.value, sumValue, minValue, maxValue, newRatio, minRatio, alpha, beta;
   while (i0 < n) {
     dx = x1 - x0, dy = y1 - y0;
     do
       sumValue = nodes[i1++].value;
     while (!sumValue && i1 < n);
     minValue = maxValue = sumValue;
-    alpha = Math.max(dy / dx, dx / dy) / (value * ratio);
+    alpha = Math.max(dy / dx, dx / dy) / (value2 * ratio);
     beta = sumValue * sumValue * alpha;
     minRatio = Math.max(maxValue / beta, beta / minValue);
     for (; i1 < n; ++i1) {
@@ -8387,18 +9141,18 @@ function squarifyRatio(ratio, parent, x0, y0, x1, y1) {
       minRatio = newRatio;
     }
     rows.push(row = { value: sumValue, dice: dx < dy, children: nodes.slice(i0, i1) });
-    if (row.dice) dice_default(row, x0, y0, x1, value ? y0 += dy * sumValue / value : y1);
-    else slice_default(row, x0, y0, value ? x0 += dx * sumValue / value : x1, y1);
-    value -= sumValue, i0 = i1;
+    if (row.dice) dice_default(row, x0, y0, x1, value2 ? y0 += dy * sumValue / value2 : y1);
+    else slice_default(row, x0, y0, value2 ? x0 += dx * sumValue / value2 : x1, y1);
+    value2 -= sumValue, i0 = i1;
   }
   return rows;
 }
-var squarify_default = function custom26(ratio) {
+var squarify_default = function custom17(ratio) {
   function squarify(parent, x0, y0, x1, y1) {
     squarifyRatio(ratio, parent, x0, y0, x1, y1);
   }
-  squarify.ratio = function(x2) {
-    return custom26((x2 = +x2) > 1 ? x2 : 1);
+  squarify.ratio = function(x3) {
+    return custom17((x3 = +x3) > 1 ? x3 : 1);
   };
   return squarify;
 }(phi);
@@ -8412,7 +9166,7 @@ function treemap_default() {
     root3.y1 = dy;
     root3.eachBefore(positionNode);
     paddingStack = [0];
-    if (round) root3.eachBefore(round_default2);
+    if (round) root3.eachBefore(round_default3);
     return root3;
   }
   function positionNode(node) {
@@ -8434,61 +9188,1577 @@ function treemap_default() {
       tile(node, x0, y0, x1, y1);
     }
   }
-  treemap.round = function(x2) {
-    return arguments.length ? (round = !!x2, treemap) : round;
+  treemap.round = function(x3) {
+    return arguments.length ? (round = !!x3, treemap) : round;
   };
-  treemap.size = function(x2) {
-    return arguments.length ? (dx = +x2[0], dy = +x2[1], treemap) : [dx, dy];
+  treemap.size = function(x3) {
+    return arguments.length ? (dx = +x3[0], dy = +x3[1], treemap) : [dx, dy];
   };
-  treemap.tile = function(x2) {
-    return arguments.length ? (tile = required(x2), treemap) : tile;
+  treemap.tile = function(x3) {
+    return arguments.length ? (tile = required(x3), treemap) : tile;
   };
-  treemap.padding = function(x2) {
-    return arguments.length ? treemap.paddingInner(x2).paddingOuter(x2) : treemap.paddingInner();
+  treemap.padding = function(x3) {
+    return arguments.length ? treemap.paddingInner(x3).paddingOuter(x3) : treemap.paddingInner();
   };
-  treemap.paddingInner = function(x2) {
-    return arguments.length ? (paddingInner = typeof x2 === "function" ? x2 : constant_default7(+x2), treemap) : paddingInner;
+  treemap.paddingInner = function(x3) {
+    return arguments.length ? (paddingInner = typeof x3 === "function" ? x3 : constant_default8(+x3), treemap) : paddingInner;
   };
-  treemap.paddingOuter = function(x2) {
-    return arguments.length ? treemap.paddingTop(x2).paddingRight(x2).paddingBottom(x2).paddingLeft(x2) : treemap.paddingTop();
+  treemap.paddingOuter = function(x3) {
+    return arguments.length ? treemap.paddingTop(x3).paddingRight(x3).paddingBottom(x3).paddingLeft(x3) : treemap.paddingTop();
   };
-  treemap.paddingTop = function(x2) {
-    return arguments.length ? (paddingTop = typeof x2 === "function" ? x2 : constant_default7(+x2), treemap) : paddingTop;
+  treemap.paddingTop = function(x3) {
+    return arguments.length ? (paddingTop = typeof x3 === "function" ? x3 : constant_default8(+x3), treemap) : paddingTop;
   };
-  treemap.paddingRight = function(x2) {
-    return arguments.length ? (paddingRight = typeof x2 === "function" ? x2 : constant_default7(+x2), treemap) : paddingRight;
+  treemap.paddingRight = function(x3) {
+    return arguments.length ? (paddingRight = typeof x3 === "function" ? x3 : constant_default8(+x3), treemap) : paddingRight;
   };
-  treemap.paddingBottom = function(x2) {
-    return arguments.length ? (paddingBottom = typeof x2 === "function" ? x2 : constant_default7(+x2), treemap) : paddingBottom;
+  treemap.paddingBottom = function(x3) {
+    return arguments.length ? (paddingBottom = typeof x3 === "function" ? x3 : constant_default8(+x3), treemap) : paddingBottom;
   };
-  treemap.paddingLeft = function(x2) {
-    return arguments.length ? (paddingLeft = typeof x2 === "function" ? x2 : constant_default7(+x2), treemap) : paddingLeft;
+  treemap.paddingLeft = function(x3) {
+    return arguments.length ? (paddingLeft = typeof x3 === "function" ? x3 : constant_default8(+x3), treemap) : paddingLeft;
   };
   return treemap;
 }
 
 // node_modules/d3-hierarchy/src/treemap/resquarify.js
-var resquarify_default = function custom27(ratio) {
+var resquarify_default = function custom18(ratio) {
   function resquarify(parent, x0, y0, x1, y1) {
     if ((rows = parent._squarify) && rows.ratio === ratio) {
-      var rows, row, nodes, i, j = -1, n, m = rows.length, value = parent.value;
+      var rows, row, nodes, i, j = -1, n, m = rows.length, value2 = parent.value;
       while (++j < m) {
         row = rows[j], nodes = row.children;
         for (i = row.value = 0, n = nodes.length; i < n; ++i) row.value += nodes[i].value;
-        if (row.dice) dice_default(row, x0, y0, x1, value ? y0 += (y1 - y0) * row.value / value : y1);
-        else slice_default(row, x0, y0, value ? x0 += (x1 - x0) * row.value / value : x1, y1);
-        value -= row.value;
+        if (row.dice) dice_default(row, x0, y0, x1, value2 ? y0 += (y1 - y0) * row.value / value2 : y1);
+        else slice_default(row, x0, y0, value2 ? x0 += (x1 - x0) * row.value / value2 : x1, y1);
+        value2 -= row.value;
       }
     } else {
       parent._squarify = rows = squarifyRatio(ratio, parent, x0, y0, x1, y1);
       rows.ratio = ratio;
     }
   }
-  resquarify.ratio = function(x2) {
-    return custom27((x2 = +x2) > 1 ? x2 : 1);
+  resquarify.ratio = function(x3) {
+    return custom18((x3 = +x3) > 1 ? x3 : 1);
   };
   return resquarify;
 }(phi);
+
+// node_modules/d3-sankey/node_modules/d3-array/src/ascending.js
+function ascending_default3(a3, b) {
+  return a3 < b ? -1 : a3 > b ? 1 : a3 >= b ? 0 : NaN;
+}
+
+// node_modules/d3-sankey/node_modules/d3-array/src/bisector.js
+function bisector_default2(f) {
+  let delta = f;
+  let compare = f;
+  if (f.length === 1) {
+    delta = (d, x3) => f(d) - x3;
+    compare = ascendingComparator2(f);
+  }
+  function left2(a3, x3, lo, hi) {
+    if (lo == null) lo = 0;
+    if (hi == null) hi = a3.length;
+    while (lo < hi) {
+      const mid = lo + hi >>> 1;
+      if (compare(a3[mid], x3) < 0) lo = mid + 1;
+      else hi = mid;
+    }
+    return lo;
+  }
+  function right2(a3, x3, lo, hi) {
+    if (lo == null) lo = 0;
+    if (hi == null) hi = a3.length;
+    while (lo < hi) {
+      const mid = lo + hi >>> 1;
+      if (compare(a3[mid], x3) > 0) hi = mid;
+      else lo = mid + 1;
+    }
+    return lo;
+  }
+  function center2(a3, x3, lo, hi) {
+    if (lo == null) lo = 0;
+    if (hi == null) hi = a3.length;
+    const i = left2(a3, x3, lo, hi - 1);
+    return i > lo && delta(a3[i - 1], x3) > -delta(a3[i], x3) ? i - 1 : i;
+  }
+  return { left: left2, center: center2, right: right2 };
+}
+function ascendingComparator2(f) {
+  return (d, x3) => ascending_default3(f(d), x3);
+}
+
+// node_modules/d3-sankey/node_modules/d3-array/src/number.js
+function number_default4(x3) {
+  return x3 === null ? NaN : +x3;
+}
+
+// node_modules/d3-sankey/node_modules/d3-array/src/bisect.js
+var ascendingBisect3 = bisector_default2(ascending_default3);
+var bisectRight3 = ascendingBisect3.right;
+var bisectLeft3 = ascendingBisect3.left;
+var bisectCenter3 = bisector_default2(number_default4).center;
+
+// node_modules/d3-sankey/node_modules/d3-array/src/array.js
+var array4 = Array.prototype;
+var slice4 = array4.slice;
+var map6 = array4.map;
+
+// node_modules/d3-sankey/node_modules/d3-array/src/ticks.js
+var e103 = Math.sqrt(50);
+var e53 = Math.sqrt(10);
+var e23 = Math.sqrt(2);
+
+// node_modules/d3-sankey/node_modules/d3-array/src/max.js
+function max5(values, valueof) {
+  let max7;
+  if (valueof === void 0) {
+    for (const value2 of values) {
+      if (value2 != null && (max7 < value2 || max7 === void 0 && value2 >= value2)) {
+        max7 = value2;
+      }
+    }
+  } else {
+    let index4 = -1;
+    for (let value2 of values) {
+      if ((value2 = valueof(value2, ++index4, values)) != null && (max7 < value2 || max7 === void 0 && value2 >= value2)) {
+        max7 = value2;
+      }
+    }
+  }
+  return max7;
+}
+
+// node_modules/d3-sankey/node_modules/d3-array/src/min.js
+function min5(values, valueof) {
+  let min7;
+  if (valueof === void 0) {
+    for (const value2 of values) {
+      if (value2 != null && (min7 > value2 || min7 === void 0 && value2 >= value2)) {
+        min7 = value2;
+      }
+    }
+  } else {
+    let index4 = -1;
+    for (let value2 of values) {
+      if ((value2 = valueof(value2, ++index4, values)) != null && (min7 > value2 || min7 === void 0 && value2 >= value2)) {
+        min7 = value2;
+      }
+    }
+  }
+  return min7;
+}
+
+// node_modules/d3-sankey/node_modules/d3-array/src/shuffle.js
+var shuffle_default3 = shuffler3(Math.random);
+function shuffler3(random) {
+  return function shuffle2(array5, i0 = 0, i1 = array5.length) {
+    let m = i1 - (i0 = +i0);
+    while (m) {
+      const i = random() * m-- | 0, t = array5[m + i0];
+      array5[m + i0] = array5[i + i0];
+      array5[i + i0] = t;
+    }
+    return array5;
+  };
+}
+
+// node_modules/d3-sankey/node_modules/d3-array/src/sum.js
+function sum4(values, valueof) {
+  let sum6 = 0;
+  if (valueof === void 0) {
+    for (let value2 of values) {
+      if (value2 = +value2) {
+        sum6 += value2;
+      }
+    }
+  } else {
+    let index4 = -1;
+    for (let value2 of values) {
+      if (value2 = +valueof(value2, ++index4, values)) {
+        sum6 += value2;
+      }
+    }
+  }
+  return sum6;
+}
+
+// node_modules/d3-sankey/src/align.js
+function left(node) {
+  return node.depth;
+}
+function justify(node, n) {
+  return node.sourceLinks.length ? node.depth : n - 1;
+}
+
+// node_modules/d3-sankey/src/constant.js
+function constant2(x3) {
+  return function() {
+    return x3;
+  };
+}
+
+// node_modules/d3-sankey/src/sankey.js
+function ascendingSourceBreadth(a3, b) {
+  return ascendingBreadth(a3.source, b.source) || a3.index - b.index;
+}
+function ascendingTargetBreadth(a3, b) {
+  return ascendingBreadth(a3.target, b.target) || a3.index - b.index;
+}
+function ascendingBreadth(a3, b) {
+  return a3.y0 - b.y0;
+}
+function value(d) {
+  return d.value;
+}
+function defaultId2(d) {
+  return d.index;
+}
+function defaultNodes(graph) {
+  return graph.nodes;
+}
+function defaultLinks(graph) {
+  return graph.links;
+}
+function find2(nodeById, id3) {
+  const node = nodeById.get(id3);
+  if (!node) throw new Error("missing: " + id3);
+  return node;
+}
+function computeLinkBreadths({ nodes }) {
+  for (const node of nodes) {
+    let y0 = node.y0;
+    let y1 = y0;
+    for (const link3 of node.sourceLinks) {
+      link3.y0 = y0 + link3.width / 2;
+      y0 += link3.width;
+    }
+    for (const link3 of node.targetLinks) {
+      link3.y1 = y1 + link3.width / 2;
+      y1 += link3.width;
+    }
+  }
+}
+function Sankey() {
+  let x0 = 0, y0 = 0, x1 = 1, y1 = 1;
+  let dx = 24;
+  let dy = 8, py;
+  let id3 = defaultId2;
+  let align = justify;
+  let sort4;
+  let linkSort;
+  let nodes = defaultNodes;
+  let links = defaultLinks;
+  let iterations = 6;
+  function sankey() {
+    const graph = { nodes: nodes.apply(null, arguments), links: links.apply(null, arguments) };
+    computeNodeLinks(graph);
+    computeNodeValues(graph);
+    computeNodeDepths(graph);
+    computeNodeHeights(graph);
+    computeNodeBreadths(graph);
+    computeLinkBreadths(graph);
+    return graph;
+  }
+  sankey.update = function(graph) {
+    computeLinkBreadths(graph);
+    return graph;
+  };
+  sankey.nodeId = function(_) {
+    return arguments.length ? (id3 = typeof _ === "function" ? _ : constant2(_), sankey) : id3;
+  };
+  sankey.nodeAlign = function(_) {
+    return arguments.length ? (align = typeof _ === "function" ? _ : constant2(_), sankey) : align;
+  };
+  sankey.nodeSort = function(_) {
+    return arguments.length ? (sort4 = _, sankey) : sort4;
+  };
+  sankey.nodeWidth = function(_) {
+    return arguments.length ? (dx = +_, sankey) : dx;
+  };
+  sankey.nodePadding = function(_) {
+    return arguments.length ? (dy = py = +_, sankey) : dy;
+  };
+  sankey.nodes = function(_) {
+    return arguments.length ? (nodes = typeof _ === "function" ? _ : constant2(_), sankey) : nodes;
+  };
+  sankey.links = function(_) {
+    return arguments.length ? (links = typeof _ === "function" ? _ : constant2(_), sankey) : links;
+  };
+  sankey.linkSort = function(_) {
+    return arguments.length ? (linkSort = _, sankey) : linkSort;
+  };
+  sankey.size = function(_) {
+    return arguments.length ? (x0 = y0 = 0, x1 = +_[0], y1 = +_[1], sankey) : [x1 - x0, y1 - y0];
+  };
+  sankey.extent = function(_) {
+    return arguments.length ? (x0 = +_[0][0], x1 = +_[1][0], y0 = +_[0][1], y1 = +_[1][1], sankey) : [[x0, y0], [x1, y1]];
+  };
+  sankey.iterations = function(_) {
+    return arguments.length ? (iterations = +_, sankey) : iterations;
+  };
+  function computeNodeLinks({ nodes: nodes2, links: links2 }) {
+    for (const [i, node] of nodes2.entries()) {
+      node.index = i;
+      node.sourceLinks = [];
+      node.targetLinks = [];
+    }
+    const nodeById = new Map(nodes2.map((d, i) => [id3(d, i, nodes2), d]));
+    for (const [i, link3] of links2.entries()) {
+      link3.index = i;
+      let { source, target } = link3;
+      if (typeof source !== "object") source = link3.source = find2(nodeById, source);
+      if (typeof target !== "object") target = link3.target = find2(nodeById, target);
+      source.sourceLinks.push(link3);
+      target.targetLinks.push(link3);
+    }
+    if (linkSort != null) {
+      for (const { sourceLinks, targetLinks } of nodes2) {
+        sourceLinks.sort(linkSort);
+        targetLinks.sort(linkSort);
+      }
+    }
+  }
+  function computeNodeValues({ nodes: nodes2 }) {
+    for (const node of nodes2) {
+      node.value = node.fixedValue === void 0 ? Math.max(sum4(node.sourceLinks, value), sum4(node.targetLinks, value)) : node.fixedValue;
+    }
+  }
+  function computeNodeDepths({ nodes: nodes2 }) {
+    const n = nodes2.length;
+    let current = new Set(nodes2);
+    let next = /* @__PURE__ */ new Set();
+    let x3 = 0;
+    while (current.size) {
+      for (const node of current) {
+        node.depth = x3;
+        for (const { target } of node.sourceLinks) {
+          next.add(target);
+        }
+      }
+      if (++x3 > n) throw new Error("circular link");
+      current = next;
+      next = /* @__PURE__ */ new Set();
+    }
+  }
+  function computeNodeHeights({ nodes: nodes2 }) {
+    const n = nodes2.length;
+    let current = new Set(nodes2);
+    let next = /* @__PURE__ */ new Set();
+    let x3 = 0;
+    while (current.size) {
+      for (const node of current) {
+        node.height = x3;
+        for (const { source } of node.targetLinks) {
+          next.add(source);
+        }
+      }
+      if (++x3 > n) throw new Error("circular link");
+      current = next;
+      next = /* @__PURE__ */ new Set();
+    }
+  }
+  function computeNodeLayers({ nodes: nodes2 }) {
+    const x3 = max5(nodes2, (d) => d.depth) + 1;
+    const kx3 = (x1 - x0 - dx) / (x3 - 1);
+    const columns = new Array(x3);
+    for (const node of nodes2) {
+      const i = Math.max(0, Math.min(x3 - 1, Math.floor(align.call(null, node, x3))));
+      node.layer = i;
+      node.x0 = x0 + i * kx3;
+      node.x1 = node.x0 + dx;
+      if (columns[i]) columns[i].push(node);
+      else columns[i] = [node];
+    }
+    if (sort4) for (const column of columns) {
+      column.sort(sort4);
+    }
+    return columns;
+  }
+  function initializeNodeBreadths(columns) {
+    const ky3 = min5(columns, (c) => (y1 - y0 - (c.length - 1) * py) / sum4(c, value));
+    for (const nodes2 of columns) {
+      let y3 = y0;
+      for (const node of nodes2) {
+        node.y0 = y3;
+        node.y1 = y3 + node.value * ky3;
+        y3 = node.y1 + py;
+        for (const link3 of node.sourceLinks) {
+          link3.width = link3.value * ky3;
+        }
+      }
+      y3 = (y1 - y3 + py) / (nodes2.length + 1);
+      for (let i = 0; i < nodes2.length; ++i) {
+        const node = nodes2[i];
+        node.y0 += y3 * (i + 1);
+        node.y1 += y3 * (i + 1);
+      }
+      reorderLinks(nodes2);
+    }
+  }
+  function computeNodeBreadths(graph) {
+    const columns = computeNodeLayers(graph);
+    py = Math.min(dy, (y1 - y0) / (max5(columns, (c) => c.length) - 1));
+    initializeNodeBreadths(columns);
+    for (let i = 0; i < iterations; ++i) {
+      const alpha = Math.pow(0.99, i);
+      const beta = Math.max(1 - alpha, (i + 1) / iterations);
+      relaxRightToLeft(columns, alpha, beta);
+      relaxLeftToRight(columns, alpha, beta);
+    }
+  }
+  function relaxLeftToRight(columns, alpha, beta) {
+    for (let i = 1, n = columns.length; i < n; ++i) {
+      const column = columns[i];
+      for (const target of column) {
+        let y3 = 0;
+        let w = 0;
+        for (const { source, value: value2 } of target.targetLinks) {
+          let v = value2 * (target.layer - source.layer);
+          y3 += targetTop(source, target) * v;
+          w += v;
+        }
+        if (!(w > 0)) continue;
+        let dy2 = (y3 / w - target.y0) * alpha;
+        target.y0 += dy2;
+        target.y1 += dy2;
+        reorderNodeLinks(target);
+      }
+      if (sort4 === void 0) column.sort(ascendingBreadth);
+      resolveCollisions(column, beta);
+    }
+  }
+  function relaxRightToLeft(columns, alpha, beta) {
+    for (let n = columns.length, i = n - 2; i >= 0; --i) {
+      const column = columns[i];
+      for (const source of column) {
+        let y3 = 0;
+        let w = 0;
+        for (const { target, value: value2 } of source.sourceLinks) {
+          let v = value2 * (target.layer - source.layer);
+          y3 += sourceTop(source, target) * v;
+          w += v;
+        }
+        if (!(w > 0)) continue;
+        let dy2 = (y3 / w - source.y0) * alpha;
+        source.y0 += dy2;
+        source.y1 += dy2;
+        reorderNodeLinks(source);
+      }
+      if (sort4 === void 0) column.sort(ascendingBreadth);
+      resolveCollisions(column, beta);
+    }
+  }
+  function resolveCollisions(nodes2, alpha) {
+    const i = nodes2.length >> 1;
+    const subject = nodes2[i];
+    resolveCollisionsBottomToTop(nodes2, subject.y0 - py, i - 1, alpha);
+    resolveCollisionsTopToBottom(nodes2, subject.y1 + py, i + 1, alpha);
+    resolveCollisionsBottomToTop(nodes2, y1, nodes2.length - 1, alpha);
+    resolveCollisionsTopToBottom(nodes2, y0, 0, alpha);
+  }
+  function resolveCollisionsTopToBottom(nodes2, y3, i, alpha) {
+    for (; i < nodes2.length; ++i) {
+      const node = nodes2[i];
+      const dy2 = (y3 - node.y0) * alpha;
+      if (dy2 > 1e-6) node.y0 += dy2, node.y1 += dy2;
+      y3 = node.y1 + py;
+    }
+  }
+  function resolveCollisionsBottomToTop(nodes2, y3, i, alpha) {
+    for (; i >= 0; --i) {
+      const node = nodes2[i];
+      const dy2 = (node.y1 - y3) * alpha;
+      if (dy2 > 1e-6) node.y0 -= dy2, node.y1 -= dy2;
+      y3 = node.y0 - py;
+    }
+  }
+  function reorderNodeLinks({ sourceLinks, targetLinks }) {
+    if (linkSort === void 0) {
+      for (const { source: { sourceLinks: sourceLinks2 } } of targetLinks) {
+        sourceLinks2.sort(ascendingTargetBreadth);
+      }
+      for (const { target: { targetLinks: targetLinks2 } } of sourceLinks) {
+        targetLinks2.sort(ascendingSourceBreadth);
+      }
+    }
+  }
+  function reorderLinks(nodes2) {
+    if (linkSort === void 0) {
+      for (const { sourceLinks, targetLinks } of nodes2) {
+        sourceLinks.sort(ascendingTargetBreadth);
+        targetLinks.sort(ascendingSourceBreadth);
+      }
+    }
+  }
+  function targetTop(source, target) {
+    let y3 = source.y0 - (source.sourceLinks.length - 1) * py / 2;
+    for (const { target: node, width } of source.sourceLinks) {
+      if (node === target) break;
+      y3 += width + py;
+    }
+    for (const { source: node, width } of target.targetLinks) {
+      if (node === source) break;
+      y3 -= width;
+    }
+    return y3;
+  }
+  function sourceTop(source, target) {
+    let y3 = target.y0 - (target.targetLinks.length - 1) * py / 2;
+    for (const { source: node, width } of target.targetLinks) {
+      if (node === source) break;
+      y3 += width + py;
+    }
+    for (const { target: node, width } of source.sourceLinks) {
+      if (node === target) break;
+      y3 -= width;
+    }
+    return y3;
+  }
+  return sankey;
+}
+
+// node_modules/d3-sankey/node_modules/d3-path/src/path.js
+var pi4 = Math.PI;
+var tau4 = 2 * pi4;
+var epsilon4 = 1e-6;
+var tauEpsilon2 = tau4 - epsilon4;
+function Path2() {
+  this._x0 = this._y0 = // start of current subpath
+  this._x1 = this._y1 = null;
+  this._ = "";
+}
+function path2() {
+  return new Path2();
+}
+Path2.prototype = path2.prototype = {
+  constructor: Path2,
+  moveTo: function(x3, y3) {
+    this._ += "M" + (this._x0 = this._x1 = +x3) + "," + (this._y0 = this._y1 = +y3);
+  },
+  closePath: function() {
+    if (this._x1 !== null) {
+      this._x1 = this._x0, this._y1 = this._y0;
+      this._ += "Z";
+    }
+  },
+  lineTo: function(x3, y3) {
+    this._ += "L" + (this._x1 = +x3) + "," + (this._y1 = +y3);
+  },
+  quadraticCurveTo: function(x1, y1, x3, y3) {
+    this._ += "Q" + +x1 + "," + +y1 + "," + (this._x1 = +x3) + "," + (this._y1 = +y3);
+  },
+  bezierCurveTo: function(x1, y1, x22, y22, x3, y3) {
+    this._ += "C" + +x1 + "," + +y1 + "," + +x22 + "," + +y22 + "," + (this._x1 = +x3) + "," + (this._y1 = +y3);
+  },
+  arcTo: function(x1, y1, x22, y22, r) {
+    x1 = +x1, y1 = +y1, x22 = +x22, y22 = +y22, r = +r;
+    var x0 = this._x1, y0 = this._y1, x21 = x22 - x1, y21 = y22 - y1, x01 = x0 - x1, y01 = y0 - y1, l01_2 = x01 * x01 + y01 * y01;
+    if (r < 0) throw new Error("negative radius: " + r);
+    if (this._x1 === null) {
+      this._ += "M" + (this._x1 = x1) + "," + (this._y1 = y1);
+    } else if (!(l01_2 > epsilon4)) ;
+    else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon4) || !r) {
+      this._ += "L" + (this._x1 = x1) + "," + (this._y1 = y1);
+    } else {
+      var x20 = x22 - x0, y20 = y22 - y0, l21_2 = x21 * x21 + y21 * y21, l20_2 = x20 * x20 + y20 * y20, l21 = Math.sqrt(l21_2), l01 = Math.sqrt(l01_2), l = r * Math.tan((pi4 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2), t01 = l / l01, t21 = l / l21;
+      if (Math.abs(t01 - 1) > epsilon4) {
+        this._ += "L" + (x1 + t01 * x01) + "," + (y1 + t01 * y01);
+      }
+      this._ += "A" + r + "," + r + ",0,0," + +(y01 * x20 > x01 * y20) + "," + (this._x1 = x1 + t21 * x21) + "," + (this._y1 = y1 + t21 * y21);
+    }
+  },
+  arc: function(x3, y3, r, a0, a1, ccw) {
+    x3 = +x3, y3 = +y3, r = +r, ccw = !!ccw;
+    var dx = r * Math.cos(a0), dy = r * Math.sin(a0), x0 = x3 + dx, y0 = y3 + dy, cw = 1 ^ ccw, da = ccw ? a0 - a1 : a1 - a0;
+    if (r < 0) throw new Error("negative radius: " + r);
+    if (this._x1 === null) {
+      this._ += "M" + x0 + "," + y0;
+    } else if (Math.abs(this._x1 - x0) > epsilon4 || Math.abs(this._y1 - y0) > epsilon4) {
+      this._ += "L" + x0 + "," + y0;
+    }
+    if (!r) return;
+    if (da < 0) da = da % tau4 + tau4;
+    if (da > tauEpsilon2) {
+      this._ += "A" + r + "," + r + ",0,1," + cw + "," + (x3 - dx) + "," + (y3 - dy) + "A" + r + "," + r + ",0,1," + cw + "," + (this._x1 = x0) + "," + (this._y1 = y0);
+    } else if (da > epsilon4) {
+      this._ += "A" + r + "," + r + ",0," + +(da >= pi4) + "," + cw + "," + (this._x1 = x3 + r * Math.cos(a1)) + "," + (this._y1 = y3 + r * Math.sin(a1));
+    }
+  },
+  rect: function(x3, y3, w, h) {
+    this._ += "M" + (this._x0 = this._x1 = +x3) + "," + (this._y0 = this._y1 = +y3) + "h" + +w + "v" + +h + "h" + -w + "Z";
+  },
+  toString: function() {
+    return this._;
+  }
+};
+var path_default2 = path2;
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/constant.js
+function constant_default10(x3) {
+  return function constant3() {
+    return x3;
+  };
+}
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/math.js
+var epsilon5 = 1e-12;
+var pi5 = Math.PI;
+var halfPi3 = pi5 / 2;
+var tau5 = 2 * pi5;
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/linear.js
+function Linear2(context) {
+  this._context = context;
+}
+Linear2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._point = 0;
+  },
+  lineEnd: function() {
+    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        break;
+      case 1:
+        this._point = 2;
+      default:
+        this._context.lineTo(x3, y3);
+        break;
+    }
+  }
+};
+function linear_default2(context) {
+  return new Linear2(context);
+}
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/point.js
+function x2(p) {
+  return p[0];
+}
+function y2(p) {
+  return p[1];
+}
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/radial.js
+var curveRadialLinear2 = curveRadial2(linear_default2);
+function Radial2(curve) {
+  this._curve = curve;
+}
+Radial2.prototype = {
+  areaStart: function() {
+    this._curve.areaStart();
+  },
+  areaEnd: function() {
+    this._curve.areaEnd();
+  },
+  lineStart: function() {
+    this._curve.lineStart();
+  },
+  lineEnd: function() {
+    this._curve.lineEnd();
+  },
+  point: function(a3, r) {
+    this._curve.point(r * Math.sin(a3), r * -Math.cos(a3));
+  }
+};
+function curveRadial2(curve) {
+  function radial2(context) {
+    return new Radial2(curve(context));
+  }
+  radial2._curve = curve;
+  return radial2;
+}
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/array.js
+var slice5 = Array.prototype.slice;
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/link/index.js
+function linkSource(d) {
+  return d.source;
+}
+function linkTarget(d) {
+  return d.target;
+}
+function link2(curve) {
+  var source = linkSource, target = linkTarget, x3 = x2, y3 = y2, context = null;
+  function link3() {
+    var buffer, argv = slice5.call(arguments), s3 = source.apply(this, argv), t = target.apply(this, argv);
+    if (!context) context = buffer = path_default2();
+    curve(context, +x3.apply(this, (argv[0] = s3, argv)), +y3.apply(this, argv), +x3.apply(this, (argv[0] = t, argv)), +y3.apply(this, argv));
+    if (buffer) return context = null, buffer + "" || null;
+  }
+  link3.source = function(_) {
+    return arguments.length ? (source = _, link3) : source;
+  };
+  link3.target = function(_) {
+    return arguments.length ? (target = _, link3) : target;
+  };
+  link3.x = function(_) {
+    return arguments.length ? (x3 = typeof _ === "function" ? _ : constant_default10(+_), link3) : x3;
+  };
+  link3.y = function(_) {
+    return arguments.length ? (y3 = typeof _ === "function" ? _ : constant_default10(+_), link3) : y3;
+  };
+  link3.context = function(_) {
+    return arguments.length ? (context = _ == null ? null : _, link3) : context;
+  };
+  return link3;
+}
+function curveHorizontal(context, x0, y0, x1, y1) {
+  context.moveTo(x0, y0);
+  context.bezierCurveTo(x0 = (x0 + x1) / 2, y0, x0, y1, x1, y1);
+}
+function linkHorizontal2() {
+  return link2(curveHorizontal);
+}
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/symbol/diamond.js
+var tan302 = Math.sqrt(1 / 3);
+var tan30_22 = tan302 * 2;
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/symbol/star.js
+var kr2 = Math.sin(pi5 / 10) / Math.sin(7 * pi5 / 10);
+var kx2 = Math.sin(tau5 / 10) * kr2;
+var ky2 = -Math.cos(tau5 / 10) * kr2;
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/symbol/triangle.js
+var sqrt34 = Math.sqrt(3);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/symbol/wye.js
+var s2 = Math.sqrt(3) / 2;
+var k2 = 1 / Math.sqrt(12);
+var a2 = (k2 / 2 + 1) * 3;
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/noop.js
+function noop_default2() {
+}
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/basis.js
+function point6(that, x3, y3) {
+  that._context.bezierCurveTo(
+    (2 * that._x0 + that._x1) / 3,
+    (2 * that._y0 + that._y1) / 3,
+    (that._x0 + 2 * that._x1) / 3,
+    (that._y0 + 2 * that._y1) / 3,
+    (that._x0 + 4 * that._x1 + x3) / 6,
+    (that._y0 + 4 * that._y1 + y3) / 6
+  );
+}
+function Basis2(context) {
+  this._context = context;
+}
+Basis2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x0 = this._x1 = this._y0 = this._y1 = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    switch (this._point) {
+      case 3:
+        point6(this, this._x1, this._y1);
+      case 2:
+        this._context.lineTo(this._x1, this._y1);
+        break;
+    }
+    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        break;
+      case 1:
+        this._point = 2;
+        break;
+      case 2:
+        this._point = 3;
+        this._context.lineTo((5 * this._x0 + this._x1) / 6, (5 * this._y0 + this._y1) / 6);
+      default:
+        point6(this, x3, y3);
+        break;
+    }
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
+  }
+};
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/basisClosed.js
+function BasisClosed2(context) {
+  this._context = context;
+}
+BasisClosed2.prototype = {
+  areaStart: noop_default2,
+  areaEnd: noop_default2,
+  lineStart: function() {
+    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    switch (this._point) {
+      case 1: {
+        this._context.moveTo(this._x2, this._y2);
+        this._context.closePath();
+        break;
+      }
+      case 2: {
+        this._context.moveTo((this._x2 + 2 * this._x3) / 3, (this._y2 + 2 * this._y3) / 3);
+        this._context.lineTo((this._x3 + 2 * this._x2) / 3, (this._y3 + 2 * this._y2) / 3);
+        this._context.closePath();
+        break;
+      }
+      case 3: {
+        this.point(this._x2, this._y2);
+        this.point(this._x3, this._y3);
+        this.point(this._x4, this._y4);
+        break;
+      }
+    }
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._x2 = x3, this._y2 = y3;
+        break;
+      case 1:
+        this._point = 2;
+        this._x3 = x3, this._y3 = y3;
+        break;
+      case 2:
+        this._point = 3;
+        this._x4 = x3, this._y4 = y3;
+        this._context.moveTo((this._x0 + 4 * this._x1 + x3) / 6, (this._y0 + 4 * this._y1 + y3) / 6);
+        break;
+      default:
+        point6(this, x3, y3);
+        break;
+    }
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
+  }
+};
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/basisOpen.js
+function BasisOpen2(context) {
+  this._context = context;
+}
+BasisOpen2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x0 = this._x1 = this._y0 = this._y1 = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        break;
+      case 1:
+        this._point = 2;
+        break;
+      case 2:
+        this._point = 3;
+        var x0 = (this._x0 + 4 * this._x1 + x3) / 6, y0 = (this._y0 + 4 * this._y1 + y3) / 6;
+        this._line ? this._context.lineTo(x0, y0) : this._context.moveTo(x0, y0);
+        break;
+      case 3:
+        this._point = 4;
+      default:
+        point6(this, x3, y3);
+        break;
+    }
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
+  }
+};
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/bundle.js
+function Bundle2(context, beta) {
+  this._basis = new Basis2(context);
+  this._beta = beta;
+}
+Bundle2.prototype = {
+  lineStart: function() {
+    this._x = [];
+    this._y = [];
+    this._basis.lineStart();
+  },
+  lineEnd: function() {
+    var x3 = this._x, y3 = this._y, j = x3.length - 1;
+    if (j > 0) {
+      var x0 = x3[0], y0 = y3[0], dx = x3[j] - x0, dy = y3[j] - y0, i = -1, t;
+      while (++i <= j) {
+        t = i / j;
+        this._basis.point(
+          this._beta * x3[i] + (1 - this._beta) * (x0 + t * dx),
+          this._beta * y3[i] + (1 - this._beta) * (y0 + t * dy)
+        );
+      }
+    }
+    this._x = this._y = null;
+    this._basis.lineEnd();
+  },
+  point: function(x3, y3) {
+    this._x.push(+x3);
+    this._y.push(+y3);
+  }
+};
+var bundle_default2 = function custom19(beta) {
+  function bundle(context) {
+    return beta === 1 ? new Basis2(context) : new Bundle2(context, beta);
+  }
+  bundle.beta = function(beta2) {
+    return custom19(+beta2);
+  };
+  return bundle;
+}(0.85);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/cardinal.js
+function point7(that, x3, y3) {
+  that._context.bezierCurveTo(
+    that._x1 + that._k * (that._x2 - that._x0),
+    that._y1 + that._k * (that._y2 - that._y0),
+    that._x2 + that._k * (that._x1 - x3),
+    that._y2 + that._k * (that._y1 - y3),
+    that._x2,
+    that._y2
+  );
+}
+function Cardinal2(context, tension) {
+  this._context = context;
+  this._k = (1 - tension) / 6;
+}
+Cardinal2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    switch (this._point) {
+      case 2:
+        this._context.lineTo(this._x2, this._y2);
+        break;
+      case 3:
+        point7(this, this._x1, this._y1);
+        break;
+    }
+    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        break;
+      case 1:
+        this._point = 2;
+        this._x1 = x3, this._y1 = y3;
+        break;
+      case 2:
+        this._point = 3;
+      default:
+        point7(this, x3, y3);
+        break;
+    }
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+  }
+};
+var cardinal_default2 = function custom20(tension) {
+  function cardinal(context) {
+    return new Cardinal2(context, tension);
+  }
+  cardinal.tension = function(tension2) {
+    return custom20(+tension2);
+  };
+  return cardinal;
+}(0);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/cardinalClosed.js
+function CardinalClosed2(context, tension) {
+  this._context = context;
+  this._k = (1 - tension) / 6;
+}
+CardinalClosed2.prototype = {
+  areaStart: noop_default2,
+  areaEnd: noop_default2,
+  lineStart: function() {
+    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._x5 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = this._y5 = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    switch (this._point) {
+      case 1: {
+        this._context.moveTo(this._x3, this._y3);
+        this._context.closePath();
+        break;
+      }
+      case 2: {
+        this._context.lineTo(this._x3, this._y3);
+        this._context.closePath();
+        break;
+      }
+      case 3: {
+        this.point(this._x3, this._y3);
+        this.point(this._x4, this._y4);
+        this.point(this._x5, this._y5);
+        break;
+      }
+    }
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._x3 = x3, this._y3 = y3;
+        break;
+      case 1:
+        this._point = 2;
+        this._context.moveTo(this._x4 = x3, this._y4 = y3);
+        break;
+      case 2:
+        this._point = 3;
+        this._x5 = x3, this._y5 = y3;
+        break;
+      default:
+        point7(this, x3, y3);
+        break;
+    }
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+  }
+};
+var cardinalClosed_default2 = function custom21(tension) {
+  function cardinal(context) {
+    return new CardinalClosed2(context, tension);
+  }
+  cardinal.tension = function(tension2) {
+    return custom21(+tension2);
+  };
+  return cardinal;
+}(0);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/cardinalOpen.js
+function CardinalOpen2(context, tension) {
+  this._context = context;
+  this._k = (1 - tension) / 6;
+}
+CardinalOpen2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        break;
+      case 1:
+        this._point = 2;
+        break;
+      case 2:
+        this._point = 3;
+        this._line ? this._context.lineTo(this._x2, this._y2) : this._context.moveTo(this._x2, this._y2);
+        break;
+      case 3:
+        this._point = 4;
+      default:
+        point7(this, x3, y3);
+        break;
+    }
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+  }
+};
+var cardinalOpen_default2 = function custom22(tension) {
+  function cardinal(context) {
+    return new CardinalOpen2(context, tension);
+  }
+  cardinal.tension = function(tension2) {
+    return custom22(+tension2);
+  };
+  return cardinal;
+}(0);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/catmullRom.js
+function point8(that, x3, y3) {
+  var x1 = that._x1, y1 = that._y1, x22 = that._x2, y22 = that._y2;
+  if (that._l01_a > epsilon5) {
+    var a3 = 2 * that._l01_2a + 3 * that._l01_a * that._l12_a + that._l12_2a, n = 3 * that._l01_a * (that._l01_a + that._l12_a);
+    x1 = (x1 * a3 - that._x0 * that._l12_2a + that._x2 * that._l01_2a) / n;
+    y1 = (y1 * a3 - that._y0 * that._l12_2a + that._y2 * that._l01_2a) / n;
+  }
+  if (that._l23_a > epsilon5) {
+    var b = 2 * that._l23_2a + 3 * that._l23_a * that._l12_a + that._l12_2a, m = 3 * that._l23_a * (that._l23_a + that._l12_a);
+    x22 = (x22 * b + that._x1 * that._l23_2a - x3 * that._l12_2a) / m;
+    y22 = (y22 * b + that._y1 * that._l23_2a - y3 * that._l12_2a) / m;
+  }
+  that._context.bezierCurveTo(x1, y1, x22, y22, that._x2, that._y2);
+}
+function CatmullRom2(context, alpha) {
+  this._context = context;
+  this._alpha = alpha;
+}
+CatmullRom2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
+    this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
+  },
+  lineEnd: function() {
+    switch (this._point) {
+      case 2:
+        this._context.lineTo(this._x2, this._y2);
+        break;
+      case 3:
+        this.point(this._x2, this._y2);
+        break;
+    }
+    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    if (this._point) {
+      var x23 = this._x2 - x3, y23 = this._y2 - y3;
+      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
+    }
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        break;
+      case 1:
+        this._point = 2;
+        break;
+      case 2:
+        this._point = 3;
+      default:
+        point8(this, x3, y3);
+        break;
+    }
+    this._l01_a = this._l12_a, this._l12_a = this._l23_a;
+    this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+  }
+};
+var catmullRom_default2 = function custom23(alpha) {
+  function catmullRom(context) {
+    return alpha ? new CatmullRom2(context, alpha) : new Cardinal2(context, 0);
+  }
+  catmullRom.alpha = function(alpha2) {
+    return custom23(+alpha2);
+  };
+  return catmullRom;
+}(0.5);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/catmullRomClosed.js
+function CatmullRomClosed2(context, alpha) {
+  this._context = context;
+  this._alpha = alpha;
+}
+CatmullRomClosed2.prototype = {
+  areaStart: noop_default2,
+  areaEnd: noop_default2,
+  lineStart: function() {
+    this._x0 = this._x1 = this._x2 = this._x3 = this._x4 = this._x5 = this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = this._y5 = NaN;
+    this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
+  },
+  lineEnd: function() {
+    switch (this._point) {
+      case 1: {
+        this._context.moveTo(this._x3, this._y3);
+        this._context.closePath();
+        break;
+      }
+      case 2: {
+        this._context.lineTo(this._x3, this._y3);
+        this._context.closePath();
+        break;
+      }
+      case 3: {
+        this.point(this._x3, this._y3);
+        this.point(this._x4, this._y4);
+        this.point(this._x5, this._y5);
+        break;
+      }
+    }
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    if (this._point) {
+      var x23 = this._x2 - x3, y23 = this._y2 - y3;
+      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
+    }
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._x3 = x3, this._y3 = y3;
+        break;
+      case 1:
+        this._point = 2;
+        this._context.moveTo(this._x4 = x3, this._y4 = y3);
+        break;
+      case 2:
+        this._point = 3;
+        this._x5 = x3, this._y5 = y3;
+        break;
+      default:
+        point8(this, x3, y3);
+        break;
+    }
+    this._l01_a = this._l12_a, this._l12_a = this._l23_a;
+    this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+  }
+};
+var catmullRomClosed_default2 = function custom24(alpha) {
+  function catmullRom(context) {
+    return alpha ? new CatmullRomClosed2(context, alpha) : new CardinalClosed2(context, 0);
+  }
+  catmullRom.alpha = function(alpha2) {
+    return custom24(+alpha2);
+  };
+  return catmullRom;
+}(0.5);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/catmullRomOpen.js
+function CatmullRomOpen2(context, alpha) {
+  this._context = context;
+  this._alpha = alpha;
+}
+CatmullRomOpen2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x0 = this._x1 = this._x2 = this._y0 = this._y1 = this._y2 = NaN;
+    this._l01_a = this._l12_a = this._l23_a = this._l01_2a = this._l12_2a = this._l23_2a = this._point = 0;
+  },
+  lineEnd: function() {
+    if (this._line || this._line !== 0 && this._point === 3) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    if (this._point) {
+      var x23 = this._x2 - x3, y23 = this._y2 - y3;
+      this._l23_a = Math.sqrt(this._l23_2a = Math.pow(x23 * x23 + y23 * y23, this._alpha));
+    }
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        break;
+      case 1:
+        this._point = 2;
+        break;
+      case 2:
+        this._point = 3;
+        this._line ? this._context.lineTo(this._x2, this._y2) : this._context.moveTo(this._x2, this._y2);
+        break;
+      case 3:
+        this._point = 4;
+      default:
+        point8(this, x3, y3);
+        break;
+    }
+    this._l01_a = this._l12_a, this._l12_a = this._l23_a;
+    this._l01_2a = this._l12_2a, this._l12_2a = this._l23_2a;
+    this._x0 = this._x1, this._x1 = this._x2, this._x2 = x3;
+    this._y0 = this._y1, this._y1 = this._y2, this._y2 = y3;
+  }
+};
+var catmullRomOpen_default2 = function custom25(alpha) {
+  function catmullRom(context) {
+    return alpha ? new CatmullRomOpen2(context, alpha) : new CardinalOpen2(context, 0);
+  }
+  catmullRom.alpha = function(alpha2) {
+    return custom25(+alpha2);
+  };
+  return catmullRom;
+}(0.5);
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/linearClosed.js
+function LinearClosed2(context) {
+  this._context = context;
+}
+LinearClosed2.prototype = {
+  areaStart: noop_default2,
+  areaEnd: noop_default2,
+  lineStart: function() {
+    this._point = 0;
+  },
+  lineEnd: function() {
+    if (this._point) this._context.closePath();
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    if (this._point) this._context.lineTo(x3, y3);
+    else this._point = 1, this._context.moveTo(x3, y3);
+  }
+};
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/monotone.js
+function sign2(x3) {
+  return x3 < 0 ? -1 : 1;
+}
+function slope32(that, x22, y22) {
+  var h0 = that._x1 - that._x0, h1 = x22 - that._x1, s0 = (that._y1 - that._y0) / (h0 || h1 < 0 && -0), s1 = (y22 - that._y1) / (h1 || h0 < 0 && -0), p = (s0 * h1 + s1 * h0) / (h0 + h1);
+  return (sign2(s0) + sign2(s1)) * Math.min(Math.abs(s0), Math.abs(s1), 0.5 * Math.abs(p)) || 0;
+}
+function slope22(that, t) {
+  var h = that._x1 - that._x0;
+  return h ? (3 * (that._y1 - that._y0) / h - t) / 2 : t;
+}
+function point9(that, t05, t15) {
+  var x0 = that._x0, y0 = that._y0, x1 = that._x1, y1 = that._y1, dx = (x1 - x0) / 3;
+  that._context.bezierCurveTo(x0 + dx, y0 + dx * t05, x1 - dx, y1 - dx * t15, x1, y1);
+}
+function MonotoneX2(context) {
+  this._context = context;
+}
+MonotoneX2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x0 = this._x1 = this._y0 = this._y1 = this._t0 = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    switch (this._point) {
+      case 2:
+        this._context.lineTo(this._x1, this._y1);
+        break;
+      case 3:
+        point9(this, this._t0, slope22(this, this._t0));
+        break;
+    }
+    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
+    this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    var t15 = NaN;
+    x3 = +x3, y3 = +y3;
+    if (x3 === this._x1 && y3 === this._y1) return;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        break;
+      case 1:
+        this._point = 2;
+        break;
+      case 2:
+        this._point = 3;
+        point9(this, slope22(this, t15 = slope32(this, x3, y3)), t15);
+        break;
+      default:
+        point9(this, this._t0, t15 = slope32(this, x3, y3));
+        break;
+    }
+    this._x0 = this._x1, this._x1 = x3;
+    this._y0 = this._y1, this._y1 = y3;
+    this._t0 = t15;
+  }
+};
+function MonotoneY2(context) {
+  this._context = new ReflectContext2(context);
+}
+(MonotoneY2.prototype = Object.create(MonotoneX2.prototype)).point = function(x3, y3) {
+  MonotoneX2.prototype.point.call(this, y3, x3);
+};
+function ReflectContext2(context) {
+  this._context = context;
+}
+ReflectContext2.prototype = {
+  moveTo: function(x3, y3) {
+    this._context.moveTo(y3, x3);
+  },
+  closePath: function() {
+    this._context.closePath();
+  },
+  lineTo: function(x3, y3) {
+    this._context.lineTo(y3, x3);
+  },
+  bezierCurveTo: function(x1, y1, x22, y22, x3, y3) {
+    this._context.bezierCurveTo(y1, x1, y22, x22, y3, x3);
+  }
+};
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/natural.js
+function Natural2(context) {
+  this._context = context;
+}
+Natural2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x = [];
+    this._y = [];
+  },
+  lineEnd: function() {
+    var x3 = this._x, y3 = this._y, n = x3.length;
+    if (n) {
+      this._line ? this._context.lineTo(x3[0], y3[0]) : this._context.moveTo(x3[0], y3[0]);
+      if (n === 2) {
+        this._context.lineTo(x3[1], y3[1]);
+      } else {
+        var px = controlPoints2(x3), py = controlPoints2(y3);
+        for (var i0 = 0, i1 = 1; i1 < n; ++i0, ++i1) {
+          this._context.bezierCurveTo(px[0][i0], py[0][i0], px[1][i0], py[1][i0], x3[i1], y3[i1]);
+        }
+      }
+    }
+    if (this._line || this._line !== 0 && n === 1) this._context.closePath();
+    this._line = 1 - this._line;
+    this._x = this._y = null;
+  },
+  point: function(x3, y3) {
+    this._x.push(+x3);
+    this._y.push(+y3);
+  }
+};
+function controlPoints2(x3) {
+  var i, n = x3.length - 1, m, a3 = new Array(n), b = new Array(n), r = new Array(n);
+  a3[0] = 0, b[0] = 2, r[0] = x3[0] + 2 * x3[1];
+  for (i = 1; i < n - 1; ++i) a3[i] = 1, b[i] = 4, r[i] = 4 * x3[i] + 2 * x3[i + 1];
+  a3[n - 1] = 2, b[n - 1] = 7, r[n - 1] = 8 * x3[n - 1] + x3[n];
+  for (i = 1; i < n; ++i) m = a3[i] / b[i - 1], b[i] -= m, r[i] -= m * r[i - 1];
+  a3[n - 1] = r[n - 1] / b[n - 1];
+  for (i = n - 2; i >= 0; --i) a3[i] = (r[i] - a3[i + 1]) / b[i];
+  b[n - 1] = (x3[n] + a3[n - 1]) / 2;
+  for (i = 0; i < n - 1; ++i) b[i] = 2 * x3[i + 1] - a3[i + 1];
+  return [a3, b];
+}
+
+// node_modules/d3-sankey/node_modules/d3-shape/src/curve/step.js
+function Step2(context, t) {
+  this._context = context;
+  this._t = t;
+}
+Step2.prototype = {
+  areaStart: function() {
+    this._line = 0;
+  },
+  areaEnd: function() {
+    this._line = NaN;
+  },
+  lineStart: function() {
+    this._x = this._y = NaN;
+    this._point = 0;
+  },
+  lineEnd: function() {
+    if (0 < this._t && this._t < 1 && this._point === 2) this._context.lineTo(this._x, this._y);
+    if (this._line || this._line !== 0 && this._point === 1) this._context.closePath();
+    if (this._line >= 0) this._t = 1 - this._t, this._line = 1 - this._line;
+  },
+  point: function(x3, y3) {
+    x3 = +x3, y3 = +y3;
+    switch (this._point) {
+      case 0:
+        this._point = 1;
+        this._line ? this._context.lineTo(x3, y3) : this._context.moveTo(x3, y3);
+        break;
+      case 1:
+        this._point = 2;
+      default: {
+        if (this._t <= 0) {
+          this._context.lineTo(this._x, y3);
+          this._context.lineTo(x3, y3);
+        } else {
+          var x1 = this._x * (1 - this._t) + x3 * this._t;
+          this._context.lineTo(x1, this._y);
+          this._context.lineTo(x1, y3);
+        }
+        break;
+      }
+    }
+    this._x = x3, this._y = y3;
+  }
+};
+
+// node_modules/d3-sankey/src/sankeyLinkHorizontal.js
+function horizontalSource(d) {
+  return [d.source.x1, d.y0];
+}
+function horizontalTarget(d) {
+  return [d.target.x0, d.y1];
+}
+function sankeyLinkHorizontal_default() {
+  return linkHorizontal2().source(horizontalSource).target(horizontalTarget);
+}
 
 // node_modules/@swimlane/ngx-charts/fesm2020/swimlane-ngx-charts.mjs
 var _c0 = ["caretElm"];
@@ -8593,56 +10863,128 @@ function ChartComponent_ngx_charts_legend_4_Template(rf, ctx) {
 var _c3 = ["ngx-charts-axis-label", ""];
 var _c4 = ["ticksel"];
 var _c5 = ["ngx-charts-x-axis-ticks", ""];
+function XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_container_4_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementContainer(0);
+  }
+}
+function XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0__svg_tspan_1_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementStart(0, "tspan", 10);
+    ɵɵtext(1);
+    ɵɵelementEnd();
+  }
+  if (rf & 2) {
+    const tickLine_r1 = ctx.$implicit;
+    const i_r2 = ctx.index;
+    ɵɵattribute("y", i_r2 * 12);
+    ɵɵadvance();
+    ɵɵtextInterpolate1(" ", tickLine_r1, " ");
+  }
+}
+function XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementContainerStart(0);
+    ɵɵtemplate(1, XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0__svg_tspan_1_Template, 2, 2, "tspan", 9);
+    ɵɵelementContainerEnd();
+  }
+  if (rf & 2) {
+    const tickLines_r3 = ctx.ngIf;
+    ɵɵadvance();
+    ɵɵproperty("ngForOf", tickLines_r3);
+  }
+}
+function XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵtemplate(0, XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0_Template, 2, 1, "ng-container", 6);
+  }
+  if (rf & 2) {
+    const tick_r4 = ɵɵnextContext(2).$implicit;
+    const ctx_r4 = ɵɵnextContext();
+    ɵɵproperty("ngIf", ctx_r4.tickChunks(tick_r4));
+  }
+}
+function XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_7_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵtext(0);
+  }
+  if (rf & 2) {
+    const tickFormatted_r6 = ɵɵnextContext().ngIf;
+    const ctx_r4 = ɵɵnextContext(2);
+    ɵɵtextInterpolate1(" ", ctx_r4.tickTrim(tickFormatted_r6), " ");
+  }
+}
+function XAxisTicksComponent__svg_g_2__svg_ng_container_1_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementContainerStart(0);
+    ɵɵelementStart(1, "title");
+    ɵɵtext(2);
+    ɵɵelementEnd();
+    ɵɵelementStart(3, "text", 7);
+    ɵɵtemplate(4, XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_container_4_Template, 1, 0, "ng-container", 8);
+    ɵɵelementEnd();
+    ɵɵtemplate(5, XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5_Template, 1, 1, "ng-template", null, 1, ɵɵtemplateRefExtractor)(7, XAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_7_Template, 1, 1, "ng-template", null, 2, ɵɵtemplateRefExtractor);
+    ɵɵelementContainerEnd();
+  }
+  if (rf & 2) {
+    const tickFormatted_r6 = ctx.ngIf;
+    const tmplMultilineTick_r7 = ɵɵreference(6);
+    const tmplSinglelineTick_r8 = ɵɵreference(8);
+    const ctx_r4 = ɵɵnextContext(2);
+    ɵɵadvance(2);
+    ɵɵtextInterpolate(tickFormatted_r6);
+    ɵɵadvance();
+    ɵɵattribute("text-anchor", ctx_r4.textAnchor)("transform", ctx_r4.textTransform);
+    ɵɵadvance();
+    ɵɵproperty("ngIf", ctx_r4.isWrapTicksSupported)("ngIfThen", tmplMultilineTick_r7)("ngIfElse", tmplSinglelineTick_r8);
+  }
+}
 function XAxisTicksComponent__svg_g_2_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
-    ɵɵelementStart(0, "g", 3)(1, "title");
-    ɵɵtext(2);
+    ɵɵelementStart(0, "g", 5);
+    ɵɵtemplate(1, XAxisTicksComponent__svg_g_2__svg_ng_container_1_Template, 9, 6, "ng-container", 6);
     ɵɵelementEnd();
-    ɵɵelementStart(3, "text", 4);
-    ɵɵtext(4);
-    ɵɵelementEnd()();
   }
   if (rf & 2) {
-    const tick_r1 = ctx.$implicit;
-    const ctx_r1 = ɵɵnextContext();
-    ɵɵattribute("transform", ctx_r1.tickTransform(tick_r1));
-    ɵɵadvance(2);
-    ɵɵtextInterpolate(ctx_r1.tickFormat(tick_r1));
+    const tick_r4 = ctx.$implicit;
+    const ctx_r4 = ɵɵnextContext();
+    ɵɵattribute("transform", ctx_r4.tickTransform(tick_r4));
     ɵɵadvance();
-    ɵɵstyleProp("font-size", "12px");
-    ɵɵattribute("text-anchor", ctx_r1.textAnchor)("transform", ctx_r1.textTransform);
-    ɵɵadvance();
-    ɵɵtextInterpolate1(" ", ctx_r1.tickTrim(ctx_r1.tickFormat(tick_r1)), " ");
+    ɵɵproperty("ngIf", ctx_r4.tickFormat(tick_r4));
   }
 }
 function XAxisTicksComponent__svg_g_3__svg_g_1_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
     ɵɵelementStart(0, "g");
-    ɵɵelement(1, "line", 6);
+    ɵɵelement(1, "line", 11);
     ɵɵelementEnd();
   }
   if (rf & 2) {
-    const ctx_r1 = ɵɵnextContext(2);
-    ɵɵattribute("transform", ctx_r1.gridLineTransform());
+    const ctx_r4 = ɵɵnextContext(2);
+    ɵɵattribute("transform", ctx_r4.gridLineTransform());
     ɵɵadvance();
-    ɵɵattribute("y1", -ctx_r1.gridLineHeight);
+    ɵɵattribute("y1", -ctx_r4.gridLineHeight);
   }
 }
 function XAxisTicksComponent__svg_g_3_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
     ɵɵelementStart(0, "g");
-    ɵɵtemplate(1, XAxisTicksComponent__svg_g_3__svg_g_1_Template, 2, 2, "g", 5);
+    ɵɵtemplate(1, XAxisTicksComponent__svg_g_3__svg_g_1_Template, 2, 2, "g", 6);
     ɵɵelementEnd();
   }
   if (rf & 2) {
-    const tick_r3 = ctx.$implicit;
-    const ctx_r1 = ɵɵnextContext();
-    ɵɵattribute("transform", ctx_r1.tickTransform(tick_r3));
+    const tick_r9 = ctx.$implicit;
+    const ctx_r4 = ɵɵnextContext();
+    ɵɵattribute("transform", ctx_r4.tickTransform(tick_r9));
     ɵɵadvance();
-    ɵɵproperty("ngIf", ctx_r1.showGridLines);
+    ɵɵproperty("ngIf", ctx_r4.showGridLines);
   }
 }
 var _c6 = ["ngx-charts-x-axis", ""];
@@ -8660,7 +11002,7 @@ function XAxisComponent__svg_g_1_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("trimTicks", ctx_r1.trimTicks)("rotateTicks", ctx_r1.rotateTicks)("maxTickLength", ctx_r1.maxTickLength)("tickFormatting", ctx_r1.tickFormatting)("tickArguments", ctx_r1.tickArguments)("tickStroke", ctx_r1.tickStroke)("scale", ctx_r1.xScale)("orient", ctx_r1.xOrient)("showGridLines", ctx_r1.showGridLines)("gridLineHeight", ctx_r1.dims.height)("width", ctx_r1.dims.width)("tickValues", ctx_r1.ticks);
+    ɵɵproperty("trimTicks", ctx_r1.trimTicks)("rotateTicks", ctx_r1.rotateTicks)("maxTickLength", ctx_r1.maxTickLength)("tickFormatting", ctx_r1.tickFormatting)("tickArguments", ctx_r1.tickArguments)("tickStroke", ctx_r1.tickStroke)("scale", ctx_r1.xScale)("orient", ctx_r1.xOrient)("showGridLines", ctx_r1.showGridLines)("gridLineHeight", ctx_r1.dims.height)("width", ctx_r1.dims.width)("tickValues", ctx_r1.ticks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function XAxisComponent__svg_g_2_Template(rf, ctx) {
@@ -8674,73 +11016,162 @@ function XAxisComponent__svg_g_2_Template(rf, ctx) {
   }
 }
 var _c7 = ["ngx-charts-y-axis-ticks", ""];
+function YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_container_4_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementContainer(0);
+  }
+}
+function YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0__svg_ng_container_1__svg_tspan_1_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementStart(0, "tspan", 12);
+    ɵɵtext(1);
+    ɵɵelementEnd();
+  }
+  if (rf & 2) {
+    const tickLine_r1 = ctx.$implicit;
+    const i_r2 = ctx.index;
+    const ctx_r2 = ɵɵnextContext(6);
+    ɵɵattribute("y", i_r2 * (8 + ctx_r2.tickSpacing));
+    ɵɵadvance();
+    ɵɵtextInterpolate1(" ", tickLine_r1, " ");
+  }
+}
+function YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0__svg_ng_container_1_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementContainerStart(0);
+    ɵɵtemplate(1, YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0__svg_ng_container_1__svg_tspan_1_Template, 2, 2, "tspan", 11);
+    ɵɵelementContainerEnd();
+  }
+  if (rf & 2) {
+    const tickLines_r4 = ɵɵnextContext().ngIf;
+    ɵɵadvance();
+    ɵɵproperty("ngForOf", tickLines_r4);
+  }
+}
+function YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementContainerStart(0);
+    ɵɵtemplate(1, YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0__svg_ng_container_1_Template, 2, 1, "ng-container", 10);
+    ɵɵelementContainerEnd();
+  }
+  if (rf & 2) {
+    const tickLines_r4 = ctx.ngIf;
+    ɵɵnextContext(2);
+    const tmplSinglelineTick_r5 = ɵɵreference(8);
+    ɵɵadvance();
+    ɵɵproperty("ngIf", tickLines_r4.length > 1)("ngIfElse", tmplSinglelineTick_r5);
+  }
+}
+function YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵtemplate(0, YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5__svg_ng_container_0_Template, 2, 2, "ng-container", 7);
+  }
+  if (rf & 2) {
+    const tick_r6 = ɵɵnextContext(2).$implicit;
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵproperty("ngIf", ctx_r2.tickChunks(tick_r6));
+  }
+}
+function YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_7_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵtext(0);
+  }
+  if (rf & 2) {
+    const tickFormatted_r7 = ɵɵnextContext().ngIf;
+    const ctx_r2 = ɵɵnextContext(2);
+    ɵɵtextInterpolate1(" ", ctx_r2.tickTrim(tickFormatted_r7), " ");
+  }
+}
+function YAxisTicksComponent__svg_g_2__svg_ng_container_1_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementContainerStart(0);
+    ɵɵelementStart(1, "title");
+    ɵɵtext(2);
+    ɵɵelementEnd();
+    ɵɵelementStart(3, "text", 8);
+    ɵɵtemplate(4, YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_container_4_Template, 1, 0, "ng-container", 9);
+    ɵɵelementEnd();
+    ɵɵtemplate(5, YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_5_Template, 1, 1, "ng-template", null, 1, ɵɵtemplateRefExtractor)(7, YAxisTicksComponent__svg_g_2__svg_ng_container_1__svg_ng_template_7_Template, 1, 1, "ng-template", null, 2, ɵɵtemplateRefExtractor);
+    ɵɵelementContainerEnd();
+  }
+  if (rf & 2) {
+    const tickFormatted_r7 = ctx.ngIf;
+    const tmplMultilineTick_r8 = ɵɵreference(6);
+    const tmplSinglelineTick_r5 = ɵɵreference(8);
+    const ctx_r2 = ɵɵnextContext(2);
+    ɵɵadvance(2);
+    ɵɵtextInterpolate(tickFormatted_r7);
+    ɵɵadvance();
+    ɵɵstyleProp("font-size", "12px");
+    ɵɵattribute("dy", ctx_r2.dy)("x", ctx_r2.x1)("y", ctx_r2.y1)("text-anchor", ctx_r2.textAnchor);
+    ɵɵadvance();
+    ɵɵproperty("ngIf", ctx_r2.wrapTicks)("ngIfThen", tmplMultilineTick_r8)("ngIfElse", tmplSinglelineTick_r5);
+  }
+}
 function YAxisTicksComponent__svg_g_2_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
-    ɵɵelementStart(0, "g", 4)(1, "title");
-    ɵɵtext(2);
+    ɵɵelementStart(0, "g", 6);
+    ɵɵtemplate(1, YAxisTicksComponent__svg_g_2__svg_ng_container_1_Template, 9, 10, "ng-container", 7);
     ɵɵelementEnd();
-    ɵɵelementStart(3, "text", 5);
-    ɵɵtext(4);
-    ɵɵelementEnd()();
   }
   if (rf & 2) {
-    const tick_r1 = ctx.$implicit;
-    const ctx_r1 = ɵɵnextContext();
-    ɵɵattribute("transform", ctx_r1.transform(tick_r1));
-    ɵɵadvance(2);
-    ɵɵtextInterpolate(ctx_r1.tickFormat(tick_r1));
+    const tick_r6 = ctx.$implicit;
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵattribute("transform", ctx_r2.transform(tick_r6));
     ɵɵadvance();
-    ɵɵstyleProp("font-size", "12px");
-    ɵɵattribute("dy", ctx_r1.dy)("x", ctx_r1.x1)("y", ctx_r1.y1)("text-anchor", ctx_r1.textAnchor);
-    ɵɵadvance();
-    ɵɵtextInterpolate1(" ", ctx_r1.tickTrim(ctx_r1.tickFormat(tick_r1)), " ");
+    ɵɵproperty("ngIf", ctx_r2.tickFormat(tick_r6));
   }
 }
 function YAxisTicksComponent__svg_path_3_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
-    ɵɵelement(0, "path", 6);
+    ɵɵelement(0, "path", 13);
   }
   if (rf & 2) {
-    const ctx_r1 = ɵɵnextContext();
-    ɵɵattribute("d", ctx_r1.referenceAreaPath)("transform", ctx_r1.gridLineTransform());
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵattribute("d", ctx_r2.referenceAreaPath)("transform", ctx_r2.gridLineTransform());
   }
 }
 function YAxisTicksComponent__svg_g_4__svg_g_1__svg_line_1_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
-    ɵɵelement(0, "line", 9);
+    ɵɵelement(0, "line", 15);
   }
   if (rf & 2) {
-    const ctx_r1 = ɵɵnextContext(3);
-    ɵɵattribute("x2", ctx_r1.gridLineWidth);
+    const ctx_r2 = ɵɵnextContext(3);
+    ɵɵattribute("x2", ctx_r2.gridLineWidth);
   }
 }
 function YAxisTicksComponent__svg_g_4__svg_g_1__svg_line_2_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
-    ɵɵelement(0, "line", 9);
+    ɵɵelement(0, "line", 15);
   }
   if (rf & 2) {
-    const ctx_r1 = ɵɵnextContext(3);
-    ɵɵattribute("x2", -ctx_r1.gridLineWidth);
+    const ctx_r2 = ɵɵnextContext(3);
+    ɵɵattribute("x2", -ctx_r2.gridLineWidth);
   }
 }
 function YAxisTicksComponent__svg_g_4__svg_g_1_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
     ɵɵelementStart(0, "g");
-    ɵɵtemplate(1, YAxisTicksComponent__svg_g_4__svg_g_1__svg_line_1_Template, 1, 1, "line", 8)(2, YAxisTicksComponent__svg_g_4__svg_g_1__svg_line_2_Template, 1, 1, "line", 8);
+    ɵɵtemplate(1, YAxisTicksComponent__svg_g_4__svg_g_1__svg_line_1_Template, 1, 1, "line", 14)(2, YAxisTicksComponent__svg_g_4__svg_g_1__svg_line_2_Template, 1, 1, "line", 14);
     ɵɵelementEnd();
   }
   if (rf & 2) {
-    const ctx_r1 = ɵɵnextContext(2);
-    ɵɵattribute("transform", ctx_r1.gridLineTransform());
+    const ctx_r2 = ɵɵnextContext(2);
+    ɵɵattribute("transform", ctx_r2.gridLineTransform());
     ɵɵadvance();
-    ɵɵproperty("ngIf", ctx_r1.orient === ctx_r1.Orientation.Left);
+    ɵɵproperty("ngIf", ctx_r2.orient === ctx_r2.Orientation.Left);
     ɵɵadvance();
-    ɵɵproperty("ngIf", ctx_r1.orient === ctx_r1.Orientation.Right);
+    ɵɵproperty("ngIf", ctx_r2.orient === ctx_r2.Orientation.Right);
   }
 }
 function YAxisTicksComponent__svg_g_4_Template(rf, ctx) {
@@ -8751,11 +11182,11 @@ function YAxisTicksComponent__svg_g_4_Template(rf, ctx) {
     ɵɵelementEnd();
   }
   if (rf & 2) {
-    const tick_r3 = ctx.$implicit;
-    const ctx_r1 = ɵɵnextContext();
-    ɵɵattribute("transform", ctx_r1.transform(tick_r3));
+    const tick_r9 = ctx.$implicit;
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵattribute("transform", ctx_r2.transform(tick_r9));
     ɵɵadvance();
-    ɵɵproperty("ngIf", ctx_r1.showGridLines);
+    ɵɵproperty("ngIf", ctx_r2.showGridLines);
   }
 }
 function YAxisTicksComponent__svg_g_5__svg_g_1__svg_g_2_Template(rf, ctx) {
@@ -8764,37 +11195,37 @@ function YAxisTicksComponent__svg_g_5__svg_g_1__svg_g_2_Template(rf, ctx) {
     ɵɵelementStart(0, "g")(1, "title");
     ɵɵtext(2);
     ɵɵelementEnd();
-    ɵɵelementStart(3, "text", 11);
+    ɵɵelementStart(3, "text", 17);
     ɵɵtext(4);
     ɵɵelementEnd()();
   }
   if (rf & 2) {
-    const refLine_r4 = ɵɵnextContext(2).$implicit;
-    const ctx_r1 = ɵɵnextContext();
+    const refLine_r10 = ɵɵnextContext(2).$implicit;
+    const ctx_r2 = ɵɵnextContext();
     ɵɵadvance(2);
-    ɵɵtextInterpolate(ctx_r1.tickTrim(ctx_r1.tickFormat(refLine_r4.value)));
+    ɵɵtextInterpolate(ctx_r2.tickTrim(ctx_r2.tickFormat(refLine_r10.value)));
     ɵɵadvance();
-    ɵɵattribute("dy", ctx_r1.dy)("y", -6)("x", ctx_r1.gridLineWidth)("text-anchor", ctx_r1.textAnchor);
+    ɵɵattribute("dy", ctx_r2.dy)("y", -6)("x", ctx_r2.gridLineWidth)("text-anchor", ctx_r2.textAnchor);
     ɵɵadvance();
-    ɵɵtextInterpolate1(" ", refLine_r4.name, " ");
+    ɵɵtextInterpolate1(" ", refLine_r10.name, " ");
   }
 }
 function YAxisTicksComponent__svg_g_5__svg_g_1_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵnamespaceSVG();
     ɵɵelementStart(0, "g");
-    ɵɵelement(1, "line", 10);
+    ɵɵelement(1, "line", 16);
     ɵɵtemplate(2, YAxisTicksComponent__svg_g_5__svg_g_1__svg_g_2_Template, 5, 6, "g", 7);
     ɵɵelementEnd();
   }
   if (rf & 2) {
-    const refLine_r4 = ɵɵnextContext().$implicit;
-    const ctx_r1 = ɵɵnextContext();
-    ɵɵattribute("transform", ctx_r1.transform(refLine_r4.value));
+    const refLine_r10 = ɵɵnextContext().$implicit;
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵattribute("transform", ctx_r2.transform(refLine_r10.value));
     ɵɵadvance();
-    ɵɵattribute("x2", ctx_r1.gridLineWidth)("transform", ctx_r1.gridLineTransform());
+    ɵɵattribute("x2", ctx_r2.gridLineWidth)("transform", ctx_r2.gridLineTransform());
     ɵɵadvance();
-    ɵɵproperty("ngIf", ctx_r1.showRefLabels);
+    ɵɵproperty("ngIf", ctx_r2.showRefLabels);
   }
 }
 function YAxisTicksComponent__svg_g_5_Template(rf, ctx) {
@@ -8805,9 +11236,9 @@ function YAxisTicksComponent__svg_g_5_Template(rf, ctx) {
     ɵɵelementEnd();
   }
   if (rf & 2) {
-    const ctx_r1 = ɵɵnextContext();
+    const ctx_r2 = ɵɵnextContext();
     ɵɵadvance();
-    ɵɵproperty("ngIf", ctx_r1.showRefLines);
+    ɵɵproperty("ngIf", ctx_r2.showRefLines);
   }
 }
 var _c8 = ["ngx-charts-y-axis", ""];
@@ -8825,7 +11256,7 @@ function YAxisComponent__svg_g_1_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("trimTicks", ctx_r1.trimTicks)("maxTickLength", ctx_r1.maxTickLength)("tickFormatting", ctx_r1.tickFormatting)("tickArguments", ctx_r1.tickArguments)("tickValues", ctx_r1.ticks)("tickStroke", ctx_r1.tickStroke)("scale", ctx_r1.yScale)("orient", ctx_r1.yOrient)("showGridLines", ctx_r1.showGridLines)("gridLineWidth", ctx_r1.dims.width)("referenceLines", ctx_r1.referenceLines)("showRefLines", ctx_r1.showRefLines)("showRefLabels", ctx_r1.showRefLabels)("height", ctx_r1.dims.height);
+    ɵɵproperty("trimTicks", ctx_r1.trimTicks)("maxTickLength", ctx_r1.maxTickLength)("tickFormatting", ctx_r1.tickFormatting)("tickArguments", ctx_r1.tickArguments)("tickValues", ctx_r1.ticks)("tickStroke", ctx_r1.tickStroke)("scale", ctx_r1.yScale)("orient", ctx_r1.yOrient)("showGridLines", ctx_r1.showGridLines)("gridLineWidth", ctx_r1.dims.width)("referenceLines", ctx_r1.referenceLines)("showRefLines", ctx_r1.showRefLines)("showRefLabels", ctx_r1.showRefLabels)("height", ctx_r1.dims.height)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function YAxisComponent__svg_g_2_Template(rf, ctx) {
@@ -9109,7 +11540,7 @@ function AreaChartComponent__svg_g_5_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function AreaChartComponent__svg_g_6_Template(rf, ctx) {
@@ -9126,7 +11557,7 @@ function AreaChartComponent__svg_g_6_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function AreaChartComponent__svg_g_8_Template(rf, ctx) {
@@ -9247,7 +11678,7 @@ function AreaChartNormalizedComponent__svg_g_5_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function AreaChartNormalizedComponent__svg_g_6_Template(rf, ctx) {
@@ -9264,7 +11695,7 @@ function AreaChartNormalizedComponent__svg_g_6_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function AreaChartNormalizedComponent__svg_g_8_Template(rf, ctx) {
@@ -9371,7 +11802,7 @@ function AreaChartNormalizedComponent__svg_g_10_Template(rf, ctx) {
     ɵɵproperty("ngForOf", ctx_r1.results)("ngForTrackBy", ctx_r1.trackBy);
   }
 }
-var _c25 = ".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n";
+var _c25 = ".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n";
 function AreaChartStackedComponent__svg_g_5_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = ɵɵgetCurrentView();
@@ -9386,7 +11817,7 @@ function AreaChartStackedComponent__svg_g_5_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function AreaChartStackedComponent__svg_g_6_Template(rf, ctx) {
@@ -9403,7 +11834,7 @@ function AreaChartStackedComponent__svg_g_6_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function AreaChartStackedComponent__svg_g_8_Template(rf, ctx) {
@@ -9600,7 +12031,7 @@ function BarHorizontalComponent__svg_g_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontalComponent__svg_g_3_Template(rf, ctx) {
@@ -9617,7 +12048,7 @@ function BarHorizontalComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("yAxisOffset", ctx_r1.dataLabelMaxWidth.negative);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("yAxisOffset", ctx_r1.dataLabelMaxWidth.negative)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontal2DComponent__svg_g_3_Template(rf, ctx) {
@@ -9634,7 +12065,7 @@ function BarHorizontal2DComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.valueScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.valueScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontal2DComponent__svg_g_4_Template(rf, ctx) {
@@ -9651,7 +12082,7 @@ function BarHorizontal2DComponent__svg_g_4_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.groupScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("yAxisOffset", ctx_r1.dataLabelMaxWidth.negative);
+    ɵɵproperty("yScale", ctx_r1.groupScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("yAxisOffset", ctx_r1.dataLabelMaxWidth.negative)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontal2DComponent__svg_g_5__svg_g_1_Template(rf, ctx) {
@@ -9759,7 +12190,7 @@ function BarHorizontalNormalizedComponent__svg_g_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontalNormalizedComponent__svg_g_3_Template(rf, ctx) {
@@ -9776,7 +12207,7 @@ function BarHorizontalNormalizedComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontalNormalizedComponent__svg_g_4__svg_g_1_Template(rf, ctx) {
@@ -9876,7 +12307,7 @@ function BarHorizontalStackedComponent__svg_g_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontalStackedComponent__svg_g_3_Template(rf, ctx) {
@@ -9893,7 +12324,7 @@ function BarHorizontalStackedComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("yAxisOffset", ctx_r1.dataLabelMaxWidth.negative);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("yAxisOffset", ctx_r1.dataLabelMaxWidth.negative)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarHorizontalStackedComponent__svg_g_4__svg_g_1_Template(rf, ctx) {
@@ -10114,7 +12545,7 @@ function BarVerticalComponent__svg_g_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("xAxisOffset", ctx_r1.dataLabelMaxHeight.negative);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("xAxisOffset", ctx_r1.dataLabelMaxHeight.negative)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVerticalComponent__svg_g_3_Template(rf, ctx) {
@@ -10131,7 +12562,7 @@ function BarVerticalComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVertical2DComponent__svg_g_3_Template(rf, ctx) {
@@ -10148,7 +12579,7 @@ function BarVertical2DComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.groupScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("xAxisOffset", ctx_r1.dataLabelMaxHeight.negative);
+    ɵɵproperty("xScale", ctx_r1.groupScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("xAxisOffset", ctx_r1.dataLabelMaxHeight.negative)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVertical2DComponent__svg_g_4_Template(rf, ctx) {
@@ -10165,7 +12596,7 @@ function BarVertical2DComponent__svg_g_4_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.valueScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.valueScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVertical2DComponent__svg_g_5__svg_g_1_Template(rf, ctx) {
@@ -10270,7 +12701,7 @@ function BarVerticalNormalizedComponent__svg_g_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVerticalNormalizedComponent__svg_g_3_Template(rf, ctx) {
@@ -10287,7 +12718,7 @@ function BarVerticalNormalizedComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVerticalNormalizedComponent__svg_g_4__svg_g_1_Template(rf, ctx) {
@@ -10387,7 +12818,7 @@ function BarVerticalStackedComponent__svg_g_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("xAxisOffset", ctx_r1.dataLabelMaxHeight.negative);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("xAxisOffset", ctx_r1.dataLabelMaxHeight.negative)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVerticalStackedComponent__svg_g_3_Template(rf, ctx) {
@@ -10404,7 +12835,7 @@ function BarVerticalStackedComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BarVerticalStackedComponent__svg_g_4__svg_g_1_Template(rf, ctx) {
@@ -10645,7 +13076,7 @@ function BubbleChartComponent__svg_g_5_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("showGridLines", ctx_r1.showGridLines)("dims", ctx_r1.dims)("xScale", ctx_r1.xScale)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("showGridLines", ctx_r1.showGridLines)("dims", ctx_r1.dims)("xScale", ctx_r1.xScale)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BubbleChartComponent__svg_g_6_Template(rf, ctx) {
@@ -10662,7 +13093,7 @@ function BubbleChartComponent__svg_g_6_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("showGridLines", ctx_r1.showGridLines)("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("showGridLines", ctx_r1.showGridLines)("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function BubbleChartComponent__svg_g_8__svg_g_1_Template(rf, ctx) {
@@ -10763,10 +13194,10 @@ function HeatMapCellComponent__svg_defs_1_Template(rf, ctx) {
   }
 }
 var _c34 = ["ngx-charts-heat-map-cell-series", ""];
-var _c35 = (a0, a1, a2) => ({
+var _c35 = (a0, a1, a22) => ({
   series: a0,
   name: a1,
-  value: a2
+  value: a22
 });
 function HeatCellSeriesComponent__svg_g_0_Template(rf, ctx) {
   if (rf & 1) {
@@ -10808,7 +13239,7 @@ function HeatMapComponent__svg_g_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function HeatMapComponent__svg_g_3_Template(rf, ctx) {
@@ -10825,7 +13256,7 @@ function HeatMapComponent__svg_g_3_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function HeatMapComponent__svg_rect_4_Template(rf, ctx) {
@@ -10902,7 +13333,7 @@ function LineChartComponent__svg_g_5_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks);
+    ɵɵproperty("xScale", ctx_r1.xScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showXAxisLabel)("labelText", ctx_r1.xAxisLabel)("trimTicks", ctx_r1.trimXAxisTicks)("rotateTicks", ctx_r1.rotateXAxisTicks)("maxTickLength", ctx_r1.maxXAxisTickLength)("tickFormatting", ctx_r1.xAxisTickFormatting)("ticks", ctx_r1.xAxisTicks)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function LineChartComponent__svg_g_6_Template(rf, ctx) {
@@ -10919,7 +13350,7 @@ function LineChartComponent__svg_g_6_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("referenceLines", ctx_r1.referenceLines)("showRefLines", ctx_r1.showRefLines)("showRefLabels", ctx_r1.showRefLabels);
+    ɵɵproperty("yScale", ctx_r1.yScale)("dims", ctx_r1.dims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("ticks", ctx_r1.yAxisTicks)("referenceLines", ctx_r1.referenceLines)("showRefLines", ctx_r1.showRefLines)("showRefLabels", ctx_r1.showRefLabels)("wrapTicks", ctx_r1.wrapTicks);
   }
 }
 function LineChartComponent__svg_g_8__svg_g_1_Template(rf, ctx) {
@@ -11171,7 +13602,7 @@ function PolarChartComponent__svg_g_6_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = ɵɵnextContext();
-    ɵɵproperty("yScale", ctx_r1.yAxisScale)("dims", ctx_r1.yAxisDims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting);
+    ɵɵproperty("yScale", ctx_r1.yAxisScale)("dims", ctx_r1.yAxisDims)("showGridLines", ctx_r1.showGridLines)("showLabel", ctx_r1.showYAxisLabel)("labelText", ctx_r1.yAxisLabel)("trimTicks", ctx_r1.trimYAxisTicks)("maxTickLength", ctx_r1.maxYAxisTickLength)("tickFormatting", ctx_r1.yAxisTickFormatting)("wrapTicks", ctx_r1.wrapTicks);
     ɵɵattribute("transform", ctx_r1.transformYAxis);
   }
 }
@@ -11329,7 +13760,7 @@ function PieSeriesComponent__svg_g_0_Template(rf, ctx) {
     ɵɵproperty("startAngle", arc_r2.startAngle)("endAngle", arc_r2.endAngle)("innerRadius", ctx_r2.innerRadius)("outerRadius", ctx_r2.outerRadius)("fill", ctx_r2.color(arc_r2))("value", arc_r2.data.value)("gradient", ctx_r2.gradient)("data", arc_r2.data)("max", ctx_r2.max)("explodeSlices", ctx_r2.explodeSlices)("isActive", ctx_r2.isActive(arc_r2.data))("animate", ctx_r2.animations)("tooltipDisabled", ctx_r2.tooltipDisabled)("tooltipPlacement", ctx_r2.placementTypes.Top)("tooltipType", ctx_r2.styleTypes.tooltip)("tooltipTitle", ctx_r2.getTooltipTitle(arc_r2))("tooltipTemplate", ctx_r2.tooltipTemplate)("tooltipContext", arc_r2.data);
   }
 }
-var _c42 = ".pie-label{font-size:11px}.pie-label.animation{-webkit-animation:.75s ease-in fadeIn;animation:.75s ease-in fadeIn}@-webkit-keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{-webkit-animation:3s linear drawOut;animation:3s linear drawOut;transition:d .75s}@-webkit-keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n";
+var _c42 = ".pie-label{font-size:11px}.pie-label.animation{animation:.75s ease-in fadeIn}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{animation:3s linear drawOut;transition:d .75s}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n";
 var _c43 = ["ngx-charts-pie-grid-series", ""];
 function PieGridSeriesComponent__svg_g_1_Template(rf, ctx) {
   if (rf & 1) {
@@ -11701,6 +14132,93 @@ function GaugeComponent__svg_text_4_Template(rf, ctx) {
     ɵɵtextInterpolate(ctx_r1.units);
   }
 }
+function SankeyComponent__svg_g_2_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = ɵɵgetCurrentView();
+    ɵɵnamespaceSVG();
+    ɵɵelementStart(0, "g", 5)(1, "defs")(2, "linearGradient", 6);
+    ɵɵelement(3, "stop", 7)(4, "stop", 8);
+    ɵɵelementEnd()();
+    ɵɵelementStart(5, "path", 9);
+    ɵɵlistener("click", function SankeyComponent__svg_g_2_Template_path_click_5_listener() {
+      const link_r2 = ɵɵrestoreView(_r1).$implicit;
+      const ctx_r2 = ɵɵnextContext();
+      return ɵɵresetView(ctx_r2.select.emit(link_r2.data));
+    })("mouseenter", function SankeyComponent__svg_g_2_Template_path_mouseenter_5_listener() {
+      const link_r2 = ɵɵrestoreView(_r1).$implicit;
+      const ctx_r2 = ɵɵnextContext();
+      return ɵɵresetView(ctx_r2.activate.emit(link_r2.data));
+    });
+    ɵɵelementEnd()();
+  }
+  if (rf & 2) {
+    const link_r2 = ctx.$implicit;
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵproperty("tooltipDisabled", ctx_r2.tooltipDisabled)("tooltipType", ctx_r2.styleTypes.tooltip)("tooltipPlacement", "top")("tooltipTitle", ctx_r2.tooltipTemplate ? void 0 : link_r2.tooltip)("tooltipTemplate", ctx_r2.tooltipTemplate)("tooltipContext", link_r2.data);
+    ɵɵadvance(2);
+    ɵɵattribute("id", link_r2.id)("x1", link_r2.source.x1)("x2", link_r2.target.x0);
+    ɵɵadvance();
+    ɵɵattribute("stop-color", link_r2.startColor);
+    ɵɵadvance();
+    ɵɵattribute("stop-color", link_r2.endColor);
+    ɵɵadvance();
+    ɵɵattribute("d", link_r2.path)("stroke", link_r2.gradientFill)("stroke-width", link_r2.strokeWidth);
+  }
+}
+function SankeyComponent__svg_g_3_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r4 = ɵɵgetCurrentView();
+    ɵɵnamespaceSVG();
+    ɵɵelementStart(0, "g", 10)(1, "rect", 11);
+    ɵɵlistener("click", function SankeyComponent__svg_g_3_Template_rect_click_1_listener() {
+      const rect_r5 = ɵɵrestoreView(_r4).$implicit;
+      const ctx_r2 = ɵɵnextContext();
+      return ɵɵresetView(ctx_r2.select.emit(rect_r5.data));
+    })("mouseenter", function SankeyComponent__svg_g_3_Template_rect_mouseenter_1_listener() {
+      const rect_r5 = ɵɵrestoreView(_r4).$implicit;
+      const ctx_r2 = ɵɵnextContext();
+      return ɵɵresetView(ctx_r2.activate.emit(rect_r5.data));
+    });
+    ɵɵelementEnd()();
+  }
+  if (rf & 2) {
+    const rect_r5 = ctx.$implicit;
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵattribute("transform", rect_r5.transform);
+    ɵɵadvance();
+    ɵɵproperty("tooltipDisabled", ctx_r2.tooltipDisabled)("tooltipType", ctx_r2.styleTypes.tooltip)("tooltipPlacement", "top")("tooltipTitle", ctx_r2.tooltipTemplate ? void 0 : rect_r5.tooltip)("tooltipTemplate", ctx_r2.tooltipTemplate)("tooltipContext", rect_r5.data);
+    ɵɵattribute("x", 0)("y", 0)("width", rect_r5.width)("height", rect_r5.height)("fill", rect_r5.fill);
+  }
+}
+function SankeyComponent__svg_g_4__svg_text_1_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementStart(0, "text", 13);
+    ɵɵtext(1);
+    ɵɵelementEnd();
+  }
+  if (rf & 2) {
+    const rect_r6 = ɵɵnextContext().$implicit;
+    ɵɵattribute("x", rect_r6.width + 5)("y", rect_r6.height / 2)("text-anchor", rect_r6.labelAnchor)("dx", rect_r6.labelAnchor === "end" ? -25 : 0);
+    ɵɵadvance();
+    ɵɵtextInterpolate1(" ", rect_r6.label, " ");
+  }
+}
+function SankeyComponent__svg_g_4_Template(rf, ctx) {
+  if (rf & 1) {
+    ɵɵnamespaceSVG();
+    ɵɵelementStart(0, "g");
+    ɵɵtemplate(1, SankeyComponent__svg_g_4__svg_text_1_Template, 2, 5, "text", 12);
+    ɵɵelementEnd();
+  }
+  if (rf & 2) {
+    const rect_r6 = ctx.$implicit;
+    const ctx_r2 = ɵɵnextContext();
+    ɵɵattribute("transform", rect_r6.transform);
+    ɵɵadvance();
+    ɵɵproperty("ngIf", ctx_r2.showLabels && rect_r6.height > 15);
+  }
+}
 function throttle(func, wait, options) {
   options = options || {};
   let context;
@@ -11886,23 +14404,23 @@ var PositionHelper = class _PositionHelper {
    */
   static positionCaret(placement, elmDim, hostDim, caretDimensions, alignment) {
     let top = 0;
-    let left = 0;
+    let left2 = 0;
     if (placement === PlacementTypes.Right) {
-      left = -7;
+      left2 = -7;
       top = _PositionHelper.calculateVerticalCaret(hostDim, elmDim, caretDimensions, alignment);
     } else if (placement === PlacementTypes.Left) {
-      left = elmDim.width;
+      left2 = elmDim.width;
       top = _PositionHelper.calculateVerticalCaret(hostDim, elmDim, caretDimensions, alignment);
     } else if (placement === PlacementTypes.Top) {
       top = elmDim.height;
-      left = _PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
+      left2 = _PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
     } else if (placement === PlacementTypes.Bottom) {
       top = -7;
-      left = _PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
+      left2 = _PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
     }
     return {
       top,
-      left
+      left: left2
     };
   }
   /**
@@ -11912,23 +14430,23 @@ var PositionHelper = class _PositionHelper {
    */
   static positionContent(placement, elmDim, hostDim, spacing, alignment) {
     let top = 0;
-    let left = 0;
+    let left2 = 0;
     if (placement === PlacementTypes.Right) {
-      left = hostDim.left + hostDim.width + spacing;
+      left2 = hostDim.left + hostDim.width + spacing;
       top = _PositionHelper.calculateVerticalAlignment(hostDim, elmDim, alignment);
     } else if (placement === PlacementTypes.Left) {
-      left = hostDim.left - elmDim.width - spacing;
+      left2 = hostDim.left - elmDim.width - spacing;
       top = _PositionHelper.calculateVerticalAlignment(hostDim, elmDim, alignment);
     } else if (placement === PlacementTypes.Top) {
       top = hostDim.top - elmDim.height - spacing;
-      left = _PositionHelper.calculateHorizontalAlignment(hostDim, elmDim, alignment);
+      left2 = _PositionHelper.calculateHorizontalAlignment(hostDim, elmDim, alignment);
     } else if (placement === PlacementTypes.Bottom) {
       top = hostDim.top + hostDim.height + spacing;
-      left = _PositionHelper.calculateHorizontalAlignment(hostDim, elmDim, alignment);
+      left2 = _PositionHelper.calculateHorizontalAlignment(hostDim, elmDim, alignment);
     }
     return {
       top,
-      left
+      left: left2
     };
   }
   /**
@@ -11986,20 +14504,20 @@ var TooltipContentComponent = class {
   positionContent(nativeElm, hostDim, elmDim) {
     const {
       top,
-      left
+      left: left2
     } = PositionHelper.positionContent(this.placement, elmDim, hostDim, this.spacing, this.alignment);
     this.renderer.setStyle(nativeElm, "top", `${top}px`);
-    this.renderer.setStyle(nativeElm, "left", `${left}px`);
+    this.renderer.setStyle(nativeElm, "left", `${left2}px`);
   }
   positionCaret(hostDim, elmDim) {
     const caretElm = this.caretElm.nativeElement;
     const caretDimensions = caretElm.getBoundingClientRect();
     const {
       top,
-      left
+      left: left2
     } = PositionHelper.positionCaret(this.placement, elmDim, hostDim, caretDimensions, this.alignment);
     this.renderer.setStyle(caretElm, "top", `${top}px`);
-    this.renderer.setStyle(caretElm, "left", `${left}px`);
+    this.renderer.setStyle(caretElm, "left", `${left2}px`);
   }
   checkFlip(hostDim, elmDim) {
     this.placement = PositionHelper.determinePlacement(this.placement, elmDim, hostDim, this.spacing);
@@ -12216,8 +14734,8 @@ var InjectionRegisteryService = class {
     types.push(component);
   }
 };
-function isViewContainerRef(x2) {
-  return x2.element;
+function isViewContainerRef(x3) {
+  return x3.element;
 }
 var InjectionService = class _InjectionService {
   constructor(applicationRef, componentFactoryResolver, injector) {
@@ -12400,11 +14918,11 @@ var ScaleLegendComponent = class {
    */
   gradientString(colors, splits) {
     splits.push(1);
-    const pairs2 = [];
+    const pairs4 = [];
     colors.reverse().forEach((c, i) => {
-      pairs2.push(`${c} ${Math.round(splits[i] * 100)}%`);
+      pairs4.push(`${c} ${Math.round(splits[i] * 100)}%`);
     });
-    return pairs2.join(", ");
+    return pairs4.join(", ");
   }
 };
 ScaleLegendComponent.ɵfac = function ScaleLegendComponent_Factory(t) {
@@ -12688,7 +15206,7 @@ var LegendComponent = class {
   deactivate(item) {
     this.labelDeactivate.emit(item);
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.label;
   }
 };
@@ -12864,7 +15382,7 @@ ChartComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵProvidersFeature([TooltipService]), ɵɵNgOnChangesFeature],
   ngContentSelectors: _c2,
   decls: 5,
-  vars: 6,
+  vars: 8,
   consts: [[1, "ngx-charts-outer"], [1, "ngx-charts"], ["class", "chart-legend", 3, "horizontal", "valueRange", "colors", "height", "width", 4, "ngIf"], ["class", "chart-legend", 3, "horizontal", "data", "title", "colors", "height", "width", "activeEntries", "labelClick", "labelActivate", "labelDeactivate", 4, "ngIf"], [1, "chart-legend", 3, "horizontal", "valueRange", "colors", "height", "width"], [1, "chart-legend", 3, "labelClick", "labelActivate", "labelDeactivate", "horizontal", "data", "title", "colors", "height", "width", "activeEntries"]],
   template: function ChartComponent_Template(rf, ctx) {
     if (rf & 1) {
@@ -12878,7 +15396,7 @@ ChartComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelementEnd();
     }
     if (rf & 2) {
-      ɵɵstyleProp("width", ctx.view[0], "px");
+      ɵɵstyleProp("width", ctx.view[0], "px")("height", ctx.view[1], "px");
       ɵɵadvance();
       ɵɵattribute("width", ctx.chartWidth)("height", ctx.view[1]);
       ɵɵadvance(2);
@@ -12898,7 +15416,7 @@ ChartComponent.ɵcmp = ɵɵdefineComponent({
       providers: [TooltipService],
       selector: "ngx-charts-chart",
       template: `
-    <div class="ngx-charts-outer" [style.width.px]="view[0]">
+    <div class="ngx-charts-outer" [style.width.px]="view[0]" [style.height.px]="view[1]">
       <svg class="ngx-charts" [attr.width]="chartWidth" [attr.height]="view[1]">
         <ng-content></ng-content>
       </svg>
@@ -13030,11 +15548,11 @@ VisibilityObserver.ɵdir = ɵɵdefineDirective({
     }]
   });
 })();
-function isDate(value) {
-  return toString.call(value) === "[object Date]";
+function isDate(value2) {
+  return toString.call(value2) === "[object Date]";
 }
-function isNumber(value) {
-  return typeof value === "number";
+function isNumber(value2) {
+  return typeof value2 === "number";
 }
 var BaseChartComponent = class {
   constructor(chartElement, zone, cd, platformId) {
@@ -13160,9 +15678,10 @@ var BaseChartComponent = class {
   cloneData(data) {
     const results = [];
     for (const item of data) {
-      const copy3 = {
-        name: item["name"]
-      };
+      const copy3 = {};
+      if (item["name"] !== void 0) {
+        copy3["name"] = item["name"];
+      }
       if (item["value"] !== void 0) {
         copy3["value"] = item["value"];
       }
@@ -13175,6 +15694,12 @@ var BaseChartComponent = class {
       }
       if (item["extra"] !== void 0) {
         copy3["extra"] = JSON.parse(JSON.stringify(item["extra"]));
+      }
+      if (item["source"] !== void 0) {
+        copy3["source"] = item["source"];
+      }
+      if (item["target"] !== void 0) {
+        copy3["target"] = item["target"];
       }
       results.push(copy3);
     }
@@ -13369,33 +15894,54 @@ AxisLabelComponent.ɵcmp = ɵɵdefineComponent({
     }]
   });
 })();
-function trimLabel(s2, max4 = 16) {
-  if (typeof s2 !== "string") {
-    if (typeof s2 === "number") {
-      return s2 + "";
+function trimLabel(s3, max7 = 16) {
+  if (typeof s3 !== "string") {
+    if (typeof s3 === "number") {
+      return s3 + "";
     } else {
       return "";
     }
   }
-  s2 = s2.trim();
-  if (s2.length <= max4) {
-    return s2;
+  s3 = s3.trim();
+  if (s3.length <= max7) {
+    return s3;
   } else {
-    return `${s2.slice(0, max4)}...`;
+    return `${s3.slice(0, max7)}...`;
   }
 }
-function reduceTicks(ticks, maxTicks) {
-  if (ticks.length > maxTicks) {
+function reduceTicks(ticks2, maxTicks) {
+  if (ticks2.length > maxTicks) {
     const reduced = [];
-    const modulus = Math.floor(ticks.length / maxTicks);
-    for (let i = 0; i < ticks.length; i++) {
+    const modulus = Math.floor(ticks2.length / maxTicks);
+    for (let i = 0; i < ticks2.length; i++) {
       if (i % modulus === 0) {
-        reduced.push(ticks[i]);
+        reduced.push(ticks2[i]);
       }
     }
-    ticks = reduced;
+    ticks2 = reduced;
   }
-  return ticks;
+  return ticks2;
+}
+function getTickLines(label, maxLength, maxLines) {
+  const labelString = (label || "").toString();
+  let totalLines = [];
+  if (/\s/.test(labelString)) {
+    totalLines = labelString.split(/\s+/).reduce((lines, line) => {
+      const last = (lines.pop() || "") + " ";
+      return last.length + line.length > maxLength ? [...lines, last.trim(), line.trim()] : [...lines, last + line];
+    }, []);
+  } else {
+    let startIndex = 0;
+    while (startIndex < labelString.length) {
+      totalLines.push(labelString.substring(startIndex, startIndex + maxLength));
+      startIndex += maxLength;
+    }
+  }
+  if (totalLines.length > maxLines) {
+    totalLines = totalLines.splice(0, maxLines);
+    totalLines[totalLines.length - 1] += "...";
+  }
+  return totalLines;
 }
 var TextAnchor;
 (function(TextAnchor2) {
@@ -13412,6 +15958,7 @@ var XAxisTicksComponent = class {
     this.maxTickLength = 16;
     this.showGridLines = false;
     this.rotateTicks = true;
+    this.wrapTicks = false;
     this.dimensionsChanged = new EventEmitter();
     this.verticalSpacing = 20;
     this.rotateLabels = false;
@@ -13423,6 +15970,10 @@ var XAxisTicksComponent = class {
     this.maxAllowedLength = 16;
     this.height = 0;
     this.approxHeight = 10;
+    this.maxPossibleLengthForTickIfWrapped = 16;
+  }
+  get isWrapTicksSupported() {
+    return this.wrapTicks && this.scale.step;
   }
   ngOnChanges(changes) {
     this.update();
@@ -13475,11 +16026,11 @@ var XAxisTicksComponent = class {
     }
     setTimeout(() => this.updateDims());
   }
-  getRotationAngle(ticks) {
+  getRotationAngle(ticks2) {
     let angle = 0;
     this.maxTicksLength = 0;
-    for (let i = 0; i < ticks.length; i++) {
-      const tick = this.tickFormat(ticks[i]).toString();
+    for (let i = 0; i < ticks2.length; i++) {
+      const tick = this.tickFormat(ticks2[i]).toString();
       let tickLength = tick.length;
       if (this.trimTicks) {
         tickLength = this.tickTrim(tick).length;
@@ -13492,27 +16043,35 @@ var XAxisTicksComponent = class {
     const charWidth = 7;
     const wordWidth = len * charWidth;
     let baseWidth = wordWidth;
-    const maxBaseWidth = Math.floor(this.width / ticks.length);
+    const maxBaseWidth = Math.floor(this.width / ticks2.length);
     while (baseWidth > maxBaseWidth && angle > -90) {
       angle -= 30;
       baseWidth = Math.cos(angle * (Math.PI / 180)) * wordWidth;
     }
-    this.approxHeight = Math.max(Math.abs(Math.sin(angle * (Math.PI / 180)) * wordWidth), 10);
+    let labelHeight = 14;
+    if (this.isWrapTicksSupported) {
+      const longestTick = this.ticks.reduce((earlier, current) => current.length > earlier.length ? current : earlier, "");
+      const tickLines = this.tickChunks(longestTick);
+      labelHeight = 14 * (tickLines.length || 1);
+      this.maxPossibleLengthForTickIfWrapped = this.getMaxPossibleLengthForTick(longestTick);
+    }
+    const requiredHeight = angle !== 0 ? Math.max(Math.abs(Math.sin(angle * Math.PI / 180)) * this.maxTickLength * charWidth, 10) : labelHeight;
+    this.approxHeight = Math.min(requiredHeight, 200);
     return angle;
   }
   getTicks() {
-    let ticks;
+    let ticks2;
     const maxTicks = this.getMaxTicks(20);
     const maxScaleTicks = this.getMaxTicks(100);
     if (this.tickValues) {
-      ticks = this.tickValues;
+      ticks2 = this.tickValues;
     } else if (this.scale.ticks) {
-      ticks = this.scale.ticks.apply(this.scale, [maxScaleTicks]);
+      ticks2 = this.scale.ticks.apply(this.scale, [maxScaleTicks]);
     } else {
-      ticks = this.scale.domain();
-      ticks = reduceTicks(ticks, maxTicks);
+      ticks2 = this.scale.domain();
+      ticks2 = reduceTicks(ticks2, maxTicks);
     }
-    return ticks;
+    return ticks2;
   }
   getMaxTicks(tickWidth) {
     return Math.floor(this.width / tickWidth);
@@ -13525,6 +16084,32 @@ var XAxisTicksComponent = class {
   }
   tickTrim(label) {
     return this.trimTicks ? trimLabel(label, this.maxTickLength) : label;
+  }
+  getMaxPossibleLengthForTick(longestLabel) {
+    if (this.scale.bandwidth) {
+      const averageCharacterWidth = 7;
+      const maxCharacters = Math.floor(this.scale.bandwidth() / averageCharacterWidth);
+      const truncatedText = longestLabel.slice(0, maxCharacters);
+      return Math.max(truncatedText.length, this.maxTickLength);
+    }
+    return this.maxTickLength;
+  }
+  tickChunks(label) {
+    if (label.toString().length > this.maxTickLength && this.scale.bandwidth) {
+      const maxAllowedLines = 5;
+      let maxLines = this.rotateTicks ? Math.floor(this.scale.step() / 14) : maxAllowedLines;
+      if (maxLines <= 1) {
+        return [this.tickTrim(label)];
+      }
+      let possibleStringLength = Math.max(this.maxPossibleLengthForTickIfWrapped, this.maxTickLength);
+      if (!isPlatformBrowser(this.platformId)) {
+        possibleStringLength = Math.floor(Math.min(this.approxHeight / maxAllowedLines, Math.max(this.maxPossibleLengthForTickIfWrapped, this.maxTickLength)));
+      }
+      maxLines = Math.min(maxLines, maxAllowedLines);
+      const lines = getTickLines(label, possibleStringLength, maxLines < 1 ? 1 : maxLines);
+      return lines;
+    }
+    return [this.tickTrim(label)];
   }
 };
 XAxisTicksComponent.ɵfac = function XAxisTicksComponent_Factory(t) {
@@ -13554,7 +16139,8 @@ XAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
     showGridLines: "showGridLines",
     gridLineHeight: "gridLineHeight",
     width: "width",
-    rotateTicks: "rotateTicks"
+    rotateTicks: "rotateTicks",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     dimensionsChanged: "dimensionsChanged"
@@ -13563,14 +16149,14 @@ XAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
   attrs: _c5,
   decls: 4,
   vars: 2,
-  consts: [["ticksel", ""], ["class", "tick", 4, "ngFor", "ngForOf"], [4, "ngFor", "ngForOf"], [1, "tick"], ["stroke-width", "0.01"], [4, "ngIf"], ["y2", "0", 1, "gridline-path", "gridline-path-vertical"]],
+  consts: [["ticksel", ""], ["tmplMultilineTick", ""], ["tmplSinglelineTick", ""], ["class", "tick", 4, "ngFor", "ngForOf"], [4, "ngFor", "ngForOf"], [1, "tick"], [4, "ngIf"], ["stroke-width", "0.01", "font-size", "12px"], [4, "ngIf", "ngIfThen", "ngIfElse"], ["x", "0", 4, "ngFor", "ngForOf"], ["x", "0"], ["y2", "0", 1, "gridline-path", "gridline-path-vertical"]],
   template: function XAxisTicksComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵnamespaceSVG();
       ɵɵelementStart(0, "g", null, 0);
-      ɵɵtemplate(2, XAxisTicksComponent__svg_g_2_Template, 5, 7, "g", 1);
+      ɵɵtemplate(2, XAxisTicksComponent__svg_g_2_Template, 2, 2, "g", 3);
       ɵɵelementEnd();
-      ɵɵtemplate(3, XAxisTicksComponent__svg_g_3_Template, 2, 2, "g", 2);
+      ɵɵtemplate(3, XAxisTicksComponent__svg_g_3_Template, 2, 2, "g", 4);
     }
     if (rf & 2) {
       ɵɵadvance(2);
@@ -13591,15 +16177,29 @@ XAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
       template: `
     <svg:g #ticksel>
       <svg:g *ngFor="let tick of ticks" class="tick" [attr.transform]="tickTransform(tick)">
-        <title>{{ tickFormat(tick) }}</title>
-        <svg:text
-          stroke-width="0.01"
-          [attr.text-anchor]="textAnchor"
-          [attr.transform]="textTransform"
-          [style.font-size]="'12px'"
-        >
-          {{ tickTrim(tickFormat(tick)) }}
-        </svg:text>
+        <ng-container *ngIf="tickFormat(tick) as tickFormatted">
+          <title>{{ tickFormatted }}</title>
+          <svg:text
+            stroke-width="0.01"
+            font-size="12px"
+            [attr.text-anchor]="textAnchor"
+            [attr.transform]="textTransform"
+          >
+            <ng-container *ngIf="isWrapTicksSupported; then tmplMultilineTick; else tmplSinglelineTick"></ng-container>
+          </svg:text>
+
+          <ng-template #tmplMultilineTick>
+            <ng-container *ngIf="tickChunks(tick) as tickLines">
+              <svg:tspan *ngFor="let tickLine of tickLines; let i = index" x="0" [attr.y]="i * 12">
+                {{ tickLine }}
+              </svg:tspan>
+            </ng-container>
+          </ng-template>
+
+          <ng-template #tmplSinglelineTick>
+            {{ tickTrim(tickFormatted) }}
+          </ng-template>
+        </ng-container>
       </svg:g>
     </svg:g>
 
@@ -13656,6 +16256,9 @@ XAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
     rotateTicks: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     dimensionsChanged: [{
       type: Output
     }],
@@ -13671,6 +16274,7 @@ var XAxisComponent = class {
     this.showGridLines = false;
     this.xOrient = Orientation.Bottom;
     this.xAxisOffset = 0;
+    this.wrapTicks = false;
     this.dimensionsChanged = new EventEmitter();
     this.xAxisClassName = "x axis";
     this.labelOffset = 0;
@@ -13732,7 +16336,8 @@ XAxisComponent.ɵcmp = ɵɵdefineComponent({
     ticks: "ticks",
     xAxisTickCount: "xAxisTickCount",
     xOrient: "xOrient",
-    xAxisOffset: "xAxisOffset"
+    xAxisOffset: "xAxisOffset",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     dimensionsChanged: "dimensionsChanged"
@@ -13741,12 +16346,12 @@ XAxisComponent.ɵcmp = ɵɵdefineComponent({
   attrs: _c6,
   decls: 3,
   vars: 4,
-  consts: [["ngx-charts-x-axis-ticks", "", 3, "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickStroke", "scale", "orient", "showGridLines", "gridLineHeight", "width", "tickValues", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width", 4, "ngIf"], ["ngx-charts-x-axis-ticks", "", 3, "dimensionsChanged", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickStroke", "scale", "orient", "showGridLines", "gridLineHeight", "width", "tickValues"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width"]],
+  consts: [["ngx-charts-x-axis-ticks", "", 3, "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickStroke", "scale", "orient", "showGridLines", "gridLineHeight", "width", "tickValues", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width", 4, "ngIf"], ["ngx-charts-x-axis-ticks", "", 3, "dimensionsChanged", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickStroke", "scale", "orient", "showGridLines", "gridLineHeight", "width", "tickValues", "wrapTicks"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width"]],
   template: function XAxisComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵnamespaceSVG();
       ɵɵelementStart(0, "g");
-      ɵɵtemplate(1, XAxisComponent__svg_g_1_Template, 1, 12, "g", 0)(2, XAxisComponent__svg_g_2_Template, 1, 5, "g", 1);
+      ɵɵtemplate(1, XAxisComponent__svg_g_1_Template, 1, 13, "g", 0)(2, XAxisComponent__svg_g_2_Template, 1, 5, "g", 1);
       ɵɵelementEnd();
     }
     if (rf & 2) {
@@ -13783,6 +16388,7 @@ XAxisComponent.ɵcmp = ɵɵdefineComponent({
         [gridLineHeight]="dims.height"
         [width]="dims.width"
         [tickValues]="ticks"
+        [wrapTicks]="wrapTicks"
         (dimensionsChanged)="emitTicksHeight($event)"
       />
       <svg:g
@@ -13838,6 +16444,9 @@ XAxisComponent.ɵcmp = ɵɵdefineComponent({
     xAxisOffset: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     dimensionsChanged: [{
       type: Output
     }],
@@ -13847,13 +16456,13 @@ XAxisComponent.ɵcmp = ɵɵdefineComponent({
     }]
   });
 })();
-function roundedRect(x2, y2, w, h, r, [tl, tr, bl, br]) {
+function roundedRect(x3, y3, w, h, r, [tl, tr, bl, br]) {
   let retval = "";
   w = Math.floor(w);
   h = Math.floor(h);
   w = w === 0 ? 1 : w;
   h = h === 0 ? 1 : h;
-  retval = `M${[x2 + r, y2]}`;
+  retval = `M${[x3 + r, y3]}`;
   retval += `h${w - 2 * r}`;
   if (tr) {
     retval += `a${[r, r]} 0 0 1 ${[r, r]}`;
@@ -13891,6 +16500,7 @@ var YAxisTicksComponent = class {
     this.showGridLines = false;
     this.showRefLabels = false;
     this.showRefLines = false;
+    this.wrapTicks = false;
     this.dimensionsChanged = new EventEmitter();
     this.innerTickSize = 6;
     this.tickPadding = 3;
@@ -13926,10 +16536,9 @@ var YAxisTicksComponent = class {
     }
   }
   update() {
-    let scale;
-    const sign2 = this.orient === Orientation.Top || this.orient === Orientation.Right ? -1 : 1;
+    const scale = this.scale;
+    const sign3 = this.orient === Orientation.Top || this.orient === Orientation.Right ? -1 : 1;
     this.tickSpacing = Math.max(this.innerTickSize, 0) + this.tickPadding;
-    scale = this.scale;
     this.ticks = this.getTicks();
     if (this.tickFormatting) {
       this.tickFormat = this.tickFormatting;
@@ -13943,8 +16552,19 @@ var YAxisTicksComponent = class {
         return d.toLocaleString();
       };
     }
-    this.adjustedScale = scale.bandwidth ? function(d) {
-      return scale(d) + scale.bandwidth() * 0.5;
+    this.adjustedScale = scale.bandwidth ? (d) => {
+      const positionMiddle = scale(d) + scale.bandwidth() * 0.5;
+      if (this.wrapTicks && d.toString().length > this.maxTickLength) {
+        const chunksLength = this.tickChunks(d).length;
+        if (chunksLength === 1) {
+          return positionMiddle;
+        }
+        const bandWidth = scale.bandwidth();
+        const heightOfLines = chunksLength * 8;
+        const availableFreeSpace = bandWidth * 0.5 - heightOfLines * 0.5;
+        return scale(d) + availableFreeSpace;
+      }
+      return positionMiddle;
     } : scale;
     if (this.showRefLines && this.referenceLines) {
       this.setReferencelines();
@@ -13955,26 +16575,26 @@ var YAxisTicksComponent = class {
           return "translate(" + this.adjustedScale(tick) + ",0)";
         };
         this.textAnchor = TextAnchor.Middle;
-        this.y2 = this.innerTickSize * sign2;
-        this.y1 = this.tickSpacing * sign2;
-        this.dy = sign2 < 0 ? "0em" : ".71em";
+        this.y2 = this.innerTickSize * sign3;
+        this.y1 = this.tickSpacing * sign3;
+        this.dy = sign3 < 0 ? "0em" : ".71em";
         break;
       case Orientation.Bottom:
         this.transform = function(tick) {
           return "translate(" + this.adjustedScale(tick) + ",0)";
         };
         this.textAnchor = TextAnchor.Middle;
-        this.y2 = this.innerTickSize * sign2;
-        this.y1 = this.tickSpacing * sign2;
-        this.dy = sign2 < 0 ? "0em" : ".71em";
+        this.y2 = this.innerTickSize * sign3;
+        this.y1 = this.tickSpacing * sign3;
+        this.dy = sign3 < 0 ? "0em" : ".71em";
         break;
       case Orientation.Left:
         this.transform = function(tick) {
           return "translate(0," + this.adjustedScale(tick) + ")";
         };
         this.textAnchor = TextAnchor.End;
-        this.x2 = this.innerTickSize * -sign2;
-        this.x1 = this.tickSpacing * -sign2;
+        this.x2 = this.innerTickSize * -sign3;
+        this.x1 = this.tickSpacing * -sign3;
         this.dy = ".32em";
         break;
       case Orientation.Right:
@@ -13982,8 +16602,8 @@ var YAxisTicksComponent = class {
           return "translate(0," + this.adjustedScale(tick) + ")";
         };
         this.textAnchor = TextAnchor.Start;
-        this.x2 = this.innerTickSize * -sign2;
-        this.x1 = this.tickSpacing * -sign2;
+        this.x2 = this.innerTickSize * -sign3;
+        this.x1 = this.tickSpacing * -sign3;
         this.dy = ".32em";
         break;
       default:
@@ -13997,18 +16617,18 @@ var YAxisTicksComponent = class {
     this.referenceAreaPath = roundedRect(0, this.refMax, this.gridLineWidth, this.refMin - this.refMax, 0, [false, false, false, false]);
   }
   getTicks() {
-    let ticks;
+    let ticks2;
     const maxTicks = this.getMaxTicks(20);
     const maxScaleTicks = this.getMaxTicks(50);
     if (this.tickValues) {
-      ticks = this.tickValues;
+      ticks2 = this.tickValues;
     } else if (this.scale.ticks) {
-      ticks = this.scale.ticks.apply(this.scale, [maxScaleTicks]);
+      ticks2 = this.scale.ticks.apply(this.scale, [maxScaleTicks]);
     } else {
-      ticks = this.scale.domain();
-      ticks = reduceTicks(ticks, maxTicks);
+      ticks2 = this.scale.domain();
+      ticks2 = reduceTicks(ticks2, maxTicks);
     }
-    return ticks;
+    return ticks2;
   }
   getMaxTicks(tickHeight) {
     return Math.floor(this.height / tickHeight);
@@ -14026,6 +16646,17 @@ var YAxisTicksComponent = class {
     const maxChars = Math.max(...this.ticks.map((t) => this.tickTrim(this.tickFormat(t)).length));
     const charWidth = 7;
     return maxChars * charWidth;
+  }
+  tickChunks(label) {
+    if (label.toString().length > this.maxTickLength && this.scale.bandwidth) {
+      const preferredWidth = this.maxTickLength;
+      const maxLines = Math.floor(this.scale.bandwidth() / 15);
+      if (maxLines <= 1) {
+        return [this.tickTrim(label)];
+      }
+      return getTickLines(label, preferredWidth, Math.min(maxLines, 5));
+    }
+    return [this.tickFormat(label)];
   }
 };
 YAxisTicksComponent.ɵfac = function YAxisTicksComponent_Factory(t) {
@@ -14057,7 +16688,8 @@ YAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
     height: "height",
     referenceLines: "referenceLines",
     showRefLabels: "showRefLabels",
-    showRefLines: "showRefLines"
+    showRefLines: "showRefLines",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     dimensionsChanged: "dimensionsChanged"
@@ -14066,14 +16698,14 @@ YAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
   attrs: _c7,
   decls: 6,
   vars: 4,
-  consts: [["ticksel", ""], ["class", "tick", 4, "ngFor", "ngForOf"], ["class", "reference-area", 4, "ngIf"], [4, "ngFor", "ngForOf"], [1, "tick"], ["stroke-width", "0.01"], [1, "reference-area"], [4, "ngIf"], ["class", "gridline-path gridline-path-horizontal", "x1", "0", 4, "ngIf"], ["x1", "0", 1, "gridline-path", "gridline-path-horizontal"], ["x1", "0", 1, "refline-path", "gridline-path-horizontal"], [1, "refline-label"]],
+  consts: [["ticksel", ""], ["tmplMultilineTick", ""], ["tmplSinglelineTick", ""], ["class", "tick", 4, "ngFor", "ngForOf"], ["class", "reference-area", 4, "ngIf"], [4, "ngFor", "ngForOf"], [1, "tick"], [4, "ngIf"], ["stroke-width", "0.01"], [4, "ngIf", "ngIfThen", "ngIfElse"], [4, "ngIf", "ngIfElse"], ["x", "0", 4, "ngFor", "ngForOf"], ["x", "0"], [1, "reference-area"], ["class", "gridline-path gridline-path-horizontal", "x1", "0", 4, "ngIf"], ["x1", "0", 1, "gridline-path", "gridline-path-horizontal"], ["x1", "0", 1, "refline-path", "gridline-path-horizontal"], [1, "refline-label"]],
   template: function YAxisTicksComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵnamespaceSVG();
       ɵɵelementStart(0, "g", null, 0);
-      ɵɵtemplate(2, YAxisTicksComponent__svg_g_2_Template, 5, 9, "g", 1);
+      ɵɵtemplate(2, YAxisTicksComponent__svg_g_2_Template, 2, 2, "g", 3);
       ɵɵelementEnd();
-      ɵɵtemplate(3, YAxisTicksComponent__svg_path_3_Template, 1, 2, "path", 2)(4, YAxisTicksComponent__svg_g_4_Template, 2, 2, "g", 3)(5, YAxisTicksComponent__svg_g_5_Template, 2, 1, "g", 3);
+      ɵɵtemplate(3, YAxisTicksComponent__svg_path_3_Template, 1, 2, "path", 4)(4, YAxisTicksComponent__svg_g_4_Template, 2, 2, "g", 5)(5, YAxisTicksComponent__svg_g_5_Template, 2, 1, "g", 5);
     }
     if (rf & 2) {
       ɵɵadvance(2);
@@ -14098,17 +16730,33 @@ YAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
       template: `
     <svg:g #ticksel>
       <svg:g *ngFor="let tick of ticks" class="tick" [attr.transform]="transform(tick)">
-        <title>{{ tickFormat(tick) }}</title>
-        <svg:text
-          stroke-width="0.01"
-          [attr.dy]="dy"
-          [attr.x]="x1"
-          [attr.y]="y1"
-          [attr.text-anchor]="textAnchor"
-          [style.font-size]="'12px'"
-        >
-          {{ tickTrim(tickFormat(tick)) }}
-        </svg:text>
+        <ng-container *ngIf="tickFormat(tick) as tickFormatted">
+          <title>{{ tickFormatted }}</title>
+          <svg:text
+            stroke-width="0.01"
+            [attr.dy]="dy"
+            [attr.x]="x1"
+            [attr.y]="y1"
+            [attr.text-anchor]="textAnchor"
+            [style.font-size]="'12px'"
+          >
+            <ng-container *ngIf="wrapTicks; then tmplMultilineTick; else tmplSinglelineTick"></ng-container>
+          </svg:text>
+
+          <ng-template #tmplMultilineTick>
+            <ng-container *ngIf="tickChunks(tick) as tickLines">
+              <ng-container *ngIf="tickLines.length > 1; else tmplSinglelineTick">
+                <svg:tspan *ngFor="let tickLine of tickLines; let i = index" x="0" [attr.y]="i * (8 + tickSpacing)">
+                  {{ tickLine }}
+                </svg:tspan>
+              </ng-container>
+            </ng-container>
+          </ng-template>
+
+          <ng-template #tmplSinglelineTick>
+            {{ tickTrim(tickFormatted) }}
+          </ng-template>
+        </ng-container>
       </svg:g>
     </svg:g>
 
@@ -14211,6 +16859,9 @@ YAxisTicksComponent.ɵcmp = ɵɵdefineComponent({
     showRefLines: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     dimensionsChanged: [{
       type: Output
     }],
@@ -14225,6 +16876,7 @@ var YAxisComponent = class {
     this.showGridLines = false;
     this.yOrient = Orientation.Left;
     this.yAxisOffset = 0;
+    this.wrapTicks = false;
     this.dimensionsChanged = new EventEmitter();
     this.yAxisClassName = "y axis";
     this.labelOffset = 15;
@@ -14243,7 +16895,6 @@ var YAxisComponent = class {
       this.labelOffset = 65;
       this.transform = `translate(${this.offset + this.dims.width} , 0)`;
     } else {
-      this.offset = this.offset;
       this.transform = `translate(${this.offset} , 0)`;
     }
     if (this.yAxisTickCount !== void 0) {
@@ -14300,7 +16951,8 @@ YAxisComponent.ɵcmp = ɵɵdefineComponent({
     referenceLines: "referenceLines",
     showRefLines: "showRefLines",
     showRefLabels: "showRefLabels",
-    yAxisOffset: "yAxisOffset"
+    yAxisOffset: "yAxisOffset",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     dimensionsChanged: "dimensionsChanged"
@@ -14309,12 +16961,12 @@ YAxisComponent.ɵcmp = ɵɵdefineComponent({
   attrs: _c8,
   decls: 3,
   vars: 4,
-  consts: [["ngx-charts-y-axis-ticks", "", 3, "trimTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickValues", "tickStroke", "scale", "orient", "showGridLines", "gridLineWidth", "referenceLines", "showRefLines", "showRefLabels", "height", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width", 4, "ngIf"], ["ngx-charts-y-axis-ticks", "", 3, "dimensionsChanged", "trimTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickValues", "tickStroke", "scale", "orient", "showGridLines", "gridLineWidth", "referenceLines", "showRefLines", "showRefLabels", "height"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width"]],
+  consts: [["ngx-charts-y-axis-ticks", "", 3, "trimTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickValues", "tickStroke", "scale", "orient", "showGridLines", "gridLineWidth", "referenceLines", "showRefLines", "showRefLabels", "height", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width", 4, "ngIf"], ["ngx-charts-y-axis-ticks", "", 3, "dimensionsChanged", "trimTicks", "maxTickLength", "tickFormatting", "tickArguments", "tickValues", "tickStroke", "scale", "orient", "showGridLines", "gridLineWidth", "referenceLines", "showRefLines", "showRefLabels", "height", "wrapTicks"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width"]],
   template: function YAxisComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵnamespaceSVG();
       ɵɵelementStart(0, "g");
-      ɵɵtemplate(1, YAxisComponent__svg_g_1_Template, 1, 14, "g", 0)(2, YAxisComponent__svg_g_2_Template, 1, 5, "g", 1);
+      ɵɵtemplate(1, YAxisComponent__svg_g_1_Template, 1, 15, "g", 0)(2, YAxisComponent__svg_g_2_Template, 1, 5, "g", 1);
       ɵɵelementEnd();
     }
     if (rf & 2) {
@@ -14353,6 +17005,7 @@ YAxisComponent.ɵcmp = ɵɵdefineComponent({
         [showRefLines]="showRefLines"
         [showRefLabels]="showRefLabels"
         [height]="dims.height"
+        [wrapTicks]="wrapTicks"
         (dimensionsChanged)="emitTicksWidth($event)"
       />
 
@@ -14413,6 +17066,9 @@ YAxisComponent.ɵcmp = ɵɵdefineComponent({
       type: Input
     }],
     yAxisOffset: [{
+      type: Input
+    }],
+    wrapTicks: [{
       type: Input
     }],
     dimensionsChanged: [{
@@ -14523,7 +17179,7 @@ var TooltipDirective = class {
   }
   showTooltip(immediate) {
     if (this.component || this.tooltipDisabled) return;
-    const time2 = immediate ? 0 : this.tooltipShowTimeout + (navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) ? 300 : 0);
+    const time2 = immediate ? 0 : this.tooltipShowTimeout + (navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) ? 400 : 0);
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.tooltipService.destroyAll();
@@ -15028,7 +17684,7 @@ var CircleSeriesComponent = class {
   }
   mapDataPointToCircle(d, i) {
     const seriesName = this.data.name;
-    const value = d.value;
+    const value2 = d.value;
     const label = d.name;
     const tooltipLabel = formatLabel(label);
     let cx;
@@ -15039,28 +17695,28 @@ var CircleSeriesComponent = class {
     } else {
       cx = this.xScale(label);
     }
-    const cy = this.yScale(this.type === SeriesType.Standard ? value : d.d1);
+    const cy = this.yScale(this.type === SeriesType.Standard ? value2 : d.d1);
     const radius = 5;
     const height = this.yScale.range()[0] - cy;
     const opacity = 1;
-    let color2;
+    let color3;
     if (this.colors.scaleType === ScaleType.Linear) {
       if (this.type === SeriesType.Standard) {
-        color2 = this.colors.getColor(value);
+        color3 = this.colors.getColor(value2);
       } else {
-        color2 = this.colors.getColor(d.d1);
+        color3 = this.colors.getColor(d.d1);
       }
     } else {
-      color2 = this.colors.getColor(seriesName);
+      color3 = this.colors.getColor(seriesName);
     }
     const data = Object.assign({}, d, {
       series: seriesName,
-      value,
+      value: value2,
       name: label
     });
     return {
       classNames: [`circle-data-${i}`],
-      value,
+      value: value2,
       label,
       data,
       cx,
@@ -15068,42 +17724,42 @@ var CircleSeriesComponent = class {
       radius,
       height,
       tooltipLabel,
-      color: color2,
+      color: color3,
       opacity,
       seriesName,
-      gradientStops: this.getGradientStops(color2),
+      gradientStops: this.getGradientStops(color3),
       min: d.min,
       max: d.max
     };
   }
   getTooltipText({
     tooltipLabel,
-    value,
+    value: value2,
     seriesName,
-    min: min4,
-    max: max4
+    min: min7,
+    max: max7
   }) {
     return `
       <span class="tooltip-label">${escapeLabel(seriesName)} • ${escapeLabel(tooltipLabel)}</span>
-      <span class="tooltip-val">${value.toLocaleString()}${this.getTooltipMinMaxText(min4, max4)}</span>
+      <span class="tooltip-val">${value2.toLocaleString()}${this.getTooltipMinMaxText(min7, max7)}</span>
     `;
   }
-  getTooltipMinMaxText(min4, max4) {
-    if (min4 !== void 0 || max4 !== void 0) {
+  getTooltipMinMaxText(min7, max7) {
+    if (min7 !== void 0 || max7 !== void 0) {
       let result = " (";
-      if (min4 !== void 0) {
-        if (max4 === void 0) {
+      if (min7 !== void 0) {
+        if (max7 === void 0) {
           result += "≥";
         }
-        result += min4.toLocaleString();
-        if (max4 !== void 0) {
+        result += min7.toLocaleString();
+        if (max7 !== void 0) {
           result += " - ";
         }
-      } else if (max4 !== void 0) {
+      } else if (max7 !== void 0) {
         result += "≤";
       }
-      if (max4 !== void 0) {
-        result += max4.toLocaleString();
+      if (max7 !== void 0) {
+        result += max7.toLocaleString();
       }
       result += ")";
       return result;
@@ -15111,14 +17767,14 @@ var CircleSeriesComponent = class {
       return "";
     }
   }
-  getGradientStops(color2) {
+  getGradientStops(color3) {
     return [{
       offset: 0,
-      color: color2,
+      color: color3,
       opacity: 0.2
     }, {
       offset: 100,
-      color: color2,
+      color: color3,
       opacity: 1
     }];
   }
@@ -15380,8 +18036,8 @@ var GridPanelSeriesComponent = class {
       let offset;
       let width;
       let height;
-      let x2;
-      let y2;
+      let x3;
+      let y3;
       let className = ClassEnum.Odd;
       if (this.orient === BarOrientation.Vertical) {
         const position = this.xScale(d.name);
@@ -15392,8 +18048,8 @@ var GridPanelSeriesComponent = class {
         offset = this.xScale.bandwidth() * this.xScale.paddingInner();
         width = this.xScale.bandwidth() + offset;
         height = this.dims.height;
-        x2 = this.xScale(d.name) - offset / 2;
-        y2 = 0;
+        x3 = this.xScale(d.name) - offset / 2;
+        y3 = 0;
       } else if (this.orient === BarOrientation.Horizontal) {
         const position = this.yScale(d.name);
         const positionIndex = Number.parseInt((position / this.yScale.step()).toString(), 10);
@@ -15403,16 +18059,16 @@ var GridPanelSeriesComponent = class {
         offset = this.yScale.bandwidth() * this.yScale.paddingInner();
         width = this.dims.width;
         height = this.yScale.bandwidth() + offset;
-        x2 = 0;
-        y2 = this.yScale(d.name) - offset / 2;
+        x3 = 0;
+        y3 = this.yScale(d.name) - offset / 2;
       }
       return {
         name: d.name,
         class: className,
         height,
         width,
-        x: x2,
-        y: y2
+        x: x3,
+        y: y3
       };
     });
   }
@@ -15494,8 +18150,8 @@ var SvgRadialGradientComponent = class {
   get stops() {
     return this.stopsInput || this.stopsDefault;
   }
-  set stops(value) {
-    this.stopsInput = value;
+  set stops(value2) {
+    this.stopsInput = value2;
   }
   ngOnChanges(changes) {
     this.r = "30%";
@@ -15753,7 +18409,7 @@ AreaComponent.ɵcmp = ɵɵdefineComponent({
 function easeOutExpo(t, b, c, d) {
   return c * (-Math.pow(2, -10 * t / d) + 1) * 1024 / 1023 + b;
 }
-function count3(countFrom, countTo, countDecimals, countDuration, callback) {
+function count5(countFrom, countTo, countDecimals, countDuration, callback) {
   const startVal = Number(countFrom);
   const endVal = Number(countTo);
   const countDown = startVal > endVal;
@@ -15838,13 +18494,13 @@ var CountUpDirective = class {
   }
   start() {
     cancelAnimationFrame(this.animationReq);
-    const valueFormatting = this.valueFormatting || ((value) => `${this.countPrefix}${value.toLocaleString()}${this.countSuffix}`);
+    const valueFormatting = this.valueFormatting || ((value2) => `${this.countPrefix}${value2.toLocaleString()}${this.countSuffix}`);
     const callback = ({
-      value,
+      value: value2,
       progress,
       finished
     }) => {
-      this.value = valueFormatting(value);
+      this.value = valueFormatting(value2);
       this.cd.markForCheck();
       if (!finished) this.countChange.emit({
         value: this.value,
@@ -15855,7 +18511,7 @@ var CountUpDirective = class {
         progress
       });
     };
-    this.animationReq = count3(this.countFrom, this.countTo, this.countDecimals, this.countDuration, callback);
+    this.animationReq = count5(this.countFrom, this.countTo, this.countDecimals, this.countDuration, callback);
   }
 };
 CountUpDirective.ɵfac = function CountUpDirective_Factory(t) {
@@ -15966,9 +18622,9 @@ var TooltipArea = class {
   }
   getValues(xVal) {
     const results = [];
-    for (const group2 of this.results) {
-      const item = group2.series.find((d) => d.name.toString() === xVal.toString());
-      let groupName = group2.name;
+    for (const group4 of this.results) {
+      const item = group4.series.find((d) => d.name.toString() === xVal.toString());
+      let groupName = group4.name;
       if (groupName instanceof Date) {
         groupName = groupName.toLocaleDateString();
       }
@@ -15978,15 +18634,15 @@ var TooltipArea = class {
         if (this.showPercentage) {
           val = (item.d1 - item.d0).toFixed(2) + "%";
         }
-        let color2;
+        let color3;
         if (this.colors.scaleType === ScaleType.Linear) {
           let v = val;
           if (item.d1) {
             v = item.d1;
           }
-          color2 = this.colors.getColor(v);
+          color3 = this.colors.getColor(v);
         } else {
-          color2 = this.colors.getColor(group2.name);
+          color3 = this.colors.getColor(group4.name);
         }
         const data = Object.assign({}, item, {
           value: val,
@@ -15994,7 +18650,7 @@ var TooltipArea = class {
           series: groupName,
           min: item.min,
           max: item.max,
-          color: color2
+          color: color3
         });
         results.push(data);
       }
@@ -16024,12 +18680,12 @@ var TooltipArea = class {
     }
   }
   findClosestPointIndex(xPos) {
-    let minIndex2 = 0;
-    let maxIndex2 = this.xSet.length - 1;
+    let minIndex4 = 0;
+    let maxIndex4 = this.xSet.length - 1;
     let minDiff = Number.MAX_VALUE;
     let closestIndex = 0;
-    while (minIndex2 <= maxIndex2) {
-      const currentIndex = (minIndex2 + maxIndex2) / 2 | 0;
+    while (minIndex4 <= maxIndex4) {
+      const currentIndex = (minIndex4 + maxIndex4) / 2 | 0;
       const currentElement = this.xScale(this.xSet[currentIndex]);
       const curDiff = Math.abs(currentElement - xPos);
       if (curDiff < minDiff) {
@@ -16037,9 +18693,9 @@ var TooltipArea = class {
         closestIndex = currentIndex;
       }
       if (currentElement < xPos) {
-        minIndex2 = currentIndex + 1;
+        minIndex4 = currentIndex + 1;
       } else if (currentElement > xPos) {
-        maxIndex2 = currentIndex - 1;
+        maxIndex4 = currentIndex - 1;
       } else {
         minDiff = 0;
         closestIndex = currentIndex;
@@ -16310,14 +18966,14 @@ var Timeline = class {
     }
     let domain = [];
     if (this.scaleType === ScaleType.Time) {
-      const min4 = Math.min(...values);
-      const max4 = Math.max(...values);
-      domain = [min4, max4];
+      const min7 = Math.min(...values);
+      const max7 = Math.max(...values);
+      domain = [min7, max7];
     } else if (this.scaleType === ScaleType.Linear) {
       values = values.map((v) => Number(v));
-      const min4 = Math.min(...values);
-      const max4 = Math.max(...values);
-      domain = [min4, max4];
+      const min7 = Math.min(...values);
+      const max7 = Math.max(...values);
+      domain = [min7, max7];
     } else {
       domain = values;
     }
@@ -16491,13 +19147,13 @@ var AdvancedLegendComponent = class {
     this.legendItems = [];
     this.labelFormatting = (label) => label;
     this.percentageFormatting = (percentage) => percentage;
-    this.defaultValueFormatting = (value) => value.toLocaleString();
+    this.defaultValueFormatting = (value2) => value2.toLocaleString();
   }
   ngOnChanges(changes) {
     this.update();
   }
   getTotal() {
-    return this.data.map((d) => Number(d.value)).reduce((sum3, d) => sum3 + d, 0);
+    return this.data.map((d) => Number(d.value)).reduce((sum6, d) => sum6 + d, 0);
   }
   update() {
     this.total = this.getTotal();
@@ -16507,15 +19163,15 @@ var AdvancedLegendComponent = class {
   getLegendItems() {
     return this.data.map((d) => {
       const label = formatLabel(d.name);
-      const value = d.value;
-      const color2 = this.colors.getColor(label);
-      const percentage = this.total > 0 ? value / this.total * 100 : 0;
+      const value2 = d.value;
+      const color3 = this.colors.getColor(label);
+      const percentage = this.total > 0 ? value2 / this.total * 100 : 0;
       const formattedLabel = typeof this.labelFormatting === "function" ? this.labelFormatting(label) : label;
       return {
-        _value: value,
+        _value: value2,
         data: d,
-        value,
-        color: color2,
+        value: value2,
+        color: color3,
         label: formattedLabel,
         displayLabel: trimLabel(formattedLabel, 20),
         origialLabel: d.name,
@@ -16523,7 +19179,7 @@ var AdvancedLegendComponent = class {
       };
     });
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.label;
   }
 };
@@ -16864,7 +19520,7 @@ var ColorHelper = class {
             colorDomain.push(colorDomain[0]);
             this.colorDomain = colorDomain;
           }
-          const points = range_default(0, 1, 1 / colorDomain.length);
+          const points = range(0, 1, 1 / colorDomain.length);
           colorScale = linear3().range(colorDomain).domain(points);
         }
         break;
@@ -16873,18 +19529,18 @@ var ColorHelper = class {
     }
     return colorScale;
   }
-  getColor(value) {
-    if (value === void 0 || value === null) {
+  getColor(value2) {
+    if (value2 === void 0 || value2 === null) {
       throw new Error("Value can not be null");
     }
     if (this.scaleType === ScaleType.Linear) {
       const valueScale = linear3().domain(this.domain).range([0, 1]);
-      return this.scale(valueScale(value));
+      return this.scale(valueScale(value2));
     } else {
       if (typeof this.customColors === "function") {
-        return this.customColors(value);
+        return this.customColors(value2);
       }
-      const formattedValue = value.toString();
+      const formattedValue = value2.toString();
       let found;
       if (this.customColors && this.customColors.length > 0) {
         found = this.customColors.find((mapping) => {
@@ -16894,20 +19550,20 @@ var ColorHelper = class {
       if (found) {
         return found.value;
       } else {
-        return this.scale(value);
+        return this.scale(value2);
       }
     }
   }
-  getLinearGradientStops(value, start2) {
+  getLinearGradientStops(value2, start2) {
     if (start2 === void 0) {
       start2 = this.domain[0];
     }
     const valueScale = linear3().domain(this.domain).range([0, 1]);
     const colorValueScale = band().domain(this.colorDomain).range([0, 1]);
-    const endColor = this.getColor(value);
+    const endColor = this.getColor(value2);
     const startVal = valueScale(start2);
     const startColor = this.getColor(start2);
-    const endVal = valueScale(value);
+    const endVal = valueScale(value2);
     let i = 1;
     let currentVal = startVal;
     const stops = [];
@@ -16918,8 +19574,8 @@ var ColorHelper = class {
       opacity: 1
     });
     while (currentVal < endVal && i < this.colorDomain.length) {
-      const color2 = this.colorDomain[i];
-      const offset = colorValueScale(color2);
+      const color3 = this.colorDomain[i];
+      const offset = colorValueScale(color3);
       if (offset <= startVal) {
         i++;
         continue;
@@ -16928,7 +19584,7 @@ var ColorHelper = class {
         break;
       }
       stops.push({
-        color: color2,
+        color: color3,
         offset,
         opacity: 1
       });
@@ -16947,8 +19603,8 @@ var ColorHelper = class {
       stops[1].offset = 100;
     } else {
       if (stops[stops.length - 1].offset !== 100) {
-        for (const s2 of stops) {
-          s2.offset = (s2.offset - startVal) / (endVal - startVal) * 100;
+        for (const s3 of stops) {
+          s3.offset = (s3.offset - startVal) / (endVal - startVal) * 100;
         }
       }
     }
@@ -16966,12 +19622,12 @@ function getUniqueXDomainValues(results) {
 }
 function getScaleType(values, checkDateType = true) {
   if (checkDateType) {
-    const allDates = values.every((value) => value instanceof Date);
+    const allDates = values.every((value2) => value2 instanceof Date);
     if (allDates) {
       return ScaleType.Time;
     }
   }
-  const allNumbers = values.every((value) => typeof value === "number");
+  const allNumbers = values.every((value2) => typeof value2 === "number");
   if (allNumbers) {
     return ScaleType.Linear;
   }
@@ -16984,25 +19640,25 @@ function getXDomainArray(values, xScaleMin, xScaleMax) {
   if (scaleType === ScaleType.Linear) {
     values = values.map((v) => Number(v));
   }
-  let min4;
-  let max4;
+  let min7;
+  let max7;
   if (scaleType === ScaleType.Time || scaleType === ScaleType.Linear) {
     const mappedValues = values.map((v) => Number(v));
-    min4 = xScaleMin ? xScaleMin : Math.min(...mappedValues);
-    max4 = xScaleMax ? xScaleMax : Math.max(...mappedValues);
+    min7 = xScaleMin ? xScaleMin : Math.min(...mappedValues);
+    max7 = xScaleMax ? xScaleMax : Math.max(...mappedValues);
   }
   if (scaleType === ScaleType.Time) {
-    domain = [new Date(min4), new Date(max4)];
-    xSet = [...values].sort((a2, b) => {
-      const aDate = a2.getTime();
+    domain = [new Date(min7), new Date(max7)];
+    xSet = [...values].sort((a3, b) => {
+      const aDate = a3.getTime();
       const bDate = b.getTime();
       if (aDate > bDate) return 1;
       if (bDate > aDate) return -1;
       return 0;
     });
   } else if (scaleType === ScaleType.Linear) {
-    domain = [min4, max4];
-    xSet = [...values].sort((a2, b) => a2 - b);
+    domain = [min7, max7];
+    xSet = [...values].sort((a3, b) => a3 - b);
   } else {
     domain = values;
     xSet = values;
@@ -17014,17 +19670,17 @@ function getXDomainArray(values, xScaleMin, xScaleMax) {
   };
 }
 function sortLinear(data, property, direction = "asc") {
-  return data.sort((a2, b) => {
+  return data.sort((a3, b) => {
     if (direction === "asc") {
-      return a2[property] - b[property];
+      return a3[property] - b[property];
     } else {
-      return b[property] - a2[property];
+      return b[property] - a3[property];
     }
   });
 }
 function sortByDomain(data, property, direction = "asc", domain) {
-  return data.sort((a2, b) => {
-    const aVal = a2[property];
+  return data.sort((a3, b) => {
+    const aVal = a3[property];
     const bVal = b[property];
     const aIdx = domain.indexOf(aVal);
     const bIdx = domain.indexOf(bVal);
@@ -17036,8 +19692,8 @@ function sortByDomain(data, property, direction = "asc", domain) {
   });
 }
 function sortByTime(data, property, direction = "asc") {
-  return data.sort((a2, b) => {
-    const aDate = a2[property].getTime();
+  return data.sort((a3, b) => {
+    const aDate = a3[property].getTime();
     const bDate = b[property].getTime();
     if (direction === "asc") {
       if (aDate > bDate) return 1;
@@ -17096,13 +19752,13 @@ var AreaSeriesComponent = class {
       if (this.stacked || this.normalized) {
         const d0values = this.data.series.map((d) => d.d0);
         const d1values = this.data.series.map((d) => d.d1);
-        const max4 = Math.max(...d1values);
-        const min4 = Math.min(...d0values);
-        this.gradientStops = this.colors.getLinearGradientStops(max4, min4);
+        const max7 = Math.max(...d1values);
+        const min7 = Math.min(...d0values);
+        this.gradientStops = this.colors.getLinearGradientStops(max7, min7);
       } else {
         const values = this.data.series.map((d) => d.value);
-        const max4 = Math.max(...values);
-        this.gradientStops = this.colors.getLinearGradientStops(max4);
+        const max7 = Math.max(...values);
+        this.gradientStops = this.colors.getLinearGradientStops(max7);
       }
     } else {
       this.hasGradient = false;
@@ -17252,6 +19908,7 @@ var AreaChartComponent = class extends BaseChartComponent {
     this.maxYAxisTickLength = 16;
     this.roundDomains = false;
     this.tooltipDisabled = false;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -17259,7 +19916,7 @@ var AreaChartComponent = class extends BaseChartComponent {
     this.yAxisWidth = 0;
     this.timelineHeight = 50;
     this.timelinePadding = 10;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -17313,24 +19970,24 @@ var AreaChartComponent = class extends BaseChartComponent {
     if (this.scaleType === ScaleType.Linear) {
       values = values.map((v) => Number(v));
     }
-    let min4;
-    let max4;
+    let min7;
+    let max7;
     if (this.scaleType === ScaleType.Time || this.scaleType === ScaleType.Linear) {
-      min4 = this.xScaleMin ? this.xScaleMin : Math.min(...values);
-      max4 = this.xScaleMax ? this.xScaleMax : Math.max(...values);
+      min7 = this.xScaleMin ? this.xScaleMin : Math.min(...values);
+      max7 = this.xScaleMax ? this.xScaleMax : Math.max(...values);
     }
     if (this.scaleType === ScaleType.Time) {
-      domain = [new Date(min4), new Date(max4)];
-      this.xSet = [...values].sort((a2, b) => {
-        const aDate = a2.getTime();
+      domain = [new Date(min7), new Date(max7)];
+      this.xSet = [...values].sort((a3, b) => {
+        const aDate = a3.getTime();
         const bDate = b.getTime();
         if (aDate > bDate) return 1;
         if (bDate > aDate) return -1;
         return 0;
       });
     } else if (this.scaleType === ScaleType.Linear) {
-      domain = [min4, max4];
-      this.xSet = [...values].sort((a2, b) => a2 - b);
+      domain = [min7, max7];
+      this.xSet = [...values].sort((a3, b) => a3 - b);
     } else {
       domain = values;
       this.xSet = values;
@@ -17353,9 +20010,9 @@ var AreaChartComponent = class extends BaseChartComponent {
     if (this.baseValue !== "auto") {
       values.push(this.baseValue);
     }
-    const min4 = this.yScaleMin ? this.yScaleMin : Math.min(...values);
-    const max4 = this.yScaleMax ? this.yScaleMax : Math.max(...values);
-    return [min4, max4];
+    const min7 = this.yScaleMin ? this.yScaleMin : Math.min(...values);
+    const max7 = this.yScaleMax ? this.yScaleMax : Math.max(...values);
+    return [min7, max7];
   }
   getSeriesDomain() {
     return this.results.map((d) => d.name);
@@ -17379,11 +20036,11 @@ var AreaChartComponent = class extends BaseChartComponent {
   getScaleType(values) {
     let date2 = true;
     let num = true;
-    for (const value of values) {
-      if (isDate(value)) {
+    for (const value2 of values) {
+      if (isDate(value2)) {
         date2 = false;
       }
-      if (isNumber(value)) {
+      if (isNumber(value2)) {
         num = false;
       }
     }
@@ -17547,7 +20204,8 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
     xScaleMin: "xScaleMin",
     xScaleMax: "xScaleMax",
     yScaleMin: "yScaleMin",
-    yScaleMax: "yScaleMax"
+    yScaleMax: "yScaleMax",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -17556,7 +20214,7 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 11,
   vars: 20,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "area-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "legend", "scaleType", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "baseValue", "colors", "data", "activeEntries", "scaleType", "gradient", "curve", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "tooltipDisabled", "tooltipTemplate"], [4, "ngFor", "ngForOf"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "colors", "activeEntries", "data", "scaleType", "visibleValue", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "legend", "scaleType"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "baseValue", "colors", "data", "scaleType", "gradient", "curve", "animations"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "area-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "legend", "scaleType", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "baseValue", "colors", "data", "activeEntries", "scaleType", "gradient", "curve", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "tooltipDisabled", "tooltipTemplate"], [4, "ngFor", "ngForOf"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "colors", "activeEntries", "data", "scaleType", "visibleValue", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "legend", "scaleType"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "baseValue", "colors", "data", "scaleType", "gradient", "curve", "animations"]],
   template: function AreaChartComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -17572,7 +20230,7 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelement(3, "rect");
       ɵɵelementEnd()();
       ɵɵelementStart(4, "g", 1);
-      ɵɵtemplate(5, AreaChartComponent__svg_g_5_Template, 1, 10, "g", 2)(6, AreaChartComponent__svg_g_6_Template, 1, 9, "g", 3);
+      ɵɵtemplate(5, AreaChartComponent__svg_g_5_Template, 1, 11, "g", 2)(6, AreaChartComponent__svg_g_6_Template, 1, 10, "g", 3);
       ɵɵelementStart(7, "g");
       ɵɵtemplate(8, AreaChartComponent__svg_g_8_Template, 2, 10, "g", 4)(9, AreaChartComponent__svg_g_9_Template, 3, 9, "g", 5);
       ɵɵelementEnd()();
@@ -17602,7 +20260,7 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
     }
   },
   dependencies: [ChartComponent, XAxisComponent, YAxisComponent, AreaSeriesComponent, TooltipArea, CircleSeriesComponent, Timeline, NgIf, NgForOf],
-  styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"],
+  styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"],
   encapsulation: 2,
   changeDetection: 0
 });
@@ -17645,6 +20303,7 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -17659,6 +20318,7 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g [attr.clip-path]="clipPath">
@@ -17744,7 +20404,7 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
   `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation$1.None,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -17843,6 +20503,9 @@ AreaChartComponent.ɵcmp = ɵɵdefineComponent({
     yScaleMax: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -17881,6 +20544,7 @@ var AreaChartNormalizedComponent = class extends BaseChartComponent {
     this.maxYAxisTickLength = 16;
     this.roundDomains = false;
     this.tooltipDisabled = false;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.yDomain = [0, 100];
@@ -17890,7 +20554,7 @@ var AreaChartNormalizedComponent = class extends BaseChartComponent {
     this.seriesType = SeriesType;
     this.timelineHeight = 50;
     this.timelinePadding = 10;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -17924,29 +20588,29 @@ var AreaChartNormalizedComponent = class extends BaseChartComponent {
       const val = this.xSet[i];
       let d0 = 0;
       let total = 0;
-      for (const group2 of this.results) {
-        const d = group2.series.find((item) => {
-          let a2 = item.name;
+      for (const group4 of this.results) {
+        const d = group4.series.find((item) => {
+          let a3 = item.name;
           let b = val;
           if (this.scaleType === ScaleType.Time) {
-            a2 = a2.valueOf();
+            a3 = a3.valueOf();
             b = b.valueOf();
           }
-          return a2 === b;
+          return a3 === b;
         });
         if (d) {
           total += d.value;
         }
       }
-      for (const group2 of this.results) {
-        let d = group2.series.find((item) => {
-          let a2 = item.name;
+      for (const group4 of this.results) {
+        let d = group4.series.find((item) => {
+          let a3 = item.name;
           let b = val;
           if (this.scaleType === ScaleType.Time) {
-            a2 = a2.valueOf();
+            a3 = a3.valueOf();
             b = b.valueOf();
           }
-          return a2 === b;
+          return a3 === b;
         });
         if (d) {
           d.d0 = d0;
@@ -17959,7 +20623,7 @@ var AreaChartNormalizedComponent = class extends BaseChartComponent {
             d0,
             d1: d0
           };
-          group2.series.push(d);
+          group4.series.push(d);
         }
         if (total > 0) {
           d.d0 = d.d0 * 100 / total;
@@ -17991,11 +20655,11 @@ var AreaChartNormalizedComponent = class extends BaseChartComponent {
     this.scaleType = getScaleType(values);
     let domain = [];
     if (this.scaleType === ScaleType.Time) {
-      const min4 = Math.min(...values);
-      const max4 = Math.max(...values);
-      domain = [new Date(min4), new Date(max4)];
-      this.xSet = [...values].sort((a2, b) => {
-        const aDate = a2.getTime();
+      const min7 = Math.min(...values);
+      const max7 = Math.max(...values);
+      domain = [new Date(min7), new Date(max7)];
+      this.xSet = [...values].sort((a3, b) => {
+        const aDate = a3.getTime();
         const bDate = b.getTime();
         if (aDate > bDate) return 1;
         if (bDate > aDate) return -1;
@@ -18003,10 +20667,10 @@ var AreaChartNormalizedComponent = class extends BaseChartComponent {
       });
     } else if (this.scaleType === ScaleType.Linear) {
       values = values.map((v) => Number(v));
-      const min4 = Math.min(...values);
-      const max4 = Math.max(...values);
-      domain = [min4, max4];
-      this.xSet = [...values].sort((a2, b) => a2 - b);
+      const min7 = Math.min(...values);
+      const max7 = Math.max(...values);
+      domain = [min7, max7];
+      this.xSet = [...values].sort((a3, b) => a3 - b);
     } else {
       domain = values;
       this.xSet = values;
@@ -18178,7 +20842,8 @@ AreaChartNormalizedComponent.ɵcmp = ɵɵdefineComponent({
     xAxisTicks: "xAxisTicks",
     yAxisTicks: "yAxisTicks",
     roundDomains: "roundDomains",
-    tooltipDisabled: "tooltipDisabled"
+    tooltipDisabled: "tooltipDisabled",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -18187,7 +20852,7 @@ AreaChartNormalizedComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 11,
   vars: 20,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "area-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "legend", "scaleType", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "activeEntries", "gradient", "normalized", "curve", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "showPercentage", "tooltipDisabled", "tooltipTemplate"], [4, "ngFor", "ngForOf"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "colors", "activeEntries", "data", "scaleType", "visibleValue", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "legend", "scaleType"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "gradient", "normalized", "curve", "animations"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "area-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "legend", "scaleType", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "activeEntries", "gradient", "normalized", "curve", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "showPercentage", "tooltipDisabled", "tooltipTemplate"], [4, "ngFor", "ngForOf"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "colors", "activeEntries", "data", "scaleType", "visibleValue", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "legend", "scaleType"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "gradient", "normalized", "curve", "animations"]],
   template: function AreaChartNormalizedComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -18203,7 +20868,7 @@ AreaChartNormalizedComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelement(3, "rect");
       ɵɵelementEnd()();
       ɵɵelementStart(4, "g", 1);
-      ɵɵtemplate(5, AreaChartNormalizedComponent__svg_g_5_Template, 1, 10, "g", 2)(6, AreaChartNormalizedComponent__svg_g_6_Template, 1, 9, "g", 3);
+      ɵɵtemplate(5, AreaChartNormalizedComponent__svg_g_5_Template, 1, 11, "g", 2)(6, AreaChartNormalizedComponent__svg_g_6_Template, 1, 10, "g", 3);
       ɵɵelementStart(7, "g");
       ɵɵtemplate(8, AreaChartNormalizedComponent__svg_g_8_Template, 2, 10, "g", 4)(9, AreaChartNormalizedComponent__svg_g_9_Template, 3, 10, "g", 5);
       ɵɵelementEnd()();
@@ -18276,6 +20941,7 @@ AreaChartNormalizedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -18290,6 +20956,7 @@ AreaChartNormalizedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g [attr.clip-path]="clipPath">
@@ -18377,7 +21044,7 @@ AreaChartNormalizedComponent.ɵcmp = ɵɵdefineComponent({
   `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation$1.None,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -18458,6 +21125,9 @@ AreaChartNormalizedComponent.ɵcmp = ɵɵdefineComponent({
     tooltipDisabled: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -18497,6 +21167,7 @@ var AreaChartStackedComponent = class extends BaseChartComponent {
     this.maxYAxisTickLength = 16;
     this.roundDomains = false;
     this.tooltipDisabled = false;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -18536,15 +21207,15 @@ var AreaChartStackedComponent = class extends BaseChartComponent {
     for (let i = 0; i < this.xSet.length; i++) {
       const val = this.xSet[i];
       let d0 = 0;
-      for (const group2 of this.results) {
-        let d = group2.series.find((item) => {
-          let a2 = item.name;
+      for (const group4 of this.results) {
+        let d = group4.series.find((item) => {
+          let a3 = item.name;
           let b = val;
           if (this.scaleType === ScaleType.Time) {
-            a2 = a2.valueOf();
+            a3 = a3.valueOf();
             b = b.valueOf();
           }
-          return a2 === b;
+          return a3 === b;
         });
         if (d) {
           d.d0 = d0;
@@ -18557,7 +21228,7 @@ var AreaChartStackedComponent = class extends BaseChartComponent {
             d0,
             d1: d0
           };
-          group2.series.push(d);
+          group4.series.push(d);
         }
       }
     }
@@ -18584,24 +21255,24 @@ var AreaChartStackedComponent = class extends BaseChartComponent {
     if (this.scaleType === ScaleType.Linear) {
       values = values.map((v) => Number(v));
     }
-    let min4;
-    let max4;
+    let min7;
+    let max7;
     if (this.scaleType === ScaleType.Time || this.scaleType === ScaleType.Linear) {
-      min4 = this.xScaleMin ? this.xScaleMin : Math.min(...values);
-      max4 = this.xScaleMax ? this.xScaleMax : Math.max(...values);
+      min7 = this.xScaleMin ? this.xScaleMin : Math.min(...values);
+      max7 = this.xScaleMax ? this.xScaleMax : Math.max(...values);
     }
     if (this.scaleType === ScaleType.Time) {
-      domain = [new Date(min4), new Date(max4)];
-      this.xSet = [...values].sort((a2, b) => {
-        const aDate = a2.getTime();
+      domain = [new Date(min7), new Date(max7)];
+      this.xSet = [...values].sort((a3, b) => {
+        const aDate = a3.getTime();
         const bDate = b.getTime();
         if (aDate > bDate) return 1;
         if (bDate > aDate) return -1;
         return 0;
       });
     } else if (this.scaleType === ScaleType.Linear) {
-      domain = [min4, max4];
-      this.xSet = [...values].sort((a2, b) => a2 - b);
+      domain = [min7, max7];
+      this.xSet = [...values].sort((a3, b) => a3 - b);
     } else {
       domain = values;
       this.xSet = values;
@@ -18612,26 +21283,26 @@ var AreaChartStackedComponent = class extends BaseChartComponent {
     const domain = [];
     for (let i = 0; i < this.xSet.length; i++) {
       const val = this.xSet[i];
-      let sum3 = 0;
-      for (const group2 of this.results) {
-        const d = group2.series.find((item) => {
-          let a2 = item.name;
+      let sum6 = 0;
+      for (const group4 of this.results) {
+        const d = group4.series.find((item) => {
+          let a3 = item.name;
           let b = val;
           if (this.scaleType === ScaleType.Time) {
-            a2 = a2.valueOf();
+            a3 = a3.valueOf();
             b = b.valueOf();
           }
-          return a2 === b;
+          return a3 === b;
         });
         if (d) {
-          sum3 += d.value;
+          sum6 += d.value;
         }
       }
-      domain.push(sum3);
+      domain.push(sum6);
     }
-    const min4 = this.yScaleMin ? this.yScaleMin : Math.min(0, ...domain);
-    const max4 = this.yScaleMax ? this.yScaleMax : Math.max(...domain);
-    return [min4, max4];
+    const min7 = this.yScaleMin ? this.yScaleMin : Math.min(0, ...domain);
+    const max7 = this.yScaleMax ? this.yScaleMax : Math.max(...domain);
+    return [min7, max7];
   }
   getSeriesDomain() {
     return this.results.map((d) => d.name);
@@ -18671,7 +21342,7 @@ var AreaChartStackedComponent = class extends BaseChartComponent {
     }
     this.select.emit(data);
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return `${item.name}`;
   }
   setColors() {
@@ -18805,7 +21476,8 @@ AreaChartStackedComponent.ɵcmp = ɵɵdefineComponent({
     xScaleMin: "xScaleMin",
     xScaleMax: "xScaleMax",
     yScaleMin: "yScaleMin",
-    yScaleMax: "yScaleMax"
+    yScaleMax: "yScaleMax",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -18814,7 +21486,7 @@ AreaChartStackedComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 11,
   vars: 20,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "area-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "legend", "scaleType", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "gradient", "activeEntries", "stacked", "curve", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "colors", "activeEntries", "data", "scaleType", "visibleValue", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "legend", "scaleType"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "gradient", "stacked", "curve", "animations"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "area-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "legend", "scaleType", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "gradient", "activeEntries", "stacked", "curve", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "colors", "activeEntries", "data", "scaleType", "visibleValue", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "legend", "scaleType"], ["ngx-charts-area-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "gradient", "stacked", "curve", "animations"]],
   template: function AreaChartStackedComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -18830,7 +21502,7 @@ AreaChartStackedComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelement(3, "rect");
       ɵɵelementEnd()();
       ɵɵelementStart(4, "g", 1);
-      ɵɵtemplate(5, AreaChartStackedComponent__svg_g_5_Template, 1, 10, "g", 2)(6, AreaChartStackedComponent__svg_g_6_Template, 1, 9, "g", 3);
+      ɵɵtemplate(5, AreaChartStackedComponent__svg_g_5_Template, 1, 11, "g", 2)(6, AreaChartStackedComponent__svg_g_6_Template, 1, 10, "g", 3);
       ɵɵelementStart(7, "g");
       ɵɵtemplate(8, AreaChartStackedComponent__svg_g_8_Template, 2, 10, "g", 4)(9, AreaChartStackedComponent__svg_g_9_Template, 3, 10, "g", 5);
       ɵɵelementEnd()();
@@ -18903,6 +21575,7 @@ AreaChartStackedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -18917,6 +21590,7 @@ AreaChartStackedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g [attr.clip-path]="clipPath">
@@ -19003,7 +21677,7 @@ AreaChartStackedComponent.ɵcmp = ɵɵdefineComponent({
   `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation$1.None,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -19096,6 +21770,9 @@ AreaChartStackedComponent.ɵcmp = ɵɵdefineComponent({
     yScaleMax: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -19179,11 +21856,11 @@ var BarComponent = class {
   }
   updatePathEl() {
     const node = select_default2(this.element).select(".bar");
-    const path2 = this.getPath();
+    const path3 = this.getPath();
     if (this.animations) {
-      node.transition().duration(500).attr("d", path2);
+      node.transition().duration(500).attr("d", path3);
     } else {
-      node.attr("d", path2);
+      node.attr("d", path3);
     }
   }
   getGradient() {
@@ -19205,39 +21882,39 @@ var BarComponent = class {
       return this.getPath();
     }
     let radius = this.getRadius();
-    let path2;
+    let path3;
     if (this.roundEdges) {
       if (this.orientation === BarOrientation.Vertical) {
         radius = Math.min(this.height, radius);
-        path2 = roundedRect(this.x, this.y + this.height, this.width, 1, 0, this.edges);
+        path3 = roundedRect(this.x, this.y + this.height, this.width, 1, 0, this.edges);
       } else if (this.orientation === BarOrientation.Horizontal) {
         radius = Math.min(this.width, radius);
-        path2 = roundedRect(this.x, this.y, 1, this.height, 0, this.edges);
+        path3 = roundedRect(this.x, this.y, 1, this.height, 0, this.edges);
       }
     } else {
       if (this.orientation === BarOrientation.Vertical) {
-        path2 = roundedRect(this.x, this.y + this.height, this.width, 1, 0, this.edges);
+        path3 = roundedRect(this.x, this.y + this.height, this.width, 1, 0, this.edges);
       } else if (this.orientation === BarOrientation.Horizontal) {
-        path2 = roundedRect(this.x, this.y, 1, this.height, 0, this.edges);
+        path3 = roundedRect(this.x, this.y, 1, this.height, 0, this.edges);
       }
     }
-    return path2;
+    return path3;
   }
   getPath() {
     let radius = this.getRadius();
-    let path2;
+    let path3;
     if (this.roundEdges) {
       if (this.orientation === BarOrientation.Vertical) {
         radius = Math.min(this.height, radius);
-        path2 = roundedRect(this.x, this.y, this.width, this.height, radius, this.edges);
+        path3 = roundedRect(this.x, this.y, this.width, this.height, radius, this.edges);
       } else if (this.orientation === BarOrientation.Horizontal) {
         radius = Math.min(this.width, radius);
-        path2 = roundedRect(this.x, this.y, this.width, this.height, radius, this.edges);
+        path3 = roundedRect(this.x, this.y, this.width, this.height, radius, this.edges);
       }
     } else {
-      path2 = roundedRect(this.x, this.y, this.width, this.height, radius, this.edges);
+      path3 = roundedRect(this.x, this.y, this.width, this.height, radius, this.edges);
     }
-    return path2;
+    return path3;
   }
   getRadius() {
     let radius = 0;
@@ -19618,17 +22295,17 @@ var SeriesHorizontal = class {
     d0Type = D0Types.positive;
     let total;
     if (this.type === BarChartType.Normalized) {
-      total = this.series.map((d) => d.value).reduce((sum3, d) => sum3 + d, 0);
+      total = this.series.map((d) => d.value).reduce((sum6, d) => sum6 + d, 0);
     }
     const xScaleMin = Math.max(this.xScale.domain()[0], 0);
     this.bars = this.series.map((d) => {
-      let value = d.value;
+      let value2 = d.value;
       const label = this.getLabel(d);
       const formattedLabel = formatLabel(label);
       const roundEdges = this.roundEdges;
-      d0Type = value > 0 ? D0Types.positive : D0Types.negative;
+      d0Type = value2 > 0 ? D0Types.positive : D0Types.negative;
       const bar = {
-        value,
+        value: value2,
         label,
         roundEdges,
         data: d,
@@ -19636,17 +22313,17 @@ var SeriesHorizontal = class {
       };
       bar.height = this.yScale.bandwidth();
       if (this.type === BarChartType.Standard) {
-        bar.width = Math.abs(this.xScale(value) - this.xScale(xScaleMin));
-        if (value < 0) {
-          bar.x = this.xScale(value);
+        bar.width = Math.abs(this.xScale(value2) - this.xScale(xScaleMin));
+        if (value2 < 0) {
+          bar.x = this.xScale(value2);
         } else {
           bar.x = this.xScale(xScaleMin);
         }
         bar.y = this.yScale(label);
       } else if (this.type === BarChartType.Stacked) {
         const offset0 = d0[d0Type];
-        const offset1 = offset0 + value;
-        d0[d0Type] += value;
+        const offset1 = offset0 + value2;
+        d0[d0Type] += value2;
         bar.width = this.xScale(offset1) - this.xScale(offset0);
         bar.x = this.xScale(offset0);
         bar.y = 0;
@@ -19654,8 +22331,8 @@ var SeriesHorizontal = class {
         bar.offset1 = offset1;
       } else if (this.type === BarChartType.Normalized) {
         let offset0 = d0[d0Type];
-        let offset1 = offset0 + value;
-        d0[d0Type] += value;
+        let offset1 = offset0 + value2;
+        d0[d0Type] += value2;
         if (total > 0) {
           offset0 = offset0 * 100 / total;
           offset1 = offset1 * 100 / total;
@@ -19668,21 +22345,21 @@ var SeriesHorizontal = class {
         bar.y = 0;
         bar.offset0 = offset0;
         bar.offset1 = offset1;
-        value = (offset1 - offset0).toFixed(2) + "%";
+        value2 = (offset1 - offset0).toFixed(2) + "%";
       }
       if (this.colors.scaleType === ScaleType.Ordinal) {
         bar.color = this.colors.getColor(label);
       } else {
         if (this.type === BarChartType.Standard) {
-          bar.color = this.colors.getColor(value);
-          bar.gradientStops = this.colors.getLinearGradientStops(value);
+          bar.color = this.colors.getColor(value2);
+          bar.gradientStops = this.colors.getLinearGradientStops(value2);
         } else {
           bar.color = this.colors.getColor(bar.offset1);
           bar.gradientStops = this.colors.getLinearGradientStops(bar.offset1, bar.offset0);
         }
       }
       let tooltipLabel = formattedLabel;
-      bar.ariaLabel = formattedLabel + " " + value.toLocaleString();
+      bar.ariaLabel = formattedLabel + " " + value2.toLocaleString();
       if (this.seriesName !== null && this.seriesName !== void 0) {
         tooltipLabel = `${this.seriesName} • ${formattedLabel}`;
         bar.data.series = this.seriesName;
@@ -19690,7 +22367,7 @@ var SeriesHorizontal = class {
       }
       bar.tooltipText = this.tooltipDisabled ? void 0 : `
         <span class="tooltip-label">${escapeLabel(tooltipLabel)}</span>
-        <span class="tooltip-val">${this.dataLabelFormatting ? this.dataLabelFormatting(value) : value.toLocaleString()}</span>
+        <span class="tooltip-val">${this.dataLabelFormatting ? this.dataLabelFormatting(value2) : value2.toLocaleString()}</span>
       `;
       return bar;
     });
@@ -19701,8 +22378,8 @@ var SeriesHorizontal = class {
       this.barsForDataLabels = [];
       const section = {};
       section.series = this.seriesName;
-      const totalPositive = this.series.map((d) => d.value).reduce((sum3, d) => d > 0 ? sum3 + d : sum3, 0);
-      const totalNegative = this.series.map((d) => d.value).reduce((sum3, d) => d < 0 ? sum3 + d : sum3, 0);
+      const totalPositive = this.series.map((d) => d.value).reduce((sum6, d) => d > 0 ? sum6 + d : sum6, 0);
+      const totalNegative = this.series.map((d) => d.value).reduce((sum6, d) => d < 0 ? sum6 + d : sum6, 0);
       section.total = totalPositive + totalNegative;
       section.x = 0;
       section.y = 0;
@@ -19743,11 +22420,11 @@ var SeriesHorizontal = class {
     }
     return dataItem.name;
   }
-  trackBy(index2, bar) {
+  trackBy(index4, bar) {
     return bar.label;
   }
-  trackDataLabelBy(index2, barLabel) {
-    return index2 + "#" + barLabel.series + "#" + barLabel.total;
+  trackDataLabelBy(index4, barLabel) {
+    return index4 + "#" + barLabel.series + "#" + barLabel.total;
   }
   click(data) {
     this.select.emit(data);
@@ -19948,6 +22625,7 @@ var BarHorizontalComponent = class extends BaseChartComponent {
     this.roundEdges = true;
     this.showDataLabel = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -20000,9 +22678,9 @@ var BarHorizontalComponent = class extends BaseChartComponent {
   }
   getXDomain() {
     const values = this.results.map((d) => d.value);
-    const min4 = this.xScaleMin ? Math.min(this.xScaleMin, ...values) : Math.min(0, ...values);
-    const max4 = this.xScaleMax ? Math.max(this.xScaleMax, ...values) : Math.max(0, ...values);
-    return [min4, max4];
+    const min7 = this.xScaleMin ? Math.min(this.xScaleMin, ...values) : Math.min(0, ...values);
+    const max7 = this.xScaleMax ? Math.max(this.xScaleMax, ...values) : Math.max(0, ...values);
+    return [min7, max7];
   }
   getYDomain() {
     return this.results.map((d) => d.label);
@@ -20147,7 +22825,8 @@ BarHorizontalComponent.ɵcmp = ɵɵdefineComponent({
     xScaleMin: "xScaleMin",
     showDataLabel: "showDataLabel",
     dataLabelFormatting: "dataLabelFormatting",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -20156,7 +22835,7 @@ BarHorizontalComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 5,
   vars: 25,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "dataLabelWidthChanged", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "activeEntries", "roundEdges", "animations", "showDataLabel", "dataLabelFormatting", "noBarWhenZero"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "dataLabelWidthChanged", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "activeEntries", "roundEdges", "animations", "showDataLabel", "dataLabelFormatting", "noBarWhenZero"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "wrapTicks"]],
   template: function BarHorizontalComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -20169,7 +22848,7 @@ BarHorizontalComponent.ɵcmp = ɵɵdefineComponent({
       });
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
-      ɵɵtemplate(2, BarHorizontalComponent__svg_g_2_Template, 1, 10, "g", 2)(3, BarHorizontalComponent__svg_g_3_Template, 1, 9, "g", 3);
+      ɵɵtemplate(2, BarHorizontalComponent__svg_g_2_Template, 1, 11, "g", 2)(3, BarHorizontalComponent__svg_g_3_Template, 1, 10, "g", 3);
       ɵɵelementStart(4, "g", 4);
       ɵɵlistener("select", function BarHorizontalComponent_Template_g_select_4_listener($event) {
         return ctx.onClick($event);
@@ -20229,6 +22908,7 @@ BarHorizontalComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -20243,6 +22923,7 @@ BarHorizontalComponent.ɵcmp = ɵɵdefineComponent({
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
           [yAxisOffset]="dataLabelMaxWidth.negative"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g
@@ -20271,7 +22952,7 @@ BarHorizontalComponent.ɵcmp = ɵɵdefineComponent({
   `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation$1.None,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -20367,6 +23048,9 @@ BarHorizontalComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -20399,6 +23083,7 @@ var BarHorizontal2DComponent = class extends BaseChartComponent {
     this.roundEdges = true;
     this.showDataLabel = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -20410,7 +23095,7 @@ var BarHorizontal2DComponent = class extends BaseChartComponent {
     };
     this.isSSR = false;
     this.barOrientation = BarOrientation;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -20468,17 +23153,17 @@ var BarHorizontal2DComponent = class extends BaseChartComponent {
   }
   getGroupDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      if (!domain.includes(group2.label)) {
-        domain.push(group2.label);
+    for (const group4 of this.results) {
+      if (!domain.includes(group4.label)) {
+        domain.push(group4.label);
       }
     }
     return domain;
   }
   getInnerDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.label)) {
           domain.push(d.label);
         }
@@ -20488,23 +23173,23 @@ var BarHorizontal2DComponent = class extends BaseChartComponent {
   }
   getValueDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.value)) {
           domain.push(d.value);
         }
       }
     }
-    const min4 = Math.min(0, ...domain);
-    const max4 = this.xScaleMax ? Math.max(this.xScaleMax, ...domain) : Math.max(0, ...domain);
-    return [min4, max4];
+    const min7 = Math.min(0, ...domain);
+    const max7 = this.xScaleMax ? Math.max(this.xScaleMax, ...domain) : Math.max(0, ...domain);
+    return [min7, max7];
   }
-  groupTransform(group2) {
-    return `translate(0, ${this.groupScale(group2.label)})`;
+  groupTransform(group4) {
+    return `translate(0, ${this.groupScale(group4.label)})`;
   }
-  onClick(data, group2) {
-    if (group2) {
-      data.series = group2.name;
+  onClick(data, group4) {
+    if (group4) {
+      data.series = group4.name;
     }
     this.select.emit(data);
   }
@@ -20557,10 +23242,10 @@ var BarHorizontal2DComponent = class extends BaseChartComponent {
       setTimeout(() => this.update());
     }
   }
-  onActivate(event, group2, fromLegend = false) {
+  onActivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     const items = this.results.map((g) => g.series).flat().filter((i) => {
       if (fromLegend) {
@@ -20575,10 +23260,10 @@ var BarHorizontal2DComponent = class extends BaseChartComponent {
       entries: this.activeEntries
     });
   }
-  onDeactivate(event, group2, fromLegend = false) {
+  onDeactivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     this.activeEntries = this.activeEntries.filter((i) => {
       if (fromLegend) {
@@ -20642,7 +23327,8 @@ BarHorizontal2DComponent.ɵcmp = ɵɵdefineComponent({
     xScaleMax: "xScaleMax",
     showDataLabel: "showDataLabel",
     dataLabelFormatting: "dataLabelFormatting",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -20651,7 +23337,7 @@ BarHorizontal2DComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 7,
   vars: 18,
-  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-grid-panel-series", "", 3, "xScale", "yScale", "data", "dims", "orient"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "dataLabelWidthChanged", "xScale", "activeEntries", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "roundEdges", "animations", "showDataLabel", "dataLabelFormatting", "noBarWhenZero"]],
+  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-grid-panel-series", "", 3, "xScale", "yScale", "data", "dims", "orient"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "dataLabelWidthChanged", "xScale", "activeEntries", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "roundEdges", "animations", "showDataLabel", "dataLabelFormatting", "noBarWhenZero"]],
   template: function BarHorizontal2DComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -20665,7 +23351,7 @@ BarHorizontal2DComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
       ɵɵelement(2, "g", 2);
-      ɵɵtemplate(3, BarHorizontal2DComponent__svg_g_3_Template, 1, 10, "g", 3)(4, BarHorizontal2DComponent__svg_g_4_Template, 1, 9, "g", 4)(5, BarHorizontal2DComponent__svg_g_5_Template, 2, 2, "g", 5)(6, BarHorizontal2DComponent__svg_g_6_Template, 2, 2, "g", 5);
+      ɵɵtemplate(3, BarHorizontal2DComponent__svg_g_3_Template, 1, 11, "g", 3)(4, BarHorizontal2DComponent__svg_g_4_Template, 1, 10, "g", 4)(5, BarHorizontal2DComponent__svg_g_5_Template, 2, 2, "g", 5)(6, BarHorizontal2DComponent__svg_g_6_Template, 2, 2, "g", 5);
       ɵɵelementEnd()();
     }
     if (rf & 2) {
@@ -20736,6 +23422,7 @@ BarHorizontal2DComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -20750,6 +23437,7 @@ BarHorizontal2DComponent.ɵcmp = ɵɵdefineComponent({
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
           [yAxisOffset]="dataLabelMaxWidth.negative"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
 
@@ -20824,7 +23512,7 @@ BarHorizontal2DComponent.ɵcmp = ɵɵdefineComponent({
         opacity: 0,
         transform: "scale(0)"
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -20920,6 +23608,9 @@ BarHorizontal2DComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -20949,6 +23640,7 @@ var BarHorizontalNormalizedComponent = class extends BaseChartComponent {
     this.barPadding = 8;
     this.roundDomains = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.valueDomain = [0, 100];
@@ -20957,7 +23649,7 @@ var BarHorizontalNormalizedComponent = class extends BaseChartComponent {
     this.yAxisWidth = 0;
     this.barChartType = BarChartType;
     this.isSSR = false;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -20993,17 +23685,17 @@ var BarHorizontalNormalizedComponent = class extends BaseChartComponent {
   }
   getGroupDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      if (!domain.includes(group2.label)) {
-        domain.push(group2.label);
+    for (const group4 of this.results) {
+      if (!domain.includes(group4.label)) {
+        domain.push(group4.label);
       }
     }
     return domain;
   }
   getInnerDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.label)) {
           domain.push(d.label);
         }
@@ -21019,12 +23711,12 @@ var BarHorizontalNormalizedComponent = class extends BaseChartComponent {
     const scale = linear3().range([0, this.dims.width]).domain(this.valueDomain);
     return this.roundDomains ? scale.nice() : scale;
   }
-  groupTransform(group2) {
-    return `translate(0, ${this.yScale(group2.name)})`;
+  groupTransform(group4) {
+    return `translate(0, ${this.yScale(group4.name)})`;
   }
-  onClick(data, group2) {
-    if (group2) {
-      data.series = group2.name;
+  onClick(data, group4) {
+    if (group4) {
+      data.series = group4.name;
     }
     this.select.emit(data);
   }
@@ -21067,10 +23759,10 @@ var BarHorizontalNormalizedComponent = class extends BaseChartComponent {
     this.xAxisHeight = height;
     this.update();
   }
-  onActivate(event, group2, fromLegend = false) {
+  onActivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     const items = this.results.map((g) => g.series).flat().filter((i) => {
       if (fromLegend) {
@@ -21085,10 +23777,10 @@ var BarHorizontalNormalizedComponent = class extends BaseChartComponent {
       entries: this.activeEntries
     });
   }
-  onDeactivate(event, group2, fromLegend = false) {
+  onDeactivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     this.activeEntries = this.activeEntries.filter((i) => {
       if (fromLegend) {
@@ -21147,7 +23839,8 @@ BarHorizontalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
     yAxisTicks: "yAxisTicks",
     barPadding: "barPadding",
     roundDomains: "roundDomains",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -21156,7 +23849,7 @@ BarHorizontalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 6,
   vars: 13,
-  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "activeEntries", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "animations", "noBarWhenZero"]],
+  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "activeEntries", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "animations", "noBarWhenZero"]],
   template: function BarHorizontalNormalizedComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -21169,7 +23862,7 @@ BarHorizontalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
       });
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
-      ɵɵtemplate(2, BarHorizontalNormalizedComponent__svg_g_2_Template, 1, 10, "g", 2)(3, BarHorizontalNormalizedComponent__svg_g_3_Template, 1, 8, "g", 3)(4, BarHorizontalNormalizedComponent__svg_g_4_Template, 2, 2, "g", 4)(5, BarHorizontalNormalizedComponent__svg_g_5_Template, 2, 2, "g", 4);
+      ɵɵtemplate(2, BarHorizontalNormalizedComponent__svg_g_2_Template, 1, 11, "g", 2)(3, BarHorizontalNormalizedComponent__svg_g_3_Template, 1, 9, "g", 3)(4, BarHorizontalNormalizedComponent__svg_g_4_Template, 2, 2, "g", 4)(5, BarHorizontalNormalizedComponent__svg_g_5_Template, 2, 2, "g", 4);
       ɵɵelementEnd()();
     }
     if (rf & 2) {
@@ -21230,6 +23923,7 @@ BarHorizontalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -21243,6 +23937,7 @@ BarHorizontalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g *ngIf="!isSSR">
@@ -21307,7 +24002,7 @@ BarHorizontalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
         opacity: 0,
         transform: "scale(0)"
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -21388,6 +24083,9 @@ BarHorizontalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -21418,6 +24116,7 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
     this.roundDomains = false;
     this.showDataLabel = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -21429,7 +24128,7 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
     };
     this.barChartType = BarChartType;
     this.isSSR = false;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -21473,17 +24172,17 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
   }
   getGroupDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      if (!domain.includes(group2.label)) {
-        domain.push(group2.label);
+    for (const group4 of this.results) {
+      if (!domain.includes(group4.label)) {
+        domain.push(group4.label);
       }
     }
     return domain;
   }
   getInnerDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.label)) {
           domain.push(d.label);
         }
@@ -21495,10 +24194,10 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
     const domain = [];
     let smallest = 0;
     let biggest = 0;
-    for (const group2 of this.results) {
+    for (const group4 of this.results) {
       let smallestSum = 0;
       let biggestSum = 0;
-      for (const d of group2.series) {
+      for (const d of group4.series) {
         if (d.value < 0) {
           smallestSum += d.value;
         } else {
@@ -21512,9 +24211,9 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
     }
     domain.push(smallest);
     domain.push(biggest);
-    const min4 = Math.min(0, ...domain);
-    const max4 = this.xScaleMax ? Math.max(this.xScaleMax, ...domain) : Math.max(...domain);
-    return [min4, max4];
+    const min7 = Math.min(0, ...domain);
+    const max7 = this.xScaleMax ? Math.max(this.xScaleMax, ...domain) : Math.max(...domain);
+    return [min7, max7];
   }
   getYScale() {
     const spacing = this.groupDomain.length / (this.dims.height / this.barPadding + 1);
@@ -21524,12 +24223,12 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
     const scale = linear3().range([0, this.dims.width]).domain(this.valueDomain);
     return this.roundDomains ? scale.nice() : scale;
   }
-  groupTransform(group2) {
-    return `translate(0, ${this.yScale(group2.name)})`;
+  groupTransform(group4) {
+    return `translate(0, ${this.yScale(group4.name)})`;
   }
-  onClick(data, group2) {
-    if (group2) {
-      data.series = group2.name;
+  onClick(data, group4) {
+    if (group4) {
+      data.series = group4.name;
     }
     this.select.emit(data);
   }
@@ -21582,10 +24281,10 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
       setTimeout(() => this.update());
     }
   }
-  onActivate(event, group2, fromLegend = false) {
+  onActivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     const items = this.results.map((g) => g.series).flat().filter((i) => {
       if (fromLegend) {
@@ -21600,10 +24299,10 @@ var BarHorizontalStackedComponent = class extends BaseChartComponent {
       entries: this.activeEntries
     });
   }
-  onDeactivate(event, group2, fromLegend = false) {
+  onDeactivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     this.activeEntries = this.activeEntries.filter((i) => {
       if (fromLegend) {
@@ -21665,7 +24364,8 @@ BarHorizontalStackedComponent.ɵcmp = ɵɵdefineComponent({
     xScaleMax: "xScaleMax",
     showDataLabel: "showDataLabel",
     dataLabelFormatting: "dataLabelFormatting",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -21674,7 +24374,7 @@ BarHorizontalStackedComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 6,
   vars: 13,
-  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "dataLabelWidthChanged", "type", "xScale", "yScale", "colors", "series", "activeEntries", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "animations", "showDataLabel", "dataLabelFormatting", "noBarWhenZero"]],
+  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "yAxisOffset", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-horizontal", "", 3, "select", "activate", "deactivate", "dataLabelWidthChanged", "type", "xScale", "yScale", "colors", "series", "activeEntries", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "animations", "showDataLabel", "dataLabelFormatting", "noBarWhenZero"]],
   template: function BarHorizontalStackedComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -21687,7 +24387,7 @@ BarHorizontalStackedComponent.ɵcmp = ɵɵdefineComponent({
       });
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
-      ɵɵtemplate(2, BarHorizontalStackedComponent__svg_g_2_Template, 1, 10, "g", 2)(3, BarHorizontalStackedComponent__svg_g_3_Template, 1, 9, "g", 3)(4, BarHorizontalStackedComponent__svg_g_4_Template, 2, 2, "g", 4)(5, BarHorizontalStackedComponent__svg_g_5_Template, 2, 2, "g", 4);
+      ɵɵtemplate(2, BarHorizontalStackedComponent__svg_g_2_Template, 1, 11, "g", 2)(3, BarHorizontalStackedComponent__svg_g_3_Template, 1, 10, "g", 3)(4, BarHorizontalStackedComponent__svg_g_4_Template, 2, 2, "g", 4)(5, BarHorizontalStackedComponent__svg_g_5_Template, 2, 2, "g", 4);
       ɵɵelementEnd()();
     }
     if (rf & 2) {
@@ -21748,6 +24448,7 @@ BarHorizontalStackedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -21762,6 +24463,7 @@ BarHorizontalStackedComponent.ɵcmp = ɵɵdefineComponent({
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
           [yAxisOffset]="dataLabelMaxWidth.negative"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g *ngIf="!isSSR">
@@ -21835,7 +24537,7 @@ BarHorizontalStackedComponent.ɵcmp = ɵɵdefineComponent({
         opacity: 0,
         transform: "scale(0)"
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -21925,6 +24627,9 @@ BarHorizontalStackedComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -21976,16 +24681,16 @@ var SeriesVerticalComponent = class {
     let d0Type = D0Types.positive;
     let total;
     if (this.type === BarChartType.Normalized) {
-      total = this.series.map((d) => d.value).reduce((sum3, d) => sum3 + d, 0);
+      total = this.series.map((d) => d.value).reduce((sum6, d) => sum6 + d, 0);
     }
-    this.bars = this.series.map((d, index2) => {
-      let value = d.value;
+    this.bars = this.series.map((d, index4) => {
+      let value2 = d.value;
       const label = this.getLabel(d);
       const formattedLabel = formatLabel(label);
       const roundEdges = this.roundEdges;
-      d0Type = value > 0 ? D0Types.positive : D0Types.negative;
+      d0Type = value2 > 0 ? D0Types.positive : D0Types.negative;
       const bar = {
-        value,
+        value: value2,
         label,
         roundEdges,
         data: d,
@@ -21996,17 +24701,17 @@ var SeriesVerticalComponent = class {
         y: 0
       };
       if (this.type === BarChartType.Standard) {
-        bar.height = Math.abs(this.yScale(value) - this.yScale(yScaleMin));
+        bar.height = Math.abs(this.yScale(value2) - this.yScale(yScaleMin));
         bar.x = this.xScale(label);
-        if (value < 0) {
+        if (value2 < 0) {
           bar.y = this.yScale(0);
         } else {
-          bar.y = this.yScale(value);
+          bar.y = this.yScale(value2);
         }
       } else if (this.type === BarChartType.Stacked) {
         const offset0 = d0[d0Type];
-        const offset1 = offset0 + value;
-        d0[d0Type] += value;
+        const offset1 = offset0 + value2;
+        d0[d0Type] += value2;
         bar.height = this.yScale(offset0) - this.yScale(offset1);
         bar.x = 0;
         bar.y = this.yScale(offset1);
@@ -22014,8 +24719,8 @@ var SeriesVerticalComponent = class {
         bar.offset1 = offset1;
       } else if (this.type === BarChartType.Normalized) {
         let offset0 = d0[d0Type];
-        let offset1 = offset0 + value;
-        d0[d0Type] += value;
+        let offset1 = offset0 + value2;
+        d0[d0Type] += value2;
         if (total > 0) {
           offset0 = offset0 * 100 / total;
           offset1 = offset1 * 100 / total;
@@ -22028,21 +24733,21 @@ var SeriesVerticalComponent = class {
         bar.y = this.yScale(offset1);
         bar.offset0 = offset0;
         bar.offset1 = offset1;
-        value = (offset1 - offset0).toFixed(2) + "%";
+        value2 = (offset1 - offset0).toFixed(2) + "%";
       }
       if (this.colors.scaleType === ScaleType.Ordinal) {
         bar.color = this.colors.getColor(label);
       } else {
         if (this.type === BarChartType.Standard) {
-          bar.color = this.colors.getColor(value);
-          bar.gradientStops = this.colors.getLinearGradientStops(value);
+          bar.color = this.colors.getColor(value2);
+          bar.gradientStops = this.colors.getLinearGradientStops(value2);
         } else {
           bar.color = this.colors.getColor(bar.offset1);
           bar.gradientStops = this.colors.getLinearGradientStops(bar.offset1, bar.offset0);
         }
       }
       let tooltipLabel = formattedLabel;
-      bar.ariaLabel = formattedLabel + " " + value.toLocaleString();
+      bar.ariaLabel = formattedLabel + " " + value2.toLocaleString();
       if (this.seriesName !== null && this.seriesName !== void 0) {
         tooltipLabel = `${this.seriesName} • ${formattedLabel}`;
         bar.data.series = this.seriesName;
@@ -22050,7 +24755,7 @@ var SeriesVerticalComponent = class {
       }
       bar.tooltipText = this.tooltipDisabled ? void 0 : `
         <span class="tooltip-label">${escapeLabel(tooltipLabel)}</span>
-        <span class="tooltip-val">${this.dataLabelFormatting ? this.dataLabelFormatting(value) : value.toLocaleString()}</span>
+        <span class="tooltip-val">${this.dataLabelFormatting ? this.dataLabelFormatting(value2) : value2.toLocaleString()}</span>
       `;
       return bar;
     });
@@ -22061,8 +24766,8 @@ var SeriesVerticalComponent = class {
       this.barsForDataLabels = [];
       const section = {};
       section.series = this.seriesName;
-      const totalPositive = this.series.map((d) => d.value).reduce((sum3, d) => d > 0 ? sum3 + d : sum3, 0);
-      const totalNegative = this.series.map((d) => d.value).reduce((sum3, d) => d < 0 ? sum3 + d : sum3, 0);
+      const totalPositive = this.series.map((d) => d.value).reduce((sum6, d) => d > 0 ? sum6 + d : sum6, 0);
+      const totalNegative = this.series.map((d) => d.value).reduce((sum6, d) => d < 0 ? sum6 + d : sum6, 0);
       section.total = totalPositive + totalNegative;
       section.x = 0;
       section.y = 0;
@@ -22106,11 +24811,11 @@ var SeriesVerticalComponent = class {
     }
     return dataItem.name;
   }
-  trackBy(index2, bar) {
+  trackBy(index4, bar) {
     return bar.label;
   }
-  trackDataLabelBy(index2, barLabel) {
-    return index2 + "#" + barLabel.series + "#" + barLabel.total;
+  trackDataLabelBy(index4, barLabel) {
+    return index4 + "#" + barLabel.series + "#" + barLabel.total;
   }
 };
 SeriesVerticalComponent.ɵfac = function SeriesVerticalComponent_Factory(t) {
@@ -22351,6 +25056,7 @@ var BarVerticalComponent = class extends BaseChartComponent {
     this.roundEdges = true;
     this.showDataLabel = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -22409,15 +25115,15 @@ var BarVerticalComponent = class extends BaseChartComponent {
   }
   getYDomain() {
     const values = this.results.map((d) => d.value);
-    let min4 = this.yScaleMin ? Math.min(this.yScaleMin, ...values) : Math.min(0, ...values);
+    let min7 = this.yScaleMin ? Math.min(this.yScaleMin, ...values) : Math.min(0, ...values);
     if (this.yAxisTicks && !this.yAxisTicks.some(isNaN)) {
-      min4 = Math.min(min4, ...this.yAxisTicks);
+      min7 = Math.min(min7, ...this.yAxisTicks);
     }
-    let max4 = this.yScaleMax ? Math.max(this.yScaleMax, ...values) : Math.max(0, ...values);
+    let max7 = this.yScaleMax ? Math.max(this.yScaleMax, ...values) : Math.max(0, ...values);
     if (this.yAxisTicks && !this.yAxisTicks.some(isNaN)) {
-      max4 = Math.max(max4, ...this.yAxisTicks);
+      max7 = Math.max(max7, ...this.yAxisTicks);
     }
-    return [min4, max4];
+    return [min7, max7];
   }
   onClick(data) {
     this.select.emit(data);
@@ -22559,7 +25265,8 @@ BarVerticalComponent.ɵcmp = ɵɵdefineComponent({
     yScaleMin: "yScaleMin",
     showDataLabel: "showDataLabel",
     dataLabelFormatting: "dataLabelFormatting",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -22568,7 +25275,7 @@ BarVerticalComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 5,
   vars: 25,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-series-vertical", "", 3, "activate", "deactivate", "select", "dataLabelHeightChanged", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "activeEntries", "roundEdges", "animations", "noBarWhenZero"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-series-vertical", "", 3, "activate", "deactivate", "select", "dataLabelHeightChanged", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "activeEntries", "roundEdges", "animations", "noBarWhenZero"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"]],
   template: function BarVerticalComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -22581,7 +25288,7 @@ BarVerticalComponent.ɵcmp = ɵɵdefineComponent({
       });
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
-      ɵɵtemplate(2, BarVerticalComponent__svg_g_2_Template, 1, 11, "g", 2)(3, BarVerticalComponent__svg_g_3_Template, 1, 9, "g", 3);
+      ɵɵtemplate(2, BarVerticalComponent__svg_g_2_Template, 1, 12, "g", 2)(3, BarVerticalComponent__svg_g_3_Template, 1, 10, "g", 3);
       ɵɵelementStart(4, "g", 4);
       ɵɵlistener("activate", function BarVerticalComponent_Template_g_activate_4_listener($event) {
         return ctx.onActivate($event);
@@ -22642,6 +25349,7 @@ BarVerticalComponent.ɵcmp = ɵɵdefineComponent({
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
           [xAxisOffset]="dataLabelMaxHeight.negative"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -22656,6 +25364,7 @@ BarVerticalComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g
@@ -22684,7 +25393,7 @@ BarVerticalComponent.ɵcmp = ɵɵdefineComponent({
   `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation$1.None,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -22780,6 +25489,9 @@ BarVerticalComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -22813,6 +25525,7 @@ var BarVertical2DComponent = class extends BaseChartComponent {
     this.roundEdges = true;
     this.showDataLabel = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -22824,7 +25537,7 @@ var BarVertical2DComponent = class extends BaseChartComponent {
     };
     this.isSSR = false;
     this.barOrientation = BarOrientation;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -22895,17 +25608,17 @@ var BarVertical2DComponent = class extends BaseChartComponent {
   }
   getGroupDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      if (!domain.includes(group2.label)) {
-        domain.push(group2.label);
+    for (const group4 of this.results) {
+      if (!domain.includes(group4.label)) {
+        domain.push(group4.label);
       }
     }
     return domain;
   }
   getInnerDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.label)) {
           domain.push(d.label);
         }
@@ -22915,23 +25628,23 @@ var BarVertical2DComponent = class extends BaseChartComponent {
   }
   getValueDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.value)) {
           domain.push(d.value);
         }
       }
     }
-    const min4 = Math.min(0, ...domain);
-    const max4 = this.yScaleMax ? Math.max(this.yScaleMax, ...domain) : Math.max(0, ...domain);
-    return [min4, max4];
+    const min7 = Math.min(0, ...domain);
+    const max7 = this.yScaleMax ? Math.max(this.yScaleMax, ...domain) : Math.max(0, ...domain);
+    return [min7, max7];
   }
-  groupTransform(group2) {
-    return `translate(${this.groupScale(group2.label)}, 0)`;
+  groupTransform(group4) {
+    return `translate(${this.groupScale(group4.label)}, 0)`;
   }
-  onClick(data, group2) {
-    if (group2) {
-      data.series = group2.name;
+  onClick(data, group4) {
+    if (group4) {
+      data.series = group4.name;
     }
     this.select.emit(data);
   }
@@ -22974,10 +25687,10 @@ var BarVertical2DComponent = class extends BaseChartComponent {
     this.xAxisHeight = height;
     this.update();
   }
-  onActivate(event, group2, fromLegend = false) {
+  onActivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     const items = this.results.map((g) => g.series).flat().filter((i) => {
       if (fromLegend) {
@@ -22992,10 +25705,10 @@ var BarVertical2DComponent = class extends BaseChartComponent {
       entries: this.activeEntries
     });
   }
-  onDeactivate(event, group2, fromLegend = false) {
+  onDeactivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     this.activeEntries = this.activeEntries.filter((i) => {
       if (fromLegend) {
@@ -23060,7 +25773,8 @@ BarVertical2DComponent.ɵcmp = ɵɵdefineComponent({
     yScaleMax: "yScaleMax",
     showDataLabel: "showDataLabel",
     dataLabelFormatting: "dataLabelFormatting",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -23069,7 +25783,7 @@ BarVertical2DComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 7,
   vars: 18,
-  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-grid-panel-series", "", 3, "xScale", "yScale", "data", "dims", "orient"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-series-vertical", "", 3, "activeEntries", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "seriesName", "roundEdges", "animations", "noBarWhenZero", "select", "activate", "deactivate", "dataLabelHeightChanged", 4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-vertical", "", 3, "select", "activate", "deactivate", "dataLabelHeightChanged", "activeEntries", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "seriesName", "roundEdges", "animations", "noBarWhenZero"]],
+  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-grid-panel-series", "", 3, "xScale", "yScale", "data", "dims", "orient"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-series-vertical", "", 3, "activeEntries", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "seriesName", "roundEdges", "animations", "noBarWhenZero", "select", "activate", "deactivate", "dataLabelHeightChanged", 4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-vertical", "", 3, "select", "activate", "deactivate", "dataLabelHeightChanged", "activeEntries", "xScale", "yScale", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "seriesName", "roundEdges", "animations", "noBarWhenZero"]],
   template: function BarVertical2DComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -23083,7 +25797,7 @@ BarVertical2DComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
       ɵɵelement(2, "g", 2);
-      ɵɵtemplate(3, BarVertical2DComponent__svg_g_3_Template, 1, 10, "g", 3)(4, BarVertical2DComponent__svg_g_4_Template, 1, 9, "g", 4)(5, BarVertical2DComponent__svg_g_5_Template, 2, 2, "g", 5);
+      ɵɵtemplate(3, BarVertical2DComponent__svg_g_3_Template, 1, 11, "g", 3)(4, BarVertical2DComponent__svg_g_4_Template, 1, 10, "g", 4)(5, BarVertical2DComponent__svg_g_5_Template, 2, 2, "g", 5);
       ɵɵelementEnd();
       ɵɵtemplate(6, BarVertical2DComponent__svg_g_6_Template, 2, 2, "g", 5);
       ɵɵelementEnd();
@@ -23156,6 +25870,7 @@ BarVertical2DComponent.ɵcmp = ɵɵdefineComponent({
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
           [xAxisOffset]="dataLabelMaxHeight.negative"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -23170,6 +25885,7 @@ BarVertical2DComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g *ngIf="!isSSR">
@@ -23237,7 +25953,7 @@ BarVertical2DComponent.ɵcmp = ɵɵdefineComponent({
         opacity: 0,
         transform: "scale(0)"
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -23336,6 +26052,9 @@ BarVertical2DComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -23365,6 +26084,7 @@ var BarVerticalNormalizedComponent = class extends BaseChartComponent {
     this.barPadding = 8;
     this.roundDomains = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.valueDomain = [0, 100];
@@ -23373,7 +26093,7 @@ var BarVerticalNormalizedComponent = class extends BaseChartComponent {
     this.yAxisWidth = 0;
     this.isSSR = false;
     this.barChartType = BarChartType;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -23409,17 +26129,17 @@ var BarVerticalNormalizedComponent = class extends BaseChartComponent {
   }
   getGroupDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      if (!domain.includes(group2.label)) {
-        domain.push(group2.label);
+    for (const group4 of this.results) {
+      if (!domain.includes(group4.label)) {
+        domain.push(group4.label);
       }
     }
     return domain;
   }
   getInnerDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.label)) {
           domain.push(d.label);
         }
@@ -23435,12 +26155,12 @@ var BarVerticalNormalizedComponent = class extends BaseChartComponent {
     const scale = linear3().range([this.dims.height, 0]).domain(this.valueDomain);
     return this.roundDomains ? scale.nice() : scale;
   }
-  groupTransform(group2) {
-    return `translate(${this.xScale(group2.name)}, 0)`;
+  groupTransform(group4) {
+    return `translate(${this.xScale(group4.name)}, 0)`;
   }
-  onClick(data, group2) {
-    if (group2) {
-      data.series = group2.name;
+  onClick(data, group4) {
+    if (group4) {
+      data.series = group4.name;
     }
     this.select.emit(data);
   }
@@ -23483,10 +26203,10 @@ var BarVerticalNormalizedComponent = class extends BaseChartComponent {
     this.xAxisHeight = height;
     this.update();
   }
-  onActivate(event, group2, fromLegend = false) {
+  onActivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     const items = this.results.map((g) => g.series).flat().filter((i) => {
       if (fromLegend) {
@@ -23501,10 +26221,10 @@ var BarVerticalNormalizedComponent = class extends BaseChartComponent {
       entries: this.activeEntries
     });
   }
-  onDeactivate(event, group2, fromLegend = false) {
+  onDeactivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     this.activeEntries = this.activeEntries.filter((i) => {
       if (fromLegend) {
@@ -23563,7 +26283,8 @@ BarVerticalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
     yAxisTicks: "yAxisTicks",
     barPadding: "barPadding",
     roundDomains: "roundDomains",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -23572,7 +26293,7 @@ BarVerticalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 6,
   vars: 13,
-  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-vertical", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "activeEntries", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "animations", "noBarWhenZero"]],
+  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-vertical", "", 3, "select", "activate", "deactivate", "type", "xScale", "yScale", "activeEntries", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "seriesName", "animations", "noBarWhenZero"]],
   template: function BarVerticalNormalizedComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -23585,7 +26306,7 @@ BarVerticalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
       });
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
-      ɵɵtemplate(2, BarVerticalNormalizedComponent__svg_g_2_Template, 1, 9, "g", 2)(3, BarVerticalNormalizedComponent__svg_g_3_Template, 1, 9, "g", 3)(4, BarVerticalNormalizedComponent__svg_g_4_Template, 2, 2, "g", 4)(5, BarVerticalNormalizedComponent__svg_g_5_Template, 2, 2, "g", 4);
+      ɵɵtemplate(2, BarVerticalNormalizedComponent__svg_g_2_Template, 1, 10, "g", 2)(3, BarVerticalNormalizedComponent__svg_g_3_Template, 1, 10, "g", 3)(4, BarVerticalNormalizedComponent__svg_g_4_Template, 2, 2, "g", 4)(5, BarVerticalNormalizedComponent__svg_g_5_Template, 2, 2, "g", 4);
       ɵɵelementEnd()();
     }
     if (rf & 2) {
@@ -23645,6 +26366,7 @@ BarVerticalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -23659,6 +26381,7 @@ BarVerticalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g *ngIf="!isSSR">
@@ -23723,7 +26446,7 @@ BarVerticalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
         opacity: 0,
         transform: "scale(0)"
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -23804,6 +26527,9 @@ BarVerticalNormalizedComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -23834,6 +26560,7 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
     this.roundDomains = false;
     this.showDataLabel = false;
     this.noBarWhenZero = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -23845,7 +26572,7 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
     };
     this.isSSR = false;
     this.barChartType = BarChartType;
-    this.trackBy = (index2, item) => {
+    this.trackBy = (index4, item) => {
       return item.name;
     };
   }
@@ -23892,17 +26619,17 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
   }
   getGroupDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      if (!domain.includes(group2.label)) {
-        domain.push(group2.label);
+    for (const group4 of this.results) {
+      if (!domain.includes(group4.label)) {
+        domain.push(group4.label);
       }
     }
     return domain;
   }
   getInnerDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.label)) {
           domain.push(d.label);
         }
@@ -23914,10 +26641,10 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
     const domain = [];
     let smallest = 0;
     let biggest = 0;
-    for (const group2 of this.results) {
+    for (const group4 of this.results) {
       let smallestSum = 0;
       let biggestSum = 0;
-      for (const d of group2.series) {
+      for (const d of group4.series) {
         if (d.value < 0) {
           smallestSum += d.value;
         } else {
@@ -23931,9 +26658,9 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
     }
     domain.push(smallest);
     domain.push(biggest);
-    const min4 = Math.min(0, ...domain);
-    const max4 = this.yScaleMax ? Math.max(this.yScaleMax, ...domain) : Math.max(...domain);
-    return [min4, max4];
+    const min7 = Math.min(0, ...domain);
+    const max7 = this.yScaleMax ? Math.max(this.yScaleMax, ...domain) : Math.max(...domain);
+    return [min7, max7];
   }
   getXScale() {
     const spacing = this.groupDomain.length / (this.dims.width / this.barPadding + 1);
@@ -23953,12 +26680,12 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
       setTimeout(() => this.update());
     }
   }
-  groupTransform(group2) {
-    return `translate(${this.xScale(group2.name) || 0}, 0)`;
+  groupTransform(group4) {
+    return `translate(${this.xScale(group4.name) || 0}, 0)`;
   }
-  onClick(data, group2) {
-    if (group2) {
-      data.series = group2.name;
+  onClick(data, group4) {
+    if (group4) {
+      data.series = group4.name;
     }
     this.select.emit(data);
   }
@@ -24001,10 +26728,10 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
     this.xAxisHeight = height;
     this.update();
   }
-  onActivate(event, group2, fromLegend = false) {
+  onActivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     const items = this.results.map((g) => g.series).flat().filter((i) => {
       if (fromLegend) {
@@ -24019,10 +26746,10 @@ var BarVerticalStackedComponent = class extends BaseChartComponent {
       entries: this.activeEntries
     });
   }
-  onDeactivate(event, group2, fromLegend = false) {
+  onDeactivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     this.activeEntries = this.activeEntries.filter((i) => {
       if (fromLegend) {
@@ -24084,7 +26811,8 @@ BarVerticalStackedComponent.ɵcmp = ɵɵdefineComponent({
     yScaleMax: "yScaleMax",
     showDataLabel: "showDataLabel",
     dataLabelFormatting: "dataLabelFormatting",
-    noBarWhenZero: "noBarWhenZero"
+    noBarWhenZero: "noBarWhenZero",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -24093,7 +26821,7 @@ BarVerticalStackedComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 6,
   vars: 13,
-  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-vertical", "", 3, "select", "activate", "deactivate", "dataLabelHeightChanged", "type", "xScale", "yScale", "activeEntries", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "seriesName", "animations", "noBarWhenZero"]],
+  consts: [[3, "legendLabelActivate", "legendLabelDeactivate", "legendLabelClick", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "bar-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "xAxisOffset", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-series-vertical", "", 3, "select", "activate", "deactivate", "dataLabelHeightChanged", "type", "xScale", "yScale", "activeEntries", "colors", "series", "dims", "gradient", "tooltipDisabled", "tooltipTemplate", "showDataLabel", "dataLabelFormatting", "seriesName", "animations", "noBarWhenZero"]],
   template: function BarVerticalStackedComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -24106,7 +26834,7 @@ BarVerticalStackedComponent.ɵcmp = ɵɵdefineComponent({
       });
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
-      ɵɵtemplate(2, BarVerticalStackedComponent__svg_g_2_Template, 1, 10, "g", 2)(3, BarVerticalStackedComponent__svg_g_3_Template, 1, 9, "g", 3)(4, BarVerticalStackedComponent__svg_g_4_Template, 2, 2, "g", 4);
+      ɵɵtemplate(2, BarVerticalStackedComponent__svg_g_2_Template, 1, 11, "g", 2)(3, BarVerticalStackedComponent__svg_g_3_Template, 1, 10, "g", 3)(4, BarVerticalStackedComponent__svg_g_4_Template, 2, 2, "g", 4);
       ɵɵelementEnd();
       ɵɵtemplate(5, BarVerticalStackedComponent__svg_g_5_Template, 2, 2, "g", 4);
       ɵɵelementEnd();
@@ -24169,6 +26897,7 @@ BarVerticalStackedComponent.ɵcmp = ɵɵdefineComponent({
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
           [xAxisOffset]="dataLabelMaxHeight.negative"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -24183,6 +26912,7 @@ BarVerticalStackedComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g *ngIf="!isSSR">
@@ -24256,7 +26986,7 @@ BarVerticalStackedComponent.ɵcmp = ɵɵdefineComponent({
         opacity: 0,
         transform: "scale(0)"
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -24346,6 +27076,9 @@ BarVerticalStackedComponent.ɵcmp = ɵɵdefineComponent({
     noBarWhenZero: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -24382,6 +27115,7 @@ BarChartModule.ɵinj = ɵɵdefineInjector({
     }]
   }], null, null);
 })();
+var cloneDeep = (0, import_rfdc.default)();
 var BoxComponent = class {
   constructor(element, cd) {
     this.cd = cd;
@@ -24436,22 +27170,22 @@ var BoxComponent = class {
   }
   updatePathEl() {
     const nodeBar = select_default2(this.nativeElm).selectAll(".bar");
-    const path2 = this.getPath();
+    const path3 = this.getPath();
     if (this.animations) {
-      nodeBar.attr("d", this.oldPath).transition().ease(sinInOut2).duration(500).attrTween("d", this.pathTween(path2, 4));
+      nodeBar.attr("d", this.oldPath).transition().ease(sinInOut).duration(500).attrTween("d", this.pathTween(path3, 4));
     } else {
-      nodeBar.attr("d", path2);
+      nodeBar.attr("d", path3);
     }
-    this.oldPath = path2;
+    this.oldPath = path3;
   }
   updateLineEl() {
     const lineEl = select_default2(this.nativeElm).selectAll(".bar-line");
     const lineCoordinates = this.lineCoordinates;
     const oldLineCoordinates = this.oldLineCoordinates;
     if (this.animations) {
-      lineEl.attr("x1", (_, index2) => oldLineCoordinates[index2].v1.x).attr("y1", (_, index2) => oldLineCoordinates[index2].v1.y).attr("x2", (_, index2) => oldLineCoordinates[index2].v2.x).attr("y2", (_, index2) => oldLineCoordinates[index2].v2.y).transition().ease(sinInOut2).duration(500).attr("x1", (_, index2) => lineCoordinates[index2].v1.x).attr("y1", (_, index2) => lineCoordinates[index2].v1.y).attr("x2", (_, index2) => lineCoordinates[index2].v2.x).attr("y2", (_, index2) => lineCoordinates[index2].v2.y);
+      lineEl.attr("x1", (_, index4) => oldLineCoordinates[index4].v1.x).attr("y1", (_, index4) => oldLineCoordinates[index4].v1.y).attr("x2", (_, index4) => oldLineCoordinates[index4].v2.x).attr("y2", (_, index4) => oldLineCoordinates[index4].v2.y).transition().ease(sinInOut).duration(500).attr("x1", (_, index4) => lineCoordinates[index4].v1.x).attr("y1", (_, index4) => lineCoordinates[index4].v1.y).attr("x2", (_, index4) => lineCoordinates[index4].v2.x).attr("y2", (_, index4) => lineCoordinates[index4].v2.y);
     } else {
-      lineEl.attr("x1", (_, index2) => lineCoordinates[index2].v1.x).attr("y1", (_, index2) => lineCoordinates[index2].v1.y).attr("x2", (_, index2) => lineCoordinates[index2].v2.x).attr("y2", (_, index2) => lineCoordinates[index2].v2.y);
+      lineEl.attr("x1", (_, index4) => lineCoordinates[index4].v1.x).attr("y1", (_, index4) => lineCoordinates[index4].v1.y).attr("x2", (_, index4) => lineCoordinates[index4].v2.x).attr("y2", (_, index4) => lineCoordinates[index4].v2.y);
     }
     this.oldLineCoordinates = [...lineCoordinates];
   }
@@ -24461,8 +27195,8 @@ var BoxComponent = class {
    * @param index The index of the element within the selection
    * @param node The node element (Line).
    */
-  lineTween(attr, d, index2, node) {
-    const nodeLineEl = node[index2];
+  lineTween(attr, d, index4, node) {
+    const nodeLineEl = node[index4];
     return nodeLineEl[attr].baseVal.value;
   }
   // TODO: Refactor into another .ts file if https://github.com/swimlane/ngx-charts/pull/1179 gets merged.
@@ -24484,7 +27218,7 @@ var BoxComponent = class {
       const points = distances.map((t) => {
         const p0 = path0.getPointAtLength(t * n0);
         const p1 = path1.getPointAtLength(t * n1);
-        return value_default([p0.x, p0.y], [p1.x, p1.y]);
+        return value_default2([p0.x, p0.y], [p1.x, p1.y]);
       });
       return (t) => {
         return t < 1 ? "M" + points.map((p) => p(t)).join("L") : d1;
@@ -24497,22 +27231,22 @@ var BoxComponent = class {
     }
     const radius = this.roundEdges ? 1 : 0;
     const {
-      x: x2,
-      y: y2
+      x: x3,
+      y: y3
     } = this.lineCoordinates[2].v1;
-    return roundedRect(x2 - this.width, y2 - 1, this.width, 2, radius, this.edges);
+    return roundedRect(x3 - this.width, y3 - 1, this.width, 2, radius, this.edges);
   }
   getPath() {
     const radius = this.getRadius();
-    let path2 = "";
-    path2 = roundedRect(this.x, this.y, this.width, this.height, Math.min(this.height, radius), this.edges);
-    return path2;
+    let path3 = "";
+    path3 = roundedRect(this.x, this.y, this.width, this.height, Math.min(this.height, radius), this.edges);
+    return path3;
   }
   getStartingLineCoordinates() {
     if (!this.animations) {
       return [...this.lineCoordinates];
     }
-    const lineCoordinates = (0, import_clone_deep.default)(this.lineCoordinates);
+    const lineCoordinates = cloneDeep(this.lineCoordinates);
     lineCoordinates[1].v1.y = lineCoordinates[1].v2.y = lineCoordinates[3].v1.y = lineCoordinates[3].v2.y = lineCoordinates[0].v1.y = lineCoordinates[0].v2.y = lineCoordinates[2].v1.y;
     return lineCoordinates;
   }
@@ -24787,13 +27521,13 @@ var BoxSeriesComponent = class {
     this.counts = this.series.series;
     const mappedCounts = this.counts.map((serie) => Number(serie.value));
     this.whiskers = [min2(mappedCounts), max2(mappedCounts)];
-    const groupCounts = this.counts.map((item) => item.value).sort((a2, b) => Number(a2) - Number(b));
+    const groupCounts = this.counts.map((item) => item.value).sort((a3, b) => Number(a3) - Number(b));
     this.quartiles = this.getBoxQuantiles(groupCounts);
     this.lineCoordinates = this.getLinesCoordinates(seriesName.toString(), this.whiskers, this.quartiles, width);
-    const value = this.quartiles[1];
+    const value2 = this.quartiles[1];
     const formattedLabel = formatLabel(seriesName);
     const box = {
-      value,
+      value: value2,
       data: this.counts,
       label: seriesName,
       formattedLabel,
@@ -24808,7 +27542,7 @@ var BoxSeriesComponent = class {
     box.height = Math.abs(this.yScale(this.quartiles[0]) - this.yScale(this.quartiles[2]));
     box.x = this.xScale(seriesName.toString());
     box.y = this.yScale(this.quartiles[2]);
-    box.ariaLabel = formattedLabel + " - Median: " + value.toLocaleString();
+    box.ariaLabel = formattedLabel + " - Median: " + value2.toLocaleString();
     if (this.colors.scaleType === ScaleType.Ordinal) {
       box.color = this.colors.getColor(seriesName);
     } else {
@@ -24836,7 +27570,7 @@ var BoxSeriesComponent = class {
     const whiskerLineWidth = Math.max(barWidth / 3, 1);
     const whiskerZero = this.yScale(whiskers[0]);
     const whiskerOne = this.yScale(whiskers[1]);
-    const median = this.yScale(quartiles[1]);
+    const median2 = this.yScale(quartiles[1]);
     const topLine = {
       v1: {
         x: offsetX + whiskerLineWidth / 2,
@@ -24850,11 +27584,11 @@ var BoxSeriesComponent = class {
     const medianLine = {
       v1: {
         x: offsetX + medianLineWidth / 2,
-        y: median
+        y: median2
       },
       v2: {
         x: offsetX - medianLineWidth / 2,
-        y: median
+        y: median2
       }
     };
     const bottomLine = {
@@ -25066,6 +27800,7 @@ var BoxChartComponent = class extends BaseChartComponent {
     this.strokeColor = "#FFFFFF";
     this.strokeWidth = 2;
     this.tooltipDisabled = false;
+    this.wrapTicks = false;
     this.select = new EventEmitter();
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
@@ -25073,7 +27808,7 @@ var BoxChartComponent = class extends BaseChartComponent {
     this.xAxisHeight = 0;
     this.yAxisWidth = 0;
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.name;
   }
   update() {
@@ -25130,20 +27865,20 @@ var BoxChartComponent = class extends BaseChartComponent {
   getXDomain() {
     let domain = [];
     const values = this.getUniqueBoxChartXDomainValues(this.results);
-    let min4;
-    let max4;
+    let min7;
+    let max7;
     if (typeof values[0] === "string") {
       domain = values.map((val) => val.toString());
     } else if (typeof values[0] === "number") {
       const mappedValues = values.map((v) => Number(v));
-      min4 = Math.min(...mappedValues);
-      max4 = Math.max(...mappedValues);
-      domain = [min4, max4];
+      min7 = Math.min(...mappedValues);
+      max7 = Math.max(...mappedValues);
+      domain = [min7, max7];
     } else {
       const mappedValues = values.map((v) => Number(new Date(v)));
-      min4 = Math.min(...mappedValues);
-      max4 = Math.max(...mappedValues);
-      domain = [new Date(min4), new Date(max4)];
+      min7 = Math.min(...mappedValues);
+      max7 = Math.max(...mappedValues);
+      domain = [new Date(min7), new Date(max7)];
     }
     return domain;
   }
@@ -25158,9 +27893,9 @@ var BoxChartComponent = class extends BaseChartComponent {
     }
     const values = [...domain];
     const mappedValues = values.map((v) => Number(v));
-    const min4 = Math.min(...mappedValues);
-    const max4 = Math.max(...mappedValues);
-    return [min4, max4];
+    const min7 = Math.min(...mappedValues);
+    const max7 = Math.max(...mappedValues);
+    return [min7, max7];
   }
   getSeriesDomain() {
     return this.results.map((d) => `${d.name}`);
@@ -25239,7 +27974,8 @@ BoxChartComponent.ɵcmp = ɵɵdefineComponent({
     strokeColor: "strokeColor",
     strokeWidth: "strokeWidth",
     tooltipDisabled: "tooltipDisabled",
-    gradient: "gradient"
+    gradient: "gradient",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     select: "select",
@@ -25248,8 +27984,8 @@ BoxChartComponent.ɵcmp = ɵɵdefineComponent({
   },
   features: [ɵɵInheritDefinitionFeature],
   decls: 6,
-  vars: 21,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "animations"], [1, "box-chart", "chart"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "showGridLines", "dims", "xScale", "showLabel", "labelText"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "showGridLines", "dims", "yScale", "showLabel", "labelText"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-box-series", "", 3, "activate", "deactivate", "select", "xScale", "yScale", "colors", "roundEdges", "strokeColor", "strokeWidth", "tooltipDisabled", "tooltipTemplate", "series", "dims", "animations", "gradient"]],
+  vars: 23,
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "animations"], [1, "box-chart", "chart"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "showGridLines", "dims", "xScale", "showLabel", "labelText", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "showGridLines", "dims", "yScale", "showLabel", "labelText", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-box-series", "", 3, "activate", "deactivate", "select", "xScale", "yScale", "colors", "roundEdges", "strokeColor", "strokeWidth", "tooltipDisabled", "tooltipTemplate", "series", "dims", "animations", "gradient"]],
   template: function BoxChartComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -25276,13 +28012,13 @@ BoxChartComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelementEnd()();
     }
     if (rf & 2) {
-      ɵɵproperty("view", ɵɵpureFunction2(18, _c24, ctx.width, ctx.height))("showLegend", ctx.legend)("legendOptions", ctx.legendOptions)("animations", ctx.animations);
+      ɵɵproperty("view", ɵɵpureFunction2(20, _c24, ctx.width, ctx.height))("showLegend", ctx.legend)("legendOptions", ctx.legendOptions)("animations", ctx.animations);
       ɵɵadvance();
       ɵɵattribute("transform", ctx.transform);
       ɵɵadvance();
-      ɵɵproperty("showGridLines", ctx.showGridLines)("dims", ctx.dims)("xScale", ctx.xScale)("showLabel", ctx.showXAxisLabel)("labelText", ctx.xAxisLabel);
+      ɵɵproperty("showGridLines", ctx.showGridLines)("dims", ctx.dims)("xScale", ctx.xScale)("showLabel", ctx.showXAxisLabel)("labelText", ctx.xAxisLabel)("wrapTicks", ctx.wrapTicks);
       ɵɵadvance();
-      ɵɵproperty("showGridLines", ctx.showGridLines)("dims", ctx.dims)("yScale", ctx.yScale)("showLabel", ctx.showYAxisLabel)("labelText", ctx.yAxisLabel);
+      ɵɵproperty("showGridLines", ctx.showGridLines)("dims", ctx.dims)("yScale", ctx.yScale)("showLabel", ctx.showYAxisLabel)("labelText", ctx.yAxisLabel)("wrapTicks", ctx.wrapTicks);
       ɵɵadvance();
       ɵɵattribute("transform", ctx.transform);
       ɵɵadvance();
@@ -25317,6 +28053,7 @@ BoxChartComponent.ɵcmp = ɵɵdefineComponent({
           [xScale]="xScale"
           [showLabel]="showXAxisLabel"
           [labelText]="xAxisLabel"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         />
         <svg:g
@@ -25326,6 +28063,7 @@ BoxChartComponent.ɵcmp = ɵɵdefineComponent({
           [yScale]="yScale"
           [showLabel]="showYAxisLabel"
           [labelText]="yAxisLabel"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         />
       </svg:g>
@@ -25355,7 +28093,7 @@ BoxChartComponent.ɵcmp = ɵɵdefineComponent({
   `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation$1.None,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -25409,6 +28147,9 @@ BoxChartComponent.ɵcmp = ɵɵdefineComponent({
     gradient: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     select: [{
       type: Output
     }],
@@ -25459,27 +28200,27 @@ function getDomain(values, scaleType, autoScale, minVal, maxVal) {
     }
   }
   if (scaleType === ScaleType.Time || scaleType === ScaleType.Linear) {
-    const min4 = minVal ? minVal : Math.min(...values);
-    const max4 = maxVal ? maxVal : Math.max(...values);
-    domain = [min4, max4];
+    const min7 = minVal || minVal === 0 ? minVal : Math.min(...values);
+    const max7 = maxVal ? maxVal : Math.max(...values);
+    domain = [min7, max7];
   } else {
     domain = values;
   }
   return domain;
 }
-function getScale(domain, range, scaleType, roundDomains) {
+function getScale(domain, range2, scaleType, roundDomains) {
   switch (scaleType) {
     case ScaleType.Time:
-      return time().range(range).domain(domain);
+      return time().range(range2).domain(domain);
     case ScaleType.Linear: {
-      const scale = linear3().range(range).domain(domain);
+      const scale = linear3().range(range2).domain(domain);
       if (roundDomains) {
         return scale.nice();
       }
       return scale;
     }
     case ScaleType.Ordinal:
-      return point().range([range[0], range[1]]).domain(domain.map((r) => r.toString()));
+      return point().range([range2[0], range2[1]]).domain(domain.map((r) => r.toString()));
     default:
       return void 0;
   }
@@ -25510,14 +28251,14 @@ var BubbleSeriesComponent = class {
     const seriesName = this.data.name;
     return this.data.series.map((d, i) => {
       if (typeof d.y !== "undefined" && typeof d.x !== "undefined") {
-        const y2 = d.y;
-        const x2 = d.x;
+        const y3 = d.y;
+        const x3 = d.x;
         const r = d.r;
         const radius = this.rScale(r || 1);
         const tooltipLabel = formatLabel(d.name);
-        const cx = this.xScaleType === ScaleType.Linear ? this.xScale(Number(x2)) : this.xScale(x2);
-        const cy = this.yScaleType === ScaleType.Linear ? this.yScale(Number(y2)) : this.yScale(y2);
-        const color2 = this.colors.scaleType === ScaleType.Linear ? this.colors.getColor(r) : this.colors.getColor(seriesName);
+        const cx = this.xScaleType === ScaleType.Linear ? this.xScale(Number(x3)) : this.xScale(x3);
+        const cy = this.yScaleType === ScaleType.Linear ? this.yScale(Number(y3)) : this.yScale(y3);
+        const color3 = this.colors.scaleType === ScaleType.Linear ? this.colors.getColor(r) : this.colors.getColor(seriesName);
         const isActive = !this.activeEntries.length ? true : this.isActive({
           name: seriesName
         });
@@ -25531,17 +28272,17 @@ var BubbleSeriesComponent = class {
         });
         return {
           data,
-          x: x2,
-          y: y2,
+          x: x3,
+          y: y3,
           r,
           classNames: [`circle-data-${i}`],
-          value: y2,
-          label: x2,
+          value: y3,
+          label: x3,
           cx,
           cy,
           radius,
           tooltipLabel,
-          color: color2,
+          color: color3,
           opacity,
           seriesName,
           isActive,
@@ -25557,15 +28298,15 @@ var BubbleSeriesComponent = class {
     const radiusValue = hasRadius ? formatLabel(circle.r) : "";
     const xAxisLabel = this.xAxisLabel && this.xAxisLabel !== "" ? `${this.xAxisLabel}:` : "";
     const yAxisLabel = this.yAxisLabel && this.yAxisLabel !== "" ? `${this.yAxisLabel}:` : "";
-    const x2 = formatLabel(circle.x);
-    const y2 = formatLabel(circle.y);
+    const x3 = formatLabel(circle.x);
+    const y3 = formatLabel(circle.y);
     const name = hasSeriesName && hasTooltipLabel ? `${circle.seriesName} • ${circle.tooltipLabel}` : circle.seriesName + circle.tooltipLabel;
     const tooltipTitle = hasSeriesName || hasTooltipLabel ? `<span class="tooltip-label">${escapeLabel(name)}</span>` : "";
     return `
       ${tooltipTitle}
       <span class="tooltip-label">
-        <label>${escapeLabel(xAxisLabel)}</label> ${escapeLabel(x2)}<br />
-        <label>${escapeLabel(yAxisLabel)}</label> ${escapeLabel(y2)}
+        <label>${escapeLabel(xAxisLabel)}</label> ${escapeLabel(x3)}<br />
+        <label>${escapeLabel(yAxisLabel)}</label> ${escapeLabel(y3)}
       </span>
       <span class="tooltip-val">
         ${escapeLabel(radiusValue)}
@@ -25602,7 +28343,7 @@ var BubbleSeriesComponent = class {
       name: this.data.name
     });
   }
-  trackBy(index2, circle) {
+  trackBy(index4, circle) {
     return `${circle.data.series} ${circle.data.name}`;
   }
 };
@@ -25805,6 +28546,7 @@ var BubbleChartComponent = class extends BaseChartComponent {
     this.minRadius = 3;
     this.schemeType = ScaleType.Ordinal;
     this.tooltipDisabled = false;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.scaleType = ScaleType.Linear;
@@ -25869,8 +28611,8 @@ var BubbleChartComponent = class extends BaseChartComponent {
     let xMin = 0;
     let yMax = this.dims.height;
     let xMax = this.dims.width;
-    for (const s2 of this.data) {
-      for (const d of s2.series) {
+    for (const s3 of this.data) {
+      for (const d of s3.series) {
         const r = this.rScale(d.r);
         const cx = this.xScaleType === ScaleType.Linear ? this.xScale(Number(d.x)) : this.xScale(d.x);
         const cy = this.yScaleType === ScaleType.Linear ? this.yScale(Number(d.y)) : this.yScale(d.y);
@@ -25902,8 +28644,8 @@ var BubbleChartComponent = class extends BaseChartComponent {
   getXScale(domain, width) {
     return getScale(domain, [this.bubblePadding[3], width], this.xScaleType, this.roundDomains);
   }
-  getRScale(domain, range) {
-    const scale = linear3().range(range).domain(domain);
+  getRScale(domain, range2) {
+    const scale = linear3().range(range2).domain(domain);
     return this.roundDomains ? scale.nice() : scale;
   }
   getLegendOptions() {
@@ -25949,16 +28691,16 @@ var BubbleChartComponent = class extends BaseChartComponent {
     return getDomain(values, this.yScaleType, this.autoScale, this.yScaleMin, this.yScaleMax);
   }
   getRDomain() {
-    let min4 = Infinity;
-    let max4 = -Infinity;
+    let min7 = Infinity;
+    let max7 = -Infinity;
     for (const results of this.results) {
       for (const d of results.series) {
-        const value = Number(d.r) || 1;
-        min4 = Math.min(min4, value);
-        max4 = Math.max(max4, value);
+        const value2 = Number(d.r) || 1;
+        min7 = Math.min(min7, value2);
+        max7 = Math.max(max7, value2);
       }
     }
-    return [min4, max4];
+    return [min7, max7];
   }
   updateYAxisWidth({
     width
@@ -26006,7 +28748,7 @@ var BubbleChartComponent = class extends BaseChartComponent {
     }
     this.activeEntries = [];
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return `${item.name}`;
   }
 };
@@ -26064,7 +28806,8 @@ BubbleChartComponent.ɵcmp = ɵɵdefineComponent({
     xScaleMin: "xScaleMin",
     xScaleMax: "xScaleMax",
     yScaleMin: "yScaleMin",
-    yScaleMax: "yScaleMax"
+    yScaleMax: "yScaleMax",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -26073,7 +28816,7 @@ BubbleChartComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 10,
   vars: 19,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "activeEntries", "legendOptions", "animations"], [1, "bubble-chart", "chart"], ["ngx-charts-x-axis", "", 3, "showGridLines", "dims", "xScale", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "showGridLines", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["x", "0", "y", "0", 1, "bubble-chart-area", 2, "fill", "rgb(255, 0, 0)", "opacity", "0", "cursor", "'auto'", 3, "mouseenter"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "showGridLines", "dims", "xScale", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "showGridLines", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-bubble-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "rScale", "xScaleType", "yScaleType", "xAxisLabel", "yAxisLabel", "colors", "data", "activeEntries", "tooltipDisabled", "tooltipTemplate"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "activeEntries", "legendOptions", "animations"], [1, "bubble-chart", "chart"], ["ngx-charts-x-axis", "", 3, "showGridLines", "dims", "xScale", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "showGridLines", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["x", "0", "y", "0", 1, "bubble-chart-area", 2, "fill", "rgb(255, 0, 0)", "opacity", "0", "cursor", "'auto'", 3, "mouseenter"], [4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "showGridLines", "dims", "xScale", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "showGridLines", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-bubble-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "rScale", "xScaleType", "yScaleType", "xAxisLabel", "yAxisLabel", "colors", "data", "activeEntries", "tooltipDisabled", "tooltipTemplate"]],
   template: function BubbleChartComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -26089,7 +28832,7 @@ BubbleChartComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelement(3, "rect");
       ɵɵelementEnd()();
       ɵɵelementStart(4, "g", 1);
-      ɵɵtemplate(5, BubbleChartComponent__svg_g_5_Template, 1, 10, "g", 2)(6, BubbleChartComponent__svg_g_6_Template, 1, 9, "g", 3);
+      ɵɵtemplate(5, BubbleChartComponent__svg_g_5_Template, 1, 11, "g", 2)(6, BubbleChartComponent__svg_g_6_Template, 1, 10, "g", 3);
       ɵɵelementStart(7, "rect", 4);
       ɵɵlistener("mouseenter", function BubbleChartComponent_Template_rect_mouseenter_7_listener() {
         return ctx.deactivateAll();
@@ -26169,6 +28912,7 @@ BubbleChartComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         />
         <svg:g
@@ -26183,6 +28927,7 @@ BubbleChartComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         />
         <svg:rect
@@ -26248,7 +28993,7 @@ BubbleChartComponent.ɵcmp = ɵɵdefineComponent({
       }), animate(500, style({
         opacity: 0
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     showGridLines: [{
@@ -26336,6 +29081,9 @@ BubbleChartComponent.ɵcmp = ɵɵdefineComponent({
       type: Input
     }],
     yScaleMax: [{
+      type: Input
+    }],
+    wrapTicks: [{
       type: Input
     }],
     activate: [{
@@ -26586,7 +29334,7 @@ var HeatCellSeriesComponent = class {
     const cells = [];
     this.data.map((row) => {
       row.series.map((cell) => {
-        const value = cell.value;
+        const value2 = cell.value;
         cell.series = row.name;
         cells.push({
           row,
@@ -26595,8 +29343,8 @@ var HeatCellSeriesComponent = class {
           y: this.yScale(cell.name),
           width: this.xScale.bandwidth(),
           height: this.yScale.bandwidth(),
-          fill: this.colors.getColor(value),
-          data: value,
+          fill: this.colors.getColor(value2),
+          data: value2,
           label: formatLabel(cell.name),
           series: row.name
         });
@@ -26614,7 +29362,7 @@ var HeatCellSeriesComponent = class {
       <span class="tooltip-val">${data.toLocaleString()}</span>
     `;
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.label;
   }
   onClick(data) {
@@ -26743,6 +29491,7 @@ var HeatMapComponent = class extends BaseChartComponent {
     this.maxYAxisTickLength = 16;
     this.tooltipDisabled = false;
     this.activeEntries = [];
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -26772,15 +29521,15 @@ var HeatMapComponent = class extends BaseChartComponent {
       legendPosition: this.legendPosition
     });
     if (this.scaleType === ScaleType.Linear) {
-      let min4 = this.min;
-      let max4 = this.max;
+      let min7 = this.min;
+      let max7 = this.max;
       if (!this.min) {
-        min4 = Math.min(0, ...this.valueDomain);
+        min7 = Math.min(0, ...this.valueDomain);
       }
       if (!this.max) {
-        max4 = Math.max(...this.valueDomain);
+        max7 = Math.max(...this.valueDomain);
       }
-      this.valueDomain = [min4, max4];
+      this.valueDomain = [min7, max7];
     }
     this.xScale = this.getXScale();
     this.yScale = this.getYScale();
@@ -26791,17 +29540,17 @@ var HeatMapComponent = class extends BaseChartComponent {
   }
   getXDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      if (!domain.includes(group2.name)) {
-        domain.push(group2.name);
+    for (const group4 of this.results) {
+      if (!domain.includes(group4.name)) {
+        domain.push(group4.name);
       }
     }
     return domain;
   }
   getYDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.name)) {
           domain.push(d.name);
         }
@@ -26811,8 +29560,8 @@ var HeatMapComponent = class extends BaseChartComponent {
   }
   getValueDomain() {
     const domain = [];
-    for (const group2 of this.results) {
-      for (const d of group2.series) {
+    for (const group4 of this.results) {
+      for (const d of group4.series) {
         if (!domain.includes(d.value)) {
           domain.push(d.value);
         }
@@ -26830,20 +29579,20 @@ var HeatMapComponent = class extends BaseChartComponent {
    *
    * @memberOf HeatMapComponent
    */
-  getDimension(value, index2 = 0, N, L) {
-    if (typeof value === "string") {
-      value = value.replace("[", "").replace("]", "").replace("px", "").replace("'", "");
-      if (value.includes(",")) {
-        value = value.split(",");
+  getDimension(value2, index4 = 0, N, L) {
+    if (typeof value2 === "string") {
+      value2 = value2.replace("[", "").replace("]", "").replace("px", "").replace("'", "");
+      if (value2.includes(",")) {
+        value2 = value2.split(",");
       }
     }
-    if (Array.isArray(value) && typeof index2 === "number") {
-      return this.getDimension(value[index2], null, N, L);
+    if (Array.isArray(value2) && typeof index4 === "number") {
+      return this.getDimension(value2[index4], null, N, L);
     }
-    if (typeof value === "string" && value.includes("%")) {
-      return +value.replace("%", "") / 100;
+    if (typeof value2 === "string" && value2.includes("%")) {
+      return +value2.replace("%", "") / 100;
     }
-    return N / (L / +value + 1);
+    return N / (L / +value2 + 1);
   }
   getXScale() {
     const f = this.getDimension(this.innerPadding, 0, this.xDomain.length, this.dims.width);
@@ -26896,10 +29645,10 @@ var HeatMapComponent = class extends BaseChartComponent {
     this.xAxisHeight = height;
     this.update();
   }
-  onActivate(event, group2, fromLegend = false) {
+  onActivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     const items = this.results.map((g) => g.series).flat().filter((i) => {
       if (fromLegend) {
@@ -26914,10 +29663,10 @@ var HeatMapComponent = class extends BaseChartComponent {
       entries: this.activeEntries
     });
   }
-  onDeactivate(event, group2, fromLegend = false) {
+  onDeactivate(event, group4, fromLegend = false) {
     const item = Object.assign({}, event);
-    if (group2) {
-      item.series = group2.name;
+    if (group4) {
+      item.series = group4.name;
     }
     this.activeEntries = this.activeEntries.filter((i) => {
       if (fromLegend) {
@@ -26975,7 +29724,8 @@ HeatMapComponent.ɵcmp = ɵɵdefineComponent({
     tooltipText: "tooltipText",
     min: "min",
     max: "max",
-    activeEntries: "activeEntries"
+    activeEntries: "activeEntries",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -26984,7 +29734,7 @@ HeatMapComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 6,
   vars: 20,
-  consts: [[3, "legendLabelClick", "view", "showLegend", "animations", "legendOptions"], [1, "heat-map", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf"], ["ngx-charts-heat-map-cell-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "colors", "data", "gradient", "animations", "tooltipDisabled", "tooltipTemplate", "tooltipText"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks"]],
+  consts: [[3, "legendLabelClick", "view", "showLegend", "animations", "legendOptions"], [1, "heat-map", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngFor", "ngForOf"], ["ngx-charts-heat-map-cell-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "colors", "data", "gradient", "animations", "tooltipDisabled", "tooltipTemplate", "tooltipText"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"]],
   template: function HeatMapComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -26993,7 +29743,7 @@ HeatMapComponent.ɵcmp = ɵɵdefineComponent({
       });
       ɵɵnamespaceSVG();
       ɵɵelementStart(1, "g", 1);
-      ɵɵtemplate(2, HeatMapComponent__svg_g_2_Template, 1, 9, "g", 2)(3, HeatMapComponent__svg_g_3_Template, 1, 8, "g", 3)(4, HeatMapComponent__svg_rect_4_Template, 1, 6, "rect", 4);
+      ɵɵtemplate(2, HeatMapComponent__svg_g_2_Template, 1, 10, "g", 2)(3, HeatMapComponent__svg_g_3_Template, 1, 9, "g", 3)(4, HeatMapComponent__svg_rect_4_Template, 1, 6, "rect", 4);
       ɵɵelementStart(5, "g", 5);
       ɵɵlistener("select", function HeatMapComponent_Template_g_select_5_listener($event) {
         return ctx.onClick($event);
@@ -27049,6 +29799,7 @@ HeatMapComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -27062,6 +29813,7 @@ HeatMapComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
           [ticks]="yAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:rect
@@ -27093,7 +29845,7 @@ HeatMapComponent.ɵcmp = ɵɵdefineComponent({
   `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation$1.None,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -27169,6 +29921,9 @@ HeatMapComponent.ɵcmp = ɵɵdefineComponent({
       type: Input
     }],
     activeEntries: [{
+      type: Input
+    }],
+    wrapTicks: [{
       type: Input
     }],
     activate: [{
@@ -27350,16 +30105,16 @@ var LineSeriesComponent = class {
     const areaGen = this.getAreaGenerator();
     this.areaPath = areaGen(data) || "";
     if (this.hasRange) {
-      const range = this.getRangeGenerator();
-      this.outerPath = range(data) || "";
+      const range2 = this.getRangeGenerator();
+      this.outerPath = range2(data) || "";
     }
     if (this.hasGradient) {
       this.stroke = this.gradientUrl;
       const values = this.data.series.map((d) => d.value);
-      const max4 = Math.max(...values);
-      const min4 = Math.min(...values);
-      if (max4 === min4) {
-        this.stroke = this.colors.getColor(max4);
+      const max7 = Math.max(...values);
+      const min7 = Math.min(...values);
+      if (max7 === min7) {
+        this.stroke = this.colors.getColor(max7);
       }
     } else {
       this.stroke = this.colors.getColor(this.data.name);
@@ -27368,29 +30123,29 @@ var LineSeriesComponent = class {
   getLineGenerator() {
     return line_default().x((d) => {
       const label = d.name;
-      let value;
+      let value2;
       if (this.scaleType === ScaleType.Time) {
-        value = this.xScale(label);
+        value2 = this.xScale(label);
       } else if (this.scaleType === ScaleType.Linear) {
-        value = this.xScale(Number(label));
+        value2 = this.xScale(Number(label));
       } else {
-        value = this.xScale(label);
+        value2 = this.xScale(label);
       }
-      return value;
+      return value2;
     }).y((d) => this.yScale(d.value)).curve(this.curve);
   }
   getRangeGenerator() {
     return area_default().x((d) => {
       const label = d.name;
-      let value;
+      let value2;
       if (this.scaleType === ScaleType.Time) {
-        value = this.xScale(label);
+        value2 = this.xScale(label);
       } else if (this.scaleType === ScaleType.Linear) {
-        value = this.xScale(Number(label));
+        value2 = this.xScale(Number(label));
       } else {
-        value = this.xScale(label);
+        value2 = this.xScale(label);
       }
-      return value;
+      return value2;
     }).y0((d) => this.yScale(typeof d.min === "number" ? d.min : d.value)).y1((d) => this.yScale(typeof d.max === "number" ? d.max : d.value)).curve(this.curve);
   }
   getAreaGenerator() {
@@ -27416,10 +30171,10 @@ var LineSeriesComponent = class {
       this.gradientId = "grad" + id2().toString();
       this.gradientUrl = `url(#${this.gradientId})`;
       const values = this.data.series.map((d) => d.value);
-      const max4 = Math.max(...values);
-      const min4 = Math.min(...values);
-      this.gradientStops = this.colors.getLinearGradientStops(max4, min4);
-      this.areaGradientStops = this.colors.getLinearGradientStops(max4);
+      const max7 = Math.max(...values);
+      const min7 = Math.min(...values);
+      this.gradientStops = this.colors.getLinearGradientStops(max7, min7);
+      this.areaGradientStops = this.colors.getLinearGradientStops(max7);
     } else {
       this.hasGradient = false;
       this.gradientStops = void 0;
@@ -27597,6 +30352,7 @@ var LineChartComponent = class extends BaseChartComponent {
     this.tooltipDisabled = false;
     this.showRefLines = false;
     this.showRefLabels = true;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -27661,24 +30417,24 @@ var LineChartComponent = class extends BaseChartComponent {
     if (this.scaleType === ScaleType.Linear) {
       values = values.map((v) => Number(v));
     }
-    let min4;
-    let max4;
+    let min7;
+    let max7;
     if (this.scaleType === ScaleType.Time || this.scaleType === ScaleType.Linear) {
-      min4 = this.xScaleMin ? this.xScaleMin : Math.min(...values);
-      max4 = this.xScaleMax ? this.xScaleMax : Math.max(...values);
+      min7 = this.xScaleMin ? this.xScaleMin : Math.min(...values);
+      max7 = this.xScaleMax ? this.xScaleMax : Math.max(...values);
     }
     if (this.scaleType === ScaleType.Time) {
-      domain = [new Date(min4), new Date(max4)];
-      this.xSet = [...values].sort((a2, b) => {
-        const aDate = a2.getTime();
+      domain = [new Date(min7), new Date(max7)];
+      this.xSet = [...values].sort((a3, b) => {
+        const aDate = a3.getTime();
         const bDate = b.getTime();
         if (aDate > bDate) return 1;
         if (bDate > aDate) return -1;
         return 0;
       });
     } else if (this.scaleType === ScaleType.Linear) {
-      domain = [min4, max4];
-      this.xSet = [...values].sort((a2, b) => a2 - b);
+      domain = [min7, max7];
+      this.xSet = [...values].sort((a3, b) => a3 - b);
     } else {
       domain = values;
       this.xSet = values;
@@ -27710,9 +30466,9 @@ var LineChartComponent = class extends BaseChartComponent {
     if (!this.autoScale) {
       values.push(0);
     }
-    const min4 = this.yScaleMin ? this.yScaleMin : Math.min(...values);
-    const max4 = this.yScaleMax ? this.yScaleMax : Math.max(...values);
-    return [min4, max4];
+    const min7 = this.yScaleMin ? this.yScaleMin : Math.min(...values);
+    const max7 = this.yScaleMax ? this.yScaleMax : Math.max(...values);
+    return [min7, max7];
   }
   getSeriesDomain() {
     return this.results.map((d) => d.name);
@@ -27751,7 +30507,7 @@ var LineChartComponent = class extends BaseChartComponent {
   onClick(data) {
     this.select.emit(data);
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return `${item.name}`;
   }
   setColors() {
@@ -27891,7 +30647,8 @@ LineChartComponent.ɵcmp = ɵɵdefineComponent({
     xScaleMin: "xScaleMin",
     xScaleMax: "xScaleMax",
     yScaleMin: "yScaleMin",
-    yScaleMax: "yScaleMax"
+    yScaleMax: "yScaleMax",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -27900,7 +30657,7 @@ LineChartComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 12,
   vars: 20,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "line-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "referenceLines", "showRefLines", "showRefLabels", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "scaleType", "legend", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "referenceLines", "showRefLines", "showRefLabels"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-line-series", "", 3, "xScale", "yScale", "colors", "data", "activeEntries", "scaleType", "curve", "rangeFillOpacity", "hasRange", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "tooltipDisabled", "tooltipTemplate"], [4, "ngFor", "ngForOf"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "colors", "data", "scaleType", "visibleValue", "activeEntries", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "scaleType", "legend"], ["ngx-charts-line-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "curve", "hasRange", "animations"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "line-chart", "chart"], ["ngx-charts-x-axis", "", 3, "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "referenceLines", "showRefLines", "showRefLabels", "wrapTicks", "dimensionsChanged", 4, "ngIf"], [4, "ngIf"], [3, "mouseleave", 4, "ngIf"], ["ngx-charts-timeline", "", 3, "results", "view", "height", "scheme", "customColors", "scaleType", "legend", "onDomainChange", 4, "ngIf"], ["ngx-charts-x-axis", "", 3, "dimensionsChanged", "xScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "rotateTicks", "maxTickLength", "tickFormatting", "ticks", "wrapTicks"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "ticks", "referenceLines", "showRefLines", "showRefLabels", "wrapTicks"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-line-series", "", 3, "xScale", "yScale", "colors", "data", "activeEntries", "scaleType", "curve", "rangeFillOpacity", "hasRange", "animations"], [3, "mouseleave"], ["ngx-charts-tooltip-area", "", 3, "hover", "dims", "xSet", "xScale", "yScale", "results", "colors", "tooltipDisabled", "tooltipTemplate"], [4, "ngFor", "ngForOf"], ["ngx-charts-circle-series", "", 3, "select", "activate", "deactivate", "xScale", "yScale", "colors", "data", "scaleType", "visibleValue", "activeEntries", "tooltipDisabled", "tooltipTemplate"], ["ngx-charts-timeline", "", 3, "onDomainChange", "results", "view", "height", "scheme", "customColors", "scaleType", "legend"], ["ngx-charts-line-series", "", 3, "xScale", "yScale", "colors", "data", "scaleType", "curve", "hasRange", "animations"]],
   template: function LineChartComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -27916,7 +30673,7 @@ LineChartComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelement(3, "rect");
       ɵɵelementEnd()();
       ɵɵelementStart(4, "g", 1);
-      ɵɵtemplate(5, LineChartComponent__svg_g_5_Template, 1, 10, "g", 2)(6, LineChartComponent__svg_g_6_Template, 1, 12, "g", 3);
+      ɵɵtemplate(5, LineChartComponent__svg_g_5_Template, 1, 11, "g", 2)(6, LineChartComponent__svg_g_6_Template, 1, 13, "g", 3);
       ɵɵelementStart(7, "g");
       ɵɵtemplate(8, LineChartComponent__svg_g_8_Template, 2, 2, "g", 4)(9, LineChartComponent__svg_g_9_Template, 2, 2, "g", 4)(10, LineChartComponent__svg_g_10_Template, 3, 9, "g", 5);
       ɵɵelementEnd()();
@@ -27998,6 +30755,7 @@ LineChartComponent.ɵcmp = ɵɵdefineComponent({
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -28015,6 +30773,7 @@ LineChartComponent.ɵcmp = ɵɵdefineComponent({
           [referenceLines]="referenceLines"
           [showRefLines]="showRefLines"
           [showRefLabels]="showRefLabels"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g [attr.clip-path]="clipPath">
@@ -28123,7 +30882,7 @@ LineChartComponent.ɵcmp = ɵɵdefineComponent({
       }), animate(500, style({
         opacity: 0
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
     }]
   }], null, {
     legend: [{
@@ -28229,6 +30988,9 @@ LineChartComponent.ɵcmp = ɵɵdefineComponent({
       type: Input
     }],
     yScaleMax: [{
+      type: Input
+    }],
+    wrapTicks: [{
       type: Input
     }],
     activate: [{
@@ -28470,25 +31232,25 @@ var PolarSeriesComponent = class {
     const data = this.sortData(this.data.series);
     const seriesName = this.data.name;
     const linearScaleType = this.colors.scaleType === ScaleType.Linear;
-    const min4 = this.yScale.domain()[0];
-    this.seriesColor = this.colors.getColor(linearScaleType ? min4 : seriesName);
+    const min7 = this.yScale.domain()[0];
+    this.seriesColor = this.colors.getColor(linearScaleType ? min7 : seriesName);
     this.path = line(data) || "";
     this.circles = data.map((d) => {
-      const a2 = this.getAngle(d);
+      const a3 = this.getAngle(d);
       const r = this.getRadius(d);
-      const value = d.value;
-      const color2 = this.colors.getColor(linearScaleType ? Math.abs(value) : seriesName);
+      const value2 = d.value;
+      const color3 = this.colors.getColor(linearScaleType ? Math.abs(value2) : seriesName);
       const cData = Object.assign({}, d, {
         series: seriesName,
-        value,
+        value: value2,
         name: d.name
       });
       return {
         data: cData,
-        cx: r * Math.sin(a2),
-        cy: -r * Math.cos(a2),
-        value,
-        color: color2,
+        cx: r * Math.sin(a3),
+        cy: -r * Math.cos(a3),
+        value: value2,
+        color: color3,
         label: d.name
       };
     });
@@ -28535,11 +31297,11 @@ var PolarSeriesComponent = class {
   }
   defaultTooltipText({
     label,
-    value
+    value: value2
   }) {
     return `
       <span class="tooltip-label">${escapeLabel(this.data.name)} • ${escapeLabel(label)}</span>
-      <span class="tooltip-val">${value.toLocaleString()}</span>
+      <span class="tooltip-val">${value2.toLocaleString()}</span>
     `;
   }
   updateGradients() {
@@ -28551,9 +31313,9 @@ var PolarSeriesComponent = class {
     this.gradientUrl = `url(#${this.gradientId})`;
     if (this.colors.scaleType === ScaleType.Linear) {
       const values = this.data.series.map((d) => d.value);
-      const max4 = Math.max(...values);
-      const min4 = Math.min(...values);
-      this.gradientStops = this.colors.getLinearGradientStops(max4, min4);
+      const max7 = Math.max(...values);
+      const min7 = Math.min(...values);
+      this.gradientStops = this.colors.getLinearGradientStops(max7, min7);
     } else {
       this.gradientStops = void 0;
     }
@@ -28742,6 +31504,7 @@ var PolarChartComponent = class extends BaseChartComponent {
     this.yAxisMinScale = 0;
     this.labelTrim = true;
     this.labelTrimSize = 10;
+    this.wrapTicks = false;
     this.activate = new EventEmitter();
     this.deactivate = new EventEmitter();
     this.margin = [10, 20, 10, 20];
@@ -28815,13 +31578,13 @@ var PolarChartComponent = class extends BaseChartComponent {
       };
     }
     const outerRadius = this.outerRadius;
-    const s2 = 1.1;
+    const s3 = 1.1;
     this.thetaTicks = this.xDomain.map((d) => {
       const startAngle = this.xScale(d);
-      const dd = s2 * outerRadius * (startAngle > Math.PI ? -1 : 1);
+      const dd = s3 * outerRadius * (startAngle > Math.PI ? -1 : 1);
       const label = tickFormat3(d);
       const startPos = [outerRadius * Math.sin(startAngle), -outerRadius * Math.cos(startAngle)];
-      const pos = [dd, s2 * startPos[1]];
+      const pos = [dd, s3 * startPos[1]];
       return {
         innerRadius: 0,
         outerRadius,
@@ -28835,11 +31598,11 @@ var PolarChartComponent = class extends BaseChartComponent {
     });
     const minDistance = 10;
     for (let i = 0; i < this.thetaTicks.length - 1; i++) {
-      const a2 = this.thetaTicks[i];
+      const a3 = this.thetaTicks[i];
       for (let j = i + 1; j < this.thetaTicks.length; j++) {
         const b = this.thetaTicks[j];
-        if (b.pos[0] * a2.pos[0] > 0) {
-          const o = minDistance - Math.abs(b.pos[1] - a2.pos[1]);
+        if (b.pos[0] * a3.pos[0] > 0) {
+          const o = minDistance - Math.abs(b.pos[1] - a3.pos[1]);
           if (o > 0) {
             b.pos[1] += Math.sign(b.pos[0]) * o;
           }
@@ -28861,14 +31624,14 @@ var PolarChartComponent = class extends BaseChartComponent {
   }
   getXDomain(values = this.getXValues()) {
     if (this.scaleType === ScaleType.Time) {
-      const min4 = Math.min(...values);
-      const max4 = Math.max(...values);
-      return [min4, max4];
+      const min7 = Math.min(...values);
+      const max7 = Math.max(...values);
+      return [min7, max7];
     } else if (this.scaleType === ScaleType.Linear) {
       values = values.map((v) => Number(v));
-      const min4 = Math.min(...values);
-      const max4 = Math.max(...values);
-      return [min4, max4];
+      const min7 = Math.min(...values);
+      const max7 = Math.max(...values);
+      return [min7, max7];
     }
     return values;
   }
@@ -28894,13 +31657,13 @@ var PolarChartComponent = class extends BaseChartComponent {
     return domain;
   }
   getYDomain(domain = this.getYValues()) {
-    let min4 = Math.min(...domain);
-    const max4 = Math.max(this.yAxisMinScale, ...domain);
-    min4 = Math.max(0, min4);
+    let min7 = Math.min(...domain);
+    const max7 = Math.max(this.yAxisMinScale, ...domain);
+    min7 = Math.max(0, min7);
     if (!this.autoScale) {
-      min4 = Math.min(0, min4);
+      min7 = Math.min(0, min7);
     }
-    return [min4, max4];
+    return [min7, max7];
   }
   getSeriesDomain() {
     return this.results.map((d) => d.name);
@@ -28909,9 +31672,10 @@ var PolarChartComponent = class extends BaseChartComponent {
     switch (this.scaleType) {
       case ScaleType.Time:
         return time().range([0, width]).domain(domain);
-      case ScaleType.Linear:
+      case ScaleType.Linear: {
         const scale = linear3().range([0, width]).domain(domain);
         return this.roundDomains ? scale.nice() : scale;
+      }
       default:
         return point().range([0, width - twoPI / domain.length]).padding(0).domain(domain);
     }
@@ -28994,7 +31758,7 @@ var PolarChartComponent = class extends BaseChartComponent {
     }
     this.activeEntries = [];
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return `${item.name}`;
   }
 };
@@ -29042,7 +31806,8 @@ PolarChartComponent.ɵcmp = ɵɵdefineComponent({
     gradient: "gradient",
     yAxisMinScale: "yAxisMinScale",
     labelTrim: "labelTrim",
-    labelTrimSize: "labelTrimSize"
+    labelTrimSize: "labelTrimSize",
+    wrapTicks: "wrapTicks"
   },
   outputs: {
     activate: "activate",
@@ -29051,7 +31816,7 @@ PolarChartComponent.ɵcmp = ɵɵdefineComponent({
   features: [ɵɵInheritDefinitionFeature],
   decls: 10,
   vars: 17,
-  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "polar-chart", "chart"], ["cx", "0", "cy", "0", 1, "polar-chart-background"], [4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width", 4, "ngIf"], ["class", "gridline-path radial-gridline-path", "cx", "0", "cy", "0", 4, "ngFor", "ngForOf"], ["cx", "0", "cy", "0", 1, "gridline-path", "radial-gridline-path"], ["ngx-charts-pie-label", "", 3, "data", "radius", "label", "max", "value", "explodeSlices", "animations", "labelTrim", "labelTrimSize", 4, "ngFor", "ngForOf"], ["ngx-charts-pie-label", "", 3, "data", "radius", "label", "max", "value", "explodeSlices", "animations", "labelTrim", "labelTrimSize"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-polar-series", "", 3, "select", "activate", "deactivate", "gradient", "xScale", "yScale", "colors", "data", "activeEntries", "scaleType", "curve", "rangeFillOpacity", "animations", "tooltipDisabled", "tooltipTemplate"]],
+  consts: [[3, "legendLabelClick", "legendLabelActivate", "legendLabelDeactivate", "view", "showLegend", "legendOptions", "activeEntries", "animations"], [1, "polar-chart", "chart"], ["cx", "0", "cy", "0", 1, "polar-chart-background"], [4, "ngIf"], ["ngx-charts-y-axis", "", 3, "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "wrapTicks", "dimensionsChanged", 4, "ngIf"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width", 4, "ngIf"], ["class", "gridline-path radial-gridline-path", "cx", "0", "cy", "0", 4, "ngFor", "ngForOf"], ["cx", "0", "cy", "0", 1, "gridline-path", "radial-gridline-path"], ["ngx-charts-pie-label", "", 3, "data", "radius", "label", "max", "value", "explodeSlices", "animations", "labelTrim", "labelTrimSize", 4, "ngFor", "ngForOf"], ["ngx-charts-pie-label", "", 3, "data", "radius", "label", "max", "value", "explodeSlices", "animations", "labelTrim", "labelTrimSize"], ["ngx-charts-y-axis", "", 3, "dimensionsChanged", "yScale", "dims", "showGridLines", "showLabel", "labelText", "trimTicks", "maxTickLength", "tickFormatting", "wrapTicks"], ["ngx-charts-axis-label", "", 3, "label", "offset", "orient", "height", "width"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ngx-charts-polar-series", "", 3, "select", "activate", "deactivate", "gradient", "xScale", "yScale", "colors", "data", "activeEntries", "scaleType", "curve", "rangeFillOpacity", "animations", "tooltipDisabled", "tooltipTemplate"]],
   template: function PolarChartComponent_Template(rf, ctx) {
     if (rf & 1) {
       ɵɵelementStart(0, "ngx-charts-chart", 0);
@@ -29067,7 +31832,7 @@ PolarChartComponent.ɵcmp = ɵɵdefineComponent({
       ɵɵelement(3, "circle", 2);
       ɵɵtemplate(4, PolarChartComponent__svg_g_4_Template, 2, 1, "g", 3)(5, PolarChartComponent__svg_g_5_Template, 2, 1, "g", 3);
       ɵɵelementEnd();
-      ɵɵtemplate(6, PolarChartComponent__svg_g_6_Template, 1, 9, "g", 4)(7, PolarChartComponent__svg_g_7_Template, 1, 5, "g", 5)(8, PolarChartComponent__svg_g_8_Template, 2, 3, "g", 3)(9, PolarChartComponent__svg_g_9_Template, 2, 3, "g", 3);
+      ɵɵtemplate(6, PolarChartComponent__svg_g_6_Template, 1, 10, "g", 4)(7, PolarChartComponent__svg_g_7_Template, 1, 5, "g", 5)(8, PolarChartComponent__svg_g_8_Template, 2, 3, "g", 3)(9, PolarChartComponent__svg_g_9_Template, 2, 3, "g", 3);
       ɵɵelementEnd()();
     }
     if (rf & 2) {
@@ -29093,7 +31858,7 @@ PolarChartComponent.ɵcmp = ɵɵdefineComponent({
     }
   },
   dependencies: [ChartComponent, PieLabelComponent, YAxisComponent, AxisLabelComponent, PolarSeriesComponent, NgIf, NgForOf],
-  styles: [_c25, ".pie-label{font-size:11px}.pie-label.animation{-webkit-animation:.75s ease-in fadeIn;animation:.75s ease-in fadeIn}@-webkit-keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{-webkit-animation:3s linear drawOut;animation:3s linear drawOut;transition:d .75s}@-webkit-keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n", ".polar-chart .polar-chart-background{fill:none}.polar-chart .radial-gridline-path{stroke-dasharray:10 10;fill:none}.polar-chart .pie-label-line{stroke:#2f3646}.polar-charts-series .polar-series-area,.polar-series-path{pointer-events:none}\n"],
+  styles: [_c25, ".pie-label{font-size:11px}.pie-label.animation{animation:.75s ease-in fadeIn}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{animation:3s linear drawOut;transition:d .75s}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n", ".polar-chart .polar-chart-background{fill:none}.polar-chart .radial-gridline-path{stroke-dasharray:10 10;fill:none}.polar-chart .pie-label-line{stroke:#2f3646}.polar-charts-series .polar-series-area,.polar-series-path{pointer-events:none}\n"],
   encapsulation: 2,
   data: {
     animation: [trigger("animationState", [transition(":leave", [style({
@@ -29160,6 +31925,7 @@ PolarChartComponent.ɵcmp = ɵɵdefineComponent({
           [trimTicks]="trimYAxisTicks"
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
+          [wrapTicks]="wrapTicks"
           (dimensionsChanged)="updateYAxisWidth($event)"
         ></svg:g>
         <svg:g
@@ -29225,7 +31991,7 @@ PolarChartComponent.ɵcmp = ɵɵdefineComponent({
       }), animate(500, style({
         opacity: 0
       }))])])],
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".pie-label{font-size:11px}.pie-label.animation{-webkit-animation:.75s ease-in fadeIn;animation:.75s ease-in fadeIn}@-webkit-keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{-webkit-animation:3s linear drawOut;animation:3s linear drawOut;transition:d .75s}@-webkit-keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n", ".polar-chart .polar-chart-background{fill:none}.polar-chart .radial-gridline-path{stroke-dasharray:10 10;fill:none}.polar-chart .pie-label-line{stroke:#2f3646}.polar-charts-series .polar-series-area,.polar-series-path{pointer-events:none}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".pie-label{font-size:11px}.pie-label.animation{animation:.75s ease-in fadeIn}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{animation:3s linear drawOut;transition:d .75s}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n", ".polar-chart .polar-chart-background{fill:none}.polar-chart .radial-gridline-path{stroke-dasharray:10 10;fill:none}.polar-chart .pie-label-line{stroke:#2f3646}.polar-charts-series .polar-series-area,.polar-series-path{pointer-events:none}\n"]
     }]
   }], null, {
     legend: [{
@@ -29306,6 +32072,9 @@ PolarChartComponent.ɵcmp = ɵɵdefineComponent({
     labelTrimSize: [{
       type: Input
     }],
+    wrapTicks: [{
+      type: Input
+    }],
     activate: [{
       type: Output
     }],
@@ -29378,14 +32147,14 @@ var PieArcComponent = class {
       this._current = this._current || d;
       const copyOfD = Object.assign({}, d);
       copyOfD.endAngle = copyOfD.startAngle;
-      const interpolater = value_default(copyOfD, copyOfD);
+      const interpolater = value_default2(copyOfD, copyOfD);
       this._current = interpolater(0);
       return function(t) {
         return calc(interpolater(t));
       };
     }).transition().duration(750).attrTween("d", function(d) {
       this._current = this._current || d;
-      const interpolater = value_default(this._current, d);
+      const interpolater = value_default2(this._current, d);
       this._current = interpolater(0);
       return function(t) {
         return calc(interpolater(t));
@@ -29400,7 +32169,7 @@ var PieArcComponent = class {
     const calc = this.calculateArc();
     node.transition().duration(750).attrTween("d", function(d) {
       this._current = this._current || d;
-      const interpolater = value_default(this._current, d);
+      const interpolater = value_default2(this._current, d);
       this._current = interpolater(0);
       return function(t) {
         return calc(interpolater(t));
@@ -29614,8 +32383,8 @@ var PieSeriesComponent = class {
       d.pos[0] = factor * this.outerRadius * (this.midAngle(d) < Math.PI ? 1 : -1);
     });
     for (let i = 0; i < labelPositions.length - 1; i++) {
-      const a2 = labelPositions[i];
-      if (!this.labelVisible(a2)) {
+      const a3 = labelPositions[i];
+      if (!this.labelVisible(a3)) {
         continue;
       }
       for (let j = i + 1; j < labelPositions.length; j++) {
@@ -29623,8 +32392,8 @@ var PieSeriesComponent = class {
         if (!this.labelVisible(b)) {
           continue;
         }
-        if (b.pos[0] * a2.pos[0] > 0) {
-          const o = minDistance - Math.abs(b.pos[1] - a2.pos[1]);
+        if (b.pos[0] * a3.pos[0] > 0) {
+          const o = minDistance - Math.abs(b.pos[1] - a3.pos[1]);
           if (o > 0) {
             b.pos[1] += Math.sign(b.pos[0]) * o;
           }
@@ -29636,8 +32405,8 @@ var PieSeriesComponent = class {
   labelVisible(myArc) {
     return this.showLabels && myArc.endAngle - myArc.startAngle > Math.PI / 30;
   }
-  getTooltipTitle(a2) {
-    return this.tooltipTemplate ? void 0 : this.tooltipText(a2);
+  getTooltipTitle(a3) {
+    return this.tooltipTemplate ? void 0 : this.tooltipText(a3);
   }
   labelText(myArc) {
     if (this.labelFormatting) {
@@ -29659,7 +32428,7 @@ var PieSeriesComponent = class {
   color(myArc) {
     return this.colors.getColor(this.label(myArc));
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.data.name;
   }
   onClick(data) {
@@ -30039,7 +32808,7 @@ AdvancedPieChartComponent.ɵcmp = ɵɵdefineComponent({
   `,
       encapsulation: ViewEncapsulation$1.None,
       changeDetection: ChangeDetectionStrategy.OnPush,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".advanced-pie{display:inline-block;float:left}.advanced-pie-legend-wrapper{display:inline-block}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".advanced-pie{display:inline-block;float:left}.advanced-pie-legend-wrapper{display:inline-block}\n"]
     }]
   }], null, {
     gradient: [{
@@ -30126,8 +32895,8 @@ var PieChartComponent = class extends BaseChartComponent {
       this.innerRadius = this.outerRadius * (1 - this.arcWidth);
     }
     this.domain = this.getDomain();
-    this.data = this.results.sort((a2, b) => {
-      return this.domain.indexOf(a2.name) - this.domain.indexOf(b.name);
+    this.data = this.results.sort((a3, b) => {
+      return this.domain.indexOf(a3.name) - this.domain.indexOf(b.name);
     });
     this.setColors();
     this.legendOptions = this.getLegendOptions();
@@ -30317,7 +33086,7 @@ PieChartComponent.ɵcmp = ɵɵdefineComponent({
   `,
       encapsulation: ViewEncapsulation$1.None,
       changeDetection: ChangeDetectionStrategy.OnPush,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".pie-label{font-size:11px}.pie-label.animation{-webkit-animation:.75s ease-in fadeIn;animation:.75s ease-in fadeIn}@-webkit-keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{-webkit-animation:3s linear drawOut;animation:3s linear drawOut;transition:d .75s}@-webkit-keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".pie-label{font-size:11px}.pie-label.animation{animation:.75s ease-in fadeIn}@keyframes fadeIn{0%{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{animation:3s linear drawOut;transition:d .75s}@keyframes drawOut{0%{stroke-dashoffset:100%}to{stroke-dashoffset:0}}\n"]
     }]
   }], null, {
     labels: [{
@@ -30435,7 +33204,7 @@ function gridLayout(dims, data, minWidth, designatedTotal) {
   return res;
 }
 function getTotal(results) {
-  return results.map((d) => d ? d.value : 0).reduce((sum3, val) => sum3 + val, 0);
+  return results.map((d) => d ? d.value : 0).reduce((sum6, val) => sum6 + val, 0);
 }
 var PieGridSeriesComponent = class {
   constructor(element) {
@@ -30455,17 +33224,17 @@ var PieGridSeriesComponent = class {
     this.arcs = this.getArcs();
   }
   getArcs() {
-    return this.layout(this.data).map((arc, index2) => {
+    return this.layout(this.data).map((arc, index4) => {
       const label = arc.data.data.name;
       const other = arc.data.data.other;
-      if (index2 === 0) {
+      if (index4 === 0) {
         arc.startAngle = 0;
       }
-      const color2 = this.colors(label);
+      const color3 = this.colors(label);
       return {
         data: arc.data.data,
-        class: "arc arc" + index2,
-        fill: color2,
+        class: "arc arc" + index4,
+        fill: color3,
         startAngle: other ? 0 : arc.startAngle,
         endAngle: arc.endAngle,
         animate: this.animations && !other,
@@ -30476,7 +33245,7 @@ var PieGridSeriesComponent = class {
   onClick(data) {
     this.select.emit(this.data[0].data);
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.data.name;
   }
   label(arc) {
@@ -30633,13 +33402,13 @@ var PieGridComponent = class extends BaseChartComponent {
       const padding = 10;
       const name = d.data.name;
       const label = formatLabel(name);
-      const value = d.data.value;
+      const value2 = d.data.value;
       const radius = min2([d.width - padding, d.height - baselineLabelHeight]) / 2 - 5;
       const innerRadius = radius * 0.9;
-      let count4 = 0;
+      let count6 = 0;
       const colors = () => {
-        count4 += 1;
-        if (count4 === 1) {
+        count6 += 1;
+        if (count6 === 1) {
           return "rgba(100,100,100,0.3)";
         } else {
           return this.colorScale.getColor(label);
@@ -30654,13 +33423,13 @@ var PieGridComponent = class extends BaseChartComponent {
         outerRadius: radius,
         name,
         label: trimLabel(label),
-        total: value,
-        value,
+        total: value2,
+        value: value2,
         percent: format(".1%")(d.data.percent),
         data: [d, {
           data: {
             other: true,
-            value: total - value,
+            value: total - value2,
             name: d.data.name
           }
         }]
@@ -30668,7 +33437,7 @@ var PieGridComponent = class extends BaseChartComponent {
     });
   }
   getTotal() {
-    return this.results.map((d) => d.value).reduce((sum3, d) => sum3 + d, 0);
+    return this.results.map((d) => d.value).reduce((sum6, d) => sum6 + d, 0);
   }
   onClick(data) {
     this.select.emit(data);
@@ -30841,7 +33610,7 @@ PieGridComponent.ɵcmp = ɵɵdefineComponent({
   `,
       encapsulation: ViewEncapsulation$1.None,
       changeDetection: ChangeDetectionStrategy.OnPush,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".pie-grid .arc1{opacity:.4}.pie-grid .percent-label{font-size:16px;font-weight:400}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".pie-grid .arc1{opacity:.4}.pie-grid .percent-label{font-size:16px;font-weight:400}\n"]
     }]
   }], null, {
     designatedTotal: [{
@@ -31062,26 +33831,26 @@ var CardComponent = class {
       };
       this.formattedLabel = labelFormatting(cardData);
       this.transformBand = `translate(0 , ${this.cardHeight - this.bandHeight})`;
-      const value = hasValue ? valueFormatting(cardData) : "";
-      this.value = this.paddedValue(value);
+      const value2 = hasValue ? valueFormatting(cardData) : "";
+      this.value = this.paddedValue(value2);
       this.setPadding();
       this.bandPath = roundedRect(0, 0, this.cardWidth, this.bandHeight, 3, [false, false, true, true]);
       setTimeout(() => {
         if (isPlatformBrowser(this.platformId)) {
           this.scaleText();
         }
-        this.value = value;
+        this.value = value2;
         if (hasValue && !this.initialized) {
           setTimeout(() => this.startCount(), 20);
         }
       }, 8);
     });
   }
-  paddedValue(value) {
-    if (this.medianSize && this.medianSize > value.length) {
-      value += " ".repeat(this.medianSize - value.length);
+  paddedValue(value2) {
+    if (this.medianSize && this.medianSize > value2.length) {
+      value2 += " ".repeat(this.medianSize - value2.length);
     }
-    return value;
+    return value2;
   }
   startCount() {
     if (!this.initialized && this.animations) {
@@ -31090,15 +33859,15 @@ var CardComponent = class {
       const decs = decimalChecker(val);
       const valueFormatting = this.valueFormatting || ((card) => card.value.toLocaleString());
       const callback = ({
-        value,
+        value: value2,
         finished
       }) => {
         this.zone.run(() => {
-          value = finished ? val : value;
+          value2 = finished ? val : value2;
           this.value = valueFormatting({
             label: this.label,
             data: this.data,
-            value
+            value: value2
           });
           if (!finished) {
             this.value = this.paddedValue(this.value);
@@ -31106,7 +33875,7 @@ var CardComponent = class {
           this.cd.markForCheck();
         });
       };
-      this.animationReq = count3(0, val, decs, 1, callback);
+      this.animationReq = count5(0, val, decs, 1, callback);
       this.initialized = true;
     }
   }
@@ -31351,23 +34120,23 @@ CardComponent.ɵcmp = ɵɵdefineComponent({
     }]
   });
 })();
-function hexToRgb(value) {
-  return rgb(value);
+function hexToRgb(value2) {
+  return rgb2(value2);
 }
-function invertColor(value) {
-  const color2 = rgb(value);
+function invertColor(value2) {
+  const color3 = rgb2(value2);
   const {
     r,
     g,
     b,
     opacity
-  } = color2;
+  } = color3;
   if (opacity === 0) {
-    return color2.toString();
+    return color3.toString();
   }
   const yiq = (r * 299 + g * 587 + b * 114) / 1e3;
   const depth = yiq >= 128 ? -0.8 : 0.8;
-  return shadeRGBColor(color2, depth);
+  return shadeRGBColor(color3, depth);
 }
 function shadeRGBColor({
   r,
@@ -31401,7 +34170,7 @@ var CardSeriesComponent = class {
           label: d ? d.data.name : "",
           value: d && d.data ? d.data.value : ""
         }).length : 0;
-      }).sort((a2, b) => b - a2);
+      }).sort((a3, b) => b - a3);
       const idx = Math.ceil(this.data.length / 2);
       this.medianSize = sortedLengths[idx];
     }
@@ -31412,31 +34181,31 @@ var CardSeriesComponent = class {
   getCards() {
     const yPadding = typeof this.innerPadding === "number" ? this.innerPadding : this.innerPadding[0] + this.innerPadding[2];
     const xPadding = typeof this.innerPadding === "number" ? this.innerPadding : this.innerPadding[1] + this.innerPadding[3];
-    return this.data.map((d, index2) => {
+    return this.data.map((d, index4) => {
       let label = d.data.name;
       if (label && label.constructor.name === "Date") {
         label = label.toLocaleDateString();
       } else {
         label = label ? label.toLocaleString() : label;
       }
-      const value = d.data.value;
+      const value2 = d.data.value;
       const valueColor = label ? this.colors.getColor(label) : this.emptyColor;
-      const color2 = this.cardColor || valueColor || "#000";
+      const color3 = this.cardColor || valueColor || "#000";
       return {
         x: d.x,
         y: d.y,
         width: d.width - xPadding,
         height: d.height - yPadding,
-        color: color2,
+        color: color3,
         bandColor: this.bandColor || valueColor,
-        textColor: this.textColor || invertColor(color2),
+        textColor: this.textColor || invertColor(color3),
         label,
         data: d.data,
-        tooltipText: `${label}: ${value}`
+        tooltipText: `${label}: ${value2}`
       };
     });
   }
-  trackBy(index2, card) {
+  trackBy(index4, card) {
     return card.label;
   }
   onClick(data) {
@@ -31677,7 +34446,7 @@ NumberCardComponent.ɵcmp = ɵɵdefineComponent({
   `,
       encapsulation: ViewEncapsulation$1.None,
       changeDetection: ChangeDetectionStrategy.OnPush,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", "ngx-charts-number-card .cell .trimmed-label{font-size:12px;pointer-events:none;overflow:hidden;text-align:left;line-height:1em}ngx-charts-number-card .cell .trimmed-label p{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100%;padding:0;margin:0}ngx-charts-number-card .cell .value-text{pointer-events:none}ngx-charts-number-card .number-card.clickable .cell .card,ngx-charts-number-card .number-card.clickable .cell .card-band{cursor:pointer}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", "ngx-charts-number-card .cell .trimmed-label{font-size:12px;pointer-events:none;overflow:hidden;text-align:left;line-height:1em}ngx-charts-number-card .cell .trimmed-label p{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100%;padding:0;margin:0}ngx-charts-number-card .cell .value-text{pointer-events:none}ngx-charts-number-card .number-card.clickable .cell .card,ngx-charts-number-card .number-card.clickable .cell .card-band{cursor:pointer}\n"]
     }]
   }], null, {
     cardColor: [{
@@ -31741,7 +34510,7 @@ var TreeMapCellComponent = class {
   }
   ngOnChanges() {
     this.update();
-    this.valueFormatting = this.valueFormatting || ((value) => value.toLocaleString());
+    this.valueFormatting = this.valueFormatting || ((value2) => value2.toLocaleString());
     const labelFormatting = this.labelFormatting || ((cell) => escapeLabel(trimLabel(cell.label, 55)));
     const cellData = {
       data: this.data,
@@ -31963,7 +34732,7 @@ var TreeMapCellSeriesComponent = class {
   getCells() {
     return this.data.children.filter((d) => {
       return d.depth === 1;
-    }).map((d, index2) => {
+    }).map((d, index4) => {
       const label = d.id;
       return {
         data: d.data,
@@ -31979,17 +34748,17 @@ var TreeMapCellSeriesComponent = class {
   }
   getTooltipText({
     label,
-    value
+    value: value2
   }) {
     return `
       <span class="tooltip-label">${escapeLabel(label)}</span>
-      <span class="tooltip-val">${value.toLocaleString()}</span>
+      <span class="tooltip-val">${value2.toLocaleString()}</span>
     `;
   }
   onClick(data) {
     this.select.emit(data);
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.label;
   }
 };
@@ -32383,8 +35152,8 @@ var LinearGaugeComponent = class extends BaseChartComponent {
   }
   scaleTextSSR(element) {
     let resizeScale = 1;
-    const value = element === "value" ? this.displayValue : this.units;
-    const width = calculateTextWidth(VERDANA_FONT_WIDTHS_16_PX, value, 10);
+    const value2 = element === "value" ? this.displayValue : this.units;
+    const width = calculateTextWidth(VERDANA_FONT_WIDTHS_16_PX, value2, 10);
     const height = 25;
     const availableWidth = this.dims.width;
     const availableHeight = Math.max(this.dims.height / 2 - 15, 0);
@@ -32577,7 +35346,7 @@ LinearGaugeComponent.ɵcmp = ɵɵdefineComponent({
   `,
       encapsulation: ViewEncapsulation$1.None,
       changeDetection: ChangeDetectionStrategy.OnPush,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".linear-gauge{cursor:pointer}.linear-gauge .background-bar path{fill:#0000000d}.linear-gauge .units{fill:#666}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".linear-gauge{cursor:pointer}.linear-gauge .background-bar path{fill:#0000000d}.linear-gauge .units{fill:#666}\n"]
     }]
   }], null, {
     min: [{
@@ -32781,7 +35550,7 @@ var GaugeAxisComponent = class {
     const bigTickSegment = this.angleSpan / this.bigSegments;
     const smallTickSegment = bigTickSegment / this.smallSegments;
     const tickLength = 20;
-    const ticks = {
+    const ticks2 = {
       big: [],
       small: []
     };
@@ -32800,7 +35569,7 @@ var GaugeAxisComponent = class {
         if (this.tickFormatting) {
           text = this.tickFormatting(text);
         }
-        ticks.big.push({
+        ticks2.big.push({
           line: this.getTickPath(startDistance, tickLength, angle),
           textAnchor,
           text,
@@ -32815,12 +35584,12 @@ var GaugeAxisComponent = class {
       for (let j = 1; j <= this.smallSegments; j++) {
         const smallAngleDeg = angleDeg + j * smallTickSegment;
         const smallAngle = smallAngleDeg * Math.PI / 180;
-        ticks.small.push({
+        ticks2.small.push({
           line: this.getTickPath(startDistance, tickLength / 2, smallAngle)
         });
       }
     }
-    return ticks;
+    return ticks2;
   }
   getTextAnchor(angle) {
     angle = (this.startAngle + angle) % 360;
@@ -32834,15 +35603,15 @@ var GaugeAxisComponent = class {
   }
   getTickPath(startDistance, tickLength, angle) {
     const y1 = startDistance * Math.sin(angle);
-    const y2 = (startDistance + tickLength) * Math.sin(angle);
+    const y22 = (startDistance + tickLength) * Math.sin(angle);
     const x1 = startDistance * Math.cos(angle);
-    const x2 = (startDistance + tickLength) * Math.cos(angle);
+    const x22 = (startDistance + tickLength) * Math.cos(angle);
     const points = [{
       x: x1,
       y: y1
     }, {
-      x: x2,
-      y: y2
+      x: x22,
+      y: y22
     }];
     const lineGenerator = line_default().x((d) => d.x).y((d) => d.y);
     return lineGenerator(points);
@@ -33071,14 +35840,14 @@ var GaugeComponent = class extends BaseChartComponent {
     return linear3().range([0, this.angleSpan]).nice().domain(this.valueDomain);
   }
   getDisplayValue() {
-    const value = this.results.map((d) => d.value).reduce((a2, b) => a2 + b, 0);
+    const value2 = this.results.map((d) => d.value).reduce((a3, b) => a3 + b, 0);
     if (this.textValue && 0 !== this.textValue.length) {
       return this.textValue.toLocaleString();
     }
     if (this.valueFormatting) {
-      return this.valueFormatting(value);
+      return this.valueFormatting(value2);
     }
-    return value.toLocaleString();
+    return value2.toLocaleString();
   }
   scaleText(repeat = true) {
     if (!this.showText) {
@@ -33148,7 +35917,7 @@ var GaugeComponent = class extends BaseChartComponent {
     });
     return item !== void 0;
   }
-  trackBy(index2, item) {
+  trackBy(index4, item) {
     return item.valueArc.data.name;
   }
 };
@@ -33304,7 +36073,7 @@ GaugeComponent.ɵcmp = ɵɵdefineComponent({
   `,
       encapsulation: ViewEncapsulation$1.None,
       changeDetection: ChangeDetectionStrategy.OnPush,
-      styles: [".ngx-charts-outer{-webkit-animation:chartFadeIn linear .6s;animation:chartFadeIn linear .6s}@-webkit-keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".gauge .background-arc path{fill:#0000000d}.gauge .gauge-tick path{stroke:#666}.gauge .gauge-tick text{font-size:12px;fill:#666;font-weight:700}.gauge .gauge-tick-large path{stroke-width:2px}.gauge .gauge-tick-small path{stroke-width:1px}\n"]
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n", ".gauge .background-arc path{fill:#0000000d}.gauge .gauge-tick path{stroke:#666}.gauge .gauge-tick text{font-size:12px;fill:#666;font-weight:700}.gauge .gauge-tick-large path{stroke-width:2px}.gauge .gauge-tick-small path{stroke-width:1px}\n"]
     }]
   }], null, {
     legend: [{
@@ -33409,6 +36178,303 @@ function ngxChartsPolyfills() {
     SVGElement.prototype.contains = HTMLDivElement.prototype.contains;
   }
 }
+var SankeyComponent = class extends BaseChartComponent {
+  constructor() {
+    super(...arguments);
+    this.showLabels = true;
+    this.tooltipDisabled = false;
+    this.activeEntries = [];
+    this.activate = new EventEmitter();
+    this.deactivate = new EventEmitter();
+    this.margin = [10, 10, 10, 10];
+    this.scaleType = ScaleType.Ordinal;
+    this.styleTypes = StyleTypes;
+  }
+  update() {
+    super.update();
+    this.dims = calculateViewDimensions({
+      width: this.width,
+      height: this.height,
+      margins: this.margin,
+      legendType: this.scaleType
+    });
+    const linkDefs = this.results;
+    const nodeDefs = Array.from(new Set(linkDefs.flatMap((l) => [l.source, l.target])), (name) => ({
+      name,
+      value: linkDefs.filter((l) => l.source === name).reduce((acc, l) => acc + l.value, 0)
+    }));
+    const sankeyGenerator = Sankey().nodeId((d) => d.name).nodeAlign(left).nodeWidth(15).nodePadding(10).extent([[1, 5], [this.dims.width - 1, this.dims.height - 5]]);
+    const data = sankeyGenerator({
+      nodes: nodeDefs.map((d) => Object.assign({}, d)),
+      links: linkDefs.map((d) => Object.assign({}, d))
+    });
+    this.valueDomain = this.getValueDomain(data.nodes);
+    this.setColors();
+    this.nodeRects = data.nodes.map((node) => {
+      const rect = {
+        x: node.x0,
+        y: node.y0,
+        height: node.y1 - node.y0,
+        width: node.x1 - node.x0,
+        fill: this.colors.getColor(node.name),
+        tooltip: this.getNodeTooltipText(node),
+        rx: 5,
+        data: {
+          name: node.name,
+          value: node.value
+        },
+        transform: "",
+        label: this.labelFormatting ? this.labelFormatting(node.name) : node.name,
+        labelAnchor: TextAnchor.Start
+      };
+      rect.labelAnchor = this.getTextAnchor(node);
+      rect.transform = `translate(${rect.x},${rect.y})`;
+      return rect;
+    });
+    this.linkPaths = data.links.map((link3) => {
+      const gradientId = "mask" + id2().toString();
+      const linkPath = {
+        path: sankeyLinkHorizontal_default()(link3),
+        strokeWidth: Math.max(1, link3.width),
+        tooltip: this.getLinkTooltipText(link3.source, link3.target, link3.value),
+        id: gradientId,
+        gradientFill: `url(#${gradientId})`,
+        source: link3.source,
+        target: link3.target,
+        startColor: this.colors.getColor(link3.source.name),
+        endColor: this.colors.getColor(link3.target.name),
+        data: {
+          source: link3.source.name,
+          target: link3.target.name,
+          value: link3.value
+        }
+      };
+      return linkPath;
+    });
+    this.transform = `translate(${this.dims.xOffset} , ${this.margin[0]})`;
+  }
+  getNodeTooltipText(node) {
+    return `
+      <span class="tooltip-label">${escapeLabel(node.name)}</span>
+      <span class="tooltip-val">${node.value.toLocaleString()}</span>
+    `;
+  }
+  getLinkTooltipText(sourceNode, targetNode, value2) {
+    return `
+      <span class="tooltip-label">${escapeLabel(sourceNode.name)} • ${escapeLabel(targetNode.name)}</span>
+      <span class="tooltip-val">${value2.toLocaleString()} (${(value2 / sourceNode.value).toLocaleString(void 0, {
+      style: "percent",
+      maximumFractionDigits: 2
+    })})</span>
+    `;
+  }
+  getTextAnchor(node) {
+    if (node.layer === 0) {
+      return TextAnchor.Start;
+    } else {
+      return TextAnchor.End;
+    }
+  }
+  onClick(data) {
+    this.select.emit(data);
+  }
+  setColors() {
+    this.colors = new ColorHelper(this.scheme, this.scaleType, this.valueDomain);
+  }
+  getValueDomain(nodes) {
+    return nodes.map((n) => n.name);
+  }
+};
+SankeyComponent.ɵfac = /* @__PURE__ */ (() => {
+  let ɵSankeyComponent_BaseFactory;
+  return function SankeyComponent_Factory(t) {
+    return (ɵSankeyComponent_BaseFactory || (ɵSankeyComponent_BaseFactory = ɵɵgetInheritedFactory(SankeyComponent)))(t || SankeyComponent);
+  };
+})();
+SankeyComponent.ɵcmp = ɵɵdefineComponent({
+  type: SankeyComponent,
+  selectors: [["ngx-charts-sankey"]],
+  contentQueries: function SankeyComponent_ContentQueries(rf, ctx, dirIndex) {
+    if (rf & 1) {
+      ɵɵcontentQuery(dirIndex, _c22, 5);
+    }
+    if (rf & 2) {
+      let _t;
+      ɵɵqueryRefresh(_t = ɵɵloadQuery()) && (ctx.tooltipTemplate = _t.first);
+    }
+  },
+  inputs: {
+    showLabels: "showLabels",
+    gradient: "gradient",
+    tooltipDisabled: "tooltipDisabled",
+    activeEntries: "activeEntries",
+    labelFormatting: "labelFormatting"
+  },
+  outputs: {
+    activate: "activate",
+    deactivate: "deactivate"
+  },
+  features: [ɵɵInheritDefinitionFeature],
+  decls: 5,
+  vars: 9,
+  consts: [[3, "view", "animations"], [1, "sankey", "chart"], ["class", "link", "ngx-tooltip", "", 3, "tooltipDisabled", "tooltipType", "tooltipPlacement", "tooltipTitle", "tooltipTemplate", "tooltipContext", 4, "ngFor", "ngForOf"], ["class", "node", 4, "ngFor", "ngForOf"], [4, "ngFor", "ngForOf"], ["ngx-tooltip", "", 1, "link", 3, "tooltipDisabled", "tooltipType", "tooltipPlacement", "tooltipTitle", "tooltipTemplate", "tooltipContext"], ["gradientUnits", "userSpaceOnUse"], ["offset", "0%"], ["offset", "100%"], ["stroke-opacity", "0.5", "fill", "none", 3, "click", "mouseenter"], [1, "node"], ["ngx-tooltip", "", 3, "click", "mouseenter", "tooltipDisabled", "tooltipType", "tooltipPlacement", "tooltipTitle", "tooltipTemplate", "tooltipContext"], ["class", "label", "dy", "0.35em", 4, "ngIf"], ["dy", "0.35em", 1, "label"]],
+  template: function SankeyComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      ɵɵelementStart(0, "ngx-charts-chart", 0);
+      ɵɵnamespaceSVG();
+      ɵɵelementStart(1, "g", 1);
+      ɵɵtemplate(2, SankeyComponent__svg_g_2_Template, 6, 14, "g", 2)(3, SankeyComponent__svg_g_3_Template, 2, 12, "g", 3)(4, SankeyComponent__svg_g_4_Template, 2, 2, "g", 4);
+      ɵɵelementEnd()();
+    }
+    if (rf & 2) {
+      ɵɵproperty("view", ɵɵpureFunction2(6, _c24, ctx.width, ctx.height))("animations", ctx.animations);
+      ɵɵadvance();
+      ɵɵattribute("transform", ctx.transform);
+      ɵɵadvance();
+      ɵɵproperty("ngForOf", ctx.linkPaths);
+      ɵɵadvance();
+      ɵɵproperty("ngForOf", ctx.nodeRects);
+      ɵɵadvance();
+      ɵɵproperty("ngForOf", ctx.nodeRects);
+    }
+  },
+  dependencies: [ChartComponent, NgForOf, TooltipDirective, NgIf],
+  styles: [_c25],
+  encapsulation: 2,
+  changeDetection: 0
+});
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SankeyComponent, [{
+    type: Component,
+    args: [{
+      selector: "ngx-charts-sankey",
+      template: `
+    <ngx-charts-chart [view]="[width, height]" [animations]="animations">
+      <svg:g [attr.transform]="transform" class="sankey chart">
+        <svg:g
+          *ngFor="let link of linkPaths"
+          class="link"
+          ngx-tooltip
+          [tooltipDisabled]="tooltipDisabled"
+          [tooltipType]="styleTypes.tooltip"
+          [tooltipPlacement]="'top'"
+          [tooltipTitle]="tooltipTemplate ? undefined : link.tooltip"
+          [tooltipTemplate]="tooltipTemplate"
+          [tooltipContext]="link.data"
+        >
+          <svg:defs>
+            <svg:linearGradient
+              [attr.id]="link.id"
+              gradientUnits="userSpaceOnUse"
+              [attr.x1]="link.source.x1"
+              [attr.x2]="link.target.x0"
+            >
+              <svg:stop offset="0%" [attr.stop-color]="link.startColor"></svg:stop>
+              <svg:stop offset="100%" [attr.stop-color]="link.endColor"></svg:stop>
+            </svg:linearGradient>
+          </svg:defs>
+          <svg:path
+            [attr.d]="link.path"
+            [attr.stroke]="link.gradientFill"
+            [attr.stroke-width]="link.strokeWidth"
+            stroke-opacity="0.5"
+            fill="none"
+            (click)="select.emit(link.data)"
+            (mouseenter)="activate.emit(link.data)"
+          ></svg:path>
+        </svg:g>
+
+        <svg:g *ngFor="let rect of nodeRects" [attr.transform]="rect.transform" class="node">
+          <svg:rect
+            [attr.x]="0"
+            [attr.y]="0"
+            [attr.width]="rect.width"
+            [attr.height]="rect.height"
+            [attr.fill]="rect.fill"
+            ngx-tooltip
+            [tooltipDisabled]="tooltipDisabled"
+            [tooltipType]="styleTypes.tooltip"
+            [tooltipPlacement]="'top'"
+            [tooltipTitle]="tooltipTemplate ? undefined : rect.tooltip"
+            [tooltipTemplate]="tooltipTemplate"
+            [tooltipContext]="rect.data"
+            (click)="select.emit(rect.data)"
+            (mouseenter)="activate.emit(rect.data)"
+          ></svg:rect>
+        </svg:g>
+
+        <svg:g *ngFor="let rect of nodeRects" [attr.transform]="rect.transform">
+          <svg:text
+            *ngIf="showLabels && rect.height > 15"
+            class="label"
+            [attr.x]="rect.width + 5"
+            [attr.y]="rect.height / 2"
+            [attr.text-anchor]="rect.labelAnchor"
+            dy="0.35em"
+            [attr.dx]="rect.labelAnchor === 'end' ? -25 : 0"
+          >
+            {{ rect.label }}
+          </svg:text>
+        </svg:g>
+      </svg:g>
+    </ngx-charts-chart>
+  `,
+      changeDetection: ChangeDetectionStrategy.OnPush,
+      encapsulation: ViewEncapsulation$1.None,
+      styles: [".ngx-charts-outer{animation:chartFadeIn linear .6s}@keyframes chartFadeIn{0%{opacity:0}20%{opacity:0}to{opacity:1}}.ngx-charts{float:left;overflow:visible}.ngx-charts .circle,.ngx-charts .cell,.ngx-charts .bar,.ngx-charts .node,.ngx-charts .link,.ngx-charts .arc{cursor:pointer}.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover,.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .node.active,.ngx-charts .node:hover,.ngx-charts .link.active,.ngx-charts .link:hover,.ngx-charts .card.active,.ngx-charts .card:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .bar:focus,.ngx-charts .cell:focus,.ngx-charts .arc:focus,.ngx-charts .node:focus,.ngx-charts .link:focus,.ngx-charts .card:focus{outline:none}.ngx-charts .bar.hidden,.ngx-charts .cell.hidden,.ngx-charts .arc.hidden,.ngx-charts .node.hidden,.ngx-charts .link.hidden,.ngx-charts .card.hidden{display:none}.ngx-charts g:focus{outline:none}.ngx-charts .line-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .polar-series-path.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .area-series.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:#0000000d}\n"]
+    }]
+  }], null, {
+    showLabels: [{
+      type: Input
+    }],
+    gradient: [{
+      type: Input
+    }],
+    tooltipDisabled: [{
+      type: Input
+    }],
+    activeEntries: [{
+      type: Input
+    }],
+    labelFormatting: [{
+      type: Input
+    }],
+    activate: [{
+      type: Output
+    }],
+    deactivate: [{
+      type: Output
+    }],
+    tooltipTemplate: [{
+      type: ContentChild,
+      args: ["tooltipTemplate"]
+    }]
+  });
+})();
+var SankeyModule = class {
+};
+SankeyModule.ɵfac = function SankeyModule_Factory(t) {
+  return new (t || SankeyModule)();
+};
+SankeyModule.ɵmod = ɵɵdefineNgModule({
+  type: SankeyModule,
+  declarations: [SankeyComponent],
+  imports: [ChartCommonModule],
+  exports: [SankeyComponent]
+});
+SankeyModule.ɵinj = ɵɵdefineInjector({
+  imports: [[ChartCommonModule]]
+});
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SankeyModule, [{
+    type: NgModule,
+    args: [{
+      imports: [ChartCommonModule],
+      declarations: [SankeyComponent],
+      exports: [SankeyComponent]
+    }]
+  }], null, null);
+})();
 var NgxChartsModule = class {
   constructor() {
     ngxChartsPolyfills();
@@ -33419,16 +36485,16 @@ NgxChartsModule.ɵfac = function NgxChartsModule_Factory(t) {
 };
 NgxChartsModule.ɵmod = ɵɵdefineNgModule({
   type: NgxChartsModule,
-  exports: [ChartCommonModule, AreaChartModule, BarChartModule, BoxChartModule, BubbleChartModule, HeatMapModule, LineChartModule, PolarChartModule, NumberCardModule, PieChartModule, TreeMapModule, GaugeModule]
+  exports: [ChartCommonModule, AreaChartModule, BarChartModule, BoxChartModule, BubbleChartModule, HeatMapModule, SankeyModule, LineChartModule, PolarChartModule, NumberCardModule, PieChartModule, TreeMapModule, GaugeModule]
 });
 NgxChartsModule.ɵinj = ɵɵdefineInjector({
-  imports: [ChartCommonModule, AreaChartModule, BarChartModule, BoxChartModule, BubbleChartModule, HeatMapModule, LineChartModule, PolarChartModule, NumberCardModule, PieChartModule, TreeMapModule, GaugeModule]
+  imports: [ChartCommonModule, AreaChartModule, BarChartModule, BoxChartModule, BubbleChartModule, HeatMapModule, SankeyModule, LineChartModule, PolarChartModule, NumberCardModule, PieChartModule, TreeMapModule, GaugeModule]
 });
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgxChartsModule, [{
     type: NgModule,
     args: [{
-      exports: [ChartCommonModule, AreaChartModule, BarChartModule, BoxChartModule, BubbleChartModule, HeatMapModule, LineChartModule, PolarChartModule, NumberCardModule, PieChartModule, TreeMapModule, GaugeModule]
+      exports: [ChartCommonModule, AreaChartModule, BarChartModule, BoxChartModule, BubbleChartModule, HeatMapModule, SankeyModule, LineChartModule, PolarChartModule, NumberCardModule, PieChartModule, TreeMapModule, GaugeModule]
     }]
   }], function() {
     return [];
@@ -33521,6 +36587,8 @@ export {
   PolarChartComponent,
   PolarChartModule,
   PolarSeriesComponent,
+  SankeyComponent,
+  SankeyModule,
   ScaleLegendComponent,
   ScaleType,
   SeriesHorizontal,
@@ -33548,13 +36616,14 @@ export {
   YAxisTicksComponent,
   calculateViewDimensions,
   colorSets,
-  count3 as count,
+  count5 as count,
   decimalChecker,
   escapeLabel,
   formatLabel,
   getDomain,
   getScale,
   getScaleType,
+  getTickLines,
   getUniqueXDomainValues,
   getXDomainArray,
   gridLayout,
@@ -33572,37 +36641,4 @@ export {
   tickFormat2 as tickFormat,
   trimLabel
 };
-/*! Bundled license information:
-
-shallow-clone/index.js:
-  (*!
-   * shallow-clone <https://github.com/jonschlinkert/shallow-clone>
-   *
-   * Copyright (c) 2015-present, Jon Schlinkert.
-   * Released under the MIT License.
-   *)
-
-isobject/index.js:
-  (*!
-   * isobject <https://github.com/jonschlinkert/isobject>
-   *
-   * Copyright (c) 2014-2017, Jon Schlinkert.
-   * Released under the MIT License.
-   *)
-
-is-plain-object/index.js:
-  (*!
-   * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
-   *
-   * Copyright (c) 2014-2017, Jon Schlinkert.
-   * Released under the MIT License.
-   *)
-
-@angular/animations/fesm2022/animations.mjs:
-  (**
-   * @license Angular v17.3.12
-   * (c) 2010-2024 Google LLC. https://angular.io/
-   * License: MIT
-   *)
-*/
 //# sourceMappingURL=@swimlane_ngx-charts.js.map

@@ -18,6 +18,7 @@ builder.Services.AddScoped<TransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<WatchlistRepository, WatchlistRepository>();
 builder.Services.AddScoped<AssetTypeRepository, AssetTypeRepository>();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline

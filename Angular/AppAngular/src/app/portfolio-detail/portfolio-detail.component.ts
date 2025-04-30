@@ -1,127 +1,126 @@
+// 🔹 Angular and module imports
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
-import { PortfolioItemService } from '../services/portfolio-item.service';
-import { PortfolioService } from '../services/portfolio.service';
-import { Portfolio } from '../model/portfolio';
-import { PortfolioSummary } from '../model/portfolio-summary';
-import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-item-form.component';
-import { PortfolioItem } from '../model/portfolio-item';
-import { YahooFinanceService } from '../services/yahoo-finance.service';
 import { FormsModule } from '@angular/forms';
-import { NgxChartsModule } from '@swimlane/ngx-charts'; // 🧠 Import charts
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+
+// 🔹 Services
+import { PortfolioService } from '../services/portfolio.service';
+import { PortfolioItemService } from '../services/portfolio-item.service';
+import { AssetTypeService } from '../services/asset-type.service';
+import { YahooFinanceService } from '../services/yahoo-finance.service';
+
+// 🔹 Models
+import { Portfolio } from '../model/portfolio';
+import { PortfolioItem } from '../model/portfolio-item';
+import { AssetType } from '../model/asset-type';
+import { PortfolioSummary } from '../model/portfolio-summary';
+
+// 🔹 Components
+import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-item-form.component';
 
 @Component({
   selector: 'app-portfolio-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, PortfolioItemFormComponent, FormsModule, NgxChartsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    NgxChartsModule,
+    PortfolioItemFormComponent
+  ],
   templateUrl: './portfolio-detail.component.html',
   styleUrls: ['./portfolio-detail.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
 })
 export class PortfolioDetailComponent implements OnInit {
   portfolio!: Portfolio;
-  summary: PortfolioSummary = {
-    portfolioId: 0,
-    byAsset: [],
-    initialInvestment: 0,
-    currentValue: 0,
-    totalProfitLoss: 0,
-    changePercent: 0
-  };
+  summary!: PortfolioSummary;
+
   isLoading = true;
   showForm = false;
+  openPositionsExpanded = true;
+  completedTradesExpanded = true;
+  sellMode = false;
 
-  // 🧠 Metrics
-  totalFinalizedProfit: number = 0;
-  totalFinalizedReturnPercent: number = 0;
-  totalOpenProfit: number = 0;
-  totalOpenReturnPercent: number = 0;
+  totalFinalizedProfit = 0;
+  totalFinalizedReturnPercent = 0;
+  totalOpenProfit = 0;
+  totalOpenReturnPercent = 0;
 
-  // 🧠 Dropdowns
-  openPositionsExpanded: boolean = true;
-  completedTradesExpanded: boolean = true;
-
-  // 🧠 Pie Chart
   allocationPieData: { name: string, value: number }[] = [];
+
+  colorScheme = 'cool';
+
+  itemToSell!: PortfolioItem;
+  assetTypes: AssetType[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private itemSvc: PortfolioItemService,
     private portfolioSvc: PortfolioService,
+    private itemSvc: PortfolioItemService,
+    private assetTypeService: AssetTypeService,
     private yahooService: YahooFinanceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.showForm = false;
-    this.isLoading = true;
+    this.route.paramMap.subscribe(params => {
+      const id = Number(params.get('id'));
+      if (!id) return;
 
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) return;
+      this.showForm = false;
+      this.isLoading = true;
 
-    this.portfolioSvc.getPortfolio(id).subscribe({
-      next: p => {
-        this.portfolio = p;
-        this.checkLoadingFinished();
-      },
-      error: err => {
-        console.error('Error loading portfolio', err);
-        this.isLoading = false;
-      }
-    });
+      this.loadAssetTypes();
 
-    this.itemSvc.getSummary(id).subscribe({
-      next: sum => {
-        this.summary = sum ?? {
-          portfolioId: id,
-          byAsset: [],
-          initialInvestment: 0,
-          currentValue: 0,
-          totalProfitLoss: 0,
-          changePercent: 0
-        };
-        this.fetchNames(); // 🧠 Fetch names first
-        this.checkLoadingFinished();
-      },
-      error: err => {
-        console.error('Error loading summary', err);
-        this.isLoading = false;
-      }
+      this.portfolioSvc.getPortfolio(id).subscribe({
+        next: p => {
+          this.portfolio = p;
+          this.checkLoadingFinished();
+        },
+        error: err => {
+          console.error('Error loading portfolio', err);
+          this.isLoading = false;
+        }
+      });
+
+      this.itemSvc.getSummary(id).subscribe({
+        next: sum => {
+          this.applySummary(id, sum);
+          this.checkLoadingFinished();
+        },
+        error: err => {
+          console.error('Error loading summary', err);
+          this.isLoading = false;
+        }
+      });
     });
   }
 
-  private loadingParts = { portfolio: false, summary: false };
+  private applySummary(id: number, sum: PortfolioSummary | null): void {
+    this.summary = sum ?? {
+      portfolioId: id,
+      byAsset: [],
+      initialInvestment: 0,
+      currentValue: 0,
+      totalProfitLoss: 0,
+      changePercent: 0
+    };
+    console.log("Loaded summary:", this.summary);
+    this.fetchNames();
+  }
 
   private checkLoadingFinished(): void {
-    if (this.portfolio) this.loadingParts.portfolio = true;
-    if (this.summary) this.loadingParts.summary = true;
-    this.isLoading = !(this.loadingParts.portfolio && this.loadingParts.summary);
-  }
-
-  onItemCreated(item: PortfolioItem): void {
-    this.showForm = false;
-    this.loadSummary(this.portfolio.id);
-  }
-
-  onCancel(): void {
-    this.showForm = false;
+    this.isLoading = !(this.portfolio && this.summary);
   }
 
   private loadSummary(id: number): void {
     this.isLoading = true;
     this.itemSvc.getSummary(id).subscribe({
-      next: sum => {
-        this.summary = sum ?? {
-          portfolioId: id,
-          byAsset: [],
-          initialInvestment: 0,
-          currentValue: 0,
-          totalProfitLoss: 0,
-          changePercent: 0
-        };
-        this.fetchNames(); // 🔥 Fetch names immediately
-      },
+      next: sum => this.applySummary(id, sum),
       error: err => {
         console.error('Error loading summary', err);
         this.isLoading = false;
@@ -129,70 +128,15 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
-  /** 🔹 Calculate Open and Finalized Profit/Return */
-  private calculateProfitMetrics(): void {
-    const openAssets = this.summary.byAsset.filter(a => !a.isSold);
-    const finalizedAssets = this.summary.byAsset.filter(a => a.isSold);
-
-    let openProfit = 0;
-    let openInvestment = 0;
-    let finalizedProfit = 0;
-    let finalizedInvestment = 0;
-    let openCurrentValue = 0;
-
-    for (const asset of openAssets) {
-      const initial = asset.purchasePrice * asset.quantity;
-      const current = asset.currentPrice * asset.quantity;
-      const profit = current - initial;
-
-      openProfit += profit;
-      openInvestment += initial;
-      openCurrentValue += current;
-    }
-
-    for (const asset of finalizedAssets) {
-      const initial = asset.purchasePrice * asset.quantity;
-      const sell = (asset.exitPrice ?? 0) * asset.quantity;
-      const profit = sell - initial;
-
-      finalizedProfit += profit;
-      finalizedInvestment += initial;
-    }
-
-    this.totalOpenProfit = openProfit;
-    this.totalOpenReturnPercent = openInvestment === 0 ? 0 : (openProfit / openInvestment) * 100;
-
-    this.totalFinalizedProfit = finalizedProfit;
-    this.totalFinalizedReturnPercent = finalizedInvestment === 0 ? 0 : (finalizedProfit / finalizedInvestment) * 100;
-
-    // Update total P/L and Open Positions only
-    this.summary.totalProfitLoss = openProfit + finalizedProfit;
-    this.summary.changePercent = (openInvestment + finalizedInvestment) === 0
-      ? 0
-      : ((openProfit + finalizedProfit) / (openInvestment + finalizedInvestment)) * 100;
-
-    this.summary.initialInvestment = openInvestment;
-    this.summary.currentValue = openCurrentValue;
+  private loadAssetTypes(): void {
+    this.assetTypeService.getAssetTypes().subscribe({
+      next: types => this.assetTypes = types,
+      error: err => console.error('Failed to load asset types', err)
+    });
   }
 
-  /** 🔹 Prepare data for Allocation Pie */
-  private prepareAllocationPie(): void {
-    const openAssets = this.summary.byAsset.filter(a => !a.isSold);
-
-    this.allocationPieData = openAssets.map(asset => ({
-      name: asset.ticker,
-      value: asset.currentValue
-    }));
-  }
-  // 🔹 Pie Chart colors
-  colorScheme = {
-    domain: ['#3366CC', '#DC3912', '#FF9900', '#109618', '#990099', '#3B3EAC', '#0099C6', '#DD4477']
-  };
-  
-  /** 🔹 Fetch Names from Yahoo */
   private fetchNames(): void {
-    if (!this.summary.byAsset || this.summary.byAsset.length === 0) {
-      console.warn('No assets to fetch names for.');
+    if (!this.summary.byAsset?.length) {
       this.calculateProfitMetrics();
       this.prepareAllocationPie();
       this.isLoading = false;
@@ -204,20 +148,18 @@ export class PortfolioDetailComponent implements OnInit {
     for (const asset of this.summary.byAsset) {
       if (asset.ticker) {
         this.yahooService.getTickerInfo(asset.ticker).subscribe({
-          next: (data) => {
+          next: data => {
             asset.name = data.name;
-            loaded++;
-            if (loaded === this.summary.byAsset.length) {
+            if (++loaded === this.summary.byAsset.length) {
               this.calculateProfitMetrics();
               this.prepareAllocationPie();
               this.isLoading = false;
             }
           },
-          error: (err) => {
-            console.error(`Failed to fetch name for ${asset.ticker}`, err);
+          error: err => {
+            console.error(`Failed to fetch ${asset.ticker}`, err);
             asset.name = 'Unknown';
-            loaded++;
-            if (loaded === this.summary.byAsset.length) {
+            if (++loaded === this.summary.byAsset.length) {
               this.calculateProfitMetrics();
               this.prepareAllocationPie();
               this.isLoading = false;
@@ -225,8 +167,7 @@ export class PortfolioDetailComponent implements OnInit {
           }
         });
       } else {
-        loaded++;
-        if (loaded === this.summary.byAsset.length) {
+        if (++loaded === this.summary.byAsset.length) {
           this.calculateProfitMetrics();
           this.prepareAllocationPie();
           this.isLoading = false;
@@ -235,9 +176,56 @@ export class PortfolioDetailComponent implements OnInit {
     }
   }
 
-  // 🔹 Sell form state
-  sellMode: boolean = false;
-  itemToSell!: PortfolioItem;
+  private calculateProfitMetrics(): void {
+    const openAssets = this.summary.byAsset.filter(a => !a.isSold);
+    const finalizedAssets = this.summary.byAsset.filter(a => a.isSold);
+
+    let openProfit = 0, openInvestment = 0, finalizedProfit = 0, finalizedInvestment = 0, openCurrentValue = 0;
+
+    for (const a of openAssets) {
+      const init = a.purchasePrice * a.quantity;
+      const curr = a.currentPrice * a.quantity;
+      openProfit += curr - init;
+      openInvestment += init;
+      openCurrentValue += curr;
+    }
+
+    for (const a of finalizedAssets) {
+      const init = a.purchasePrice * a.quantity;
+      const sold = (a.exitPrice ?? 0) * a.quantity;
+      finalizedProfit += sold - init;
+      finalizedInvestment += init;
+    }
+
+    this.totalOpenProfit = openProfit;
+    this.totalOpenReturnPercent = openInvestment === 0 ? 0 : (openProfit / openInvestment) * 100;
+
+    this.totalFinalizedProfit = finalizedProfit;
+    this.totalFinalizedReturnPercent = finalizedInvestment === 0 ? 0 : (finalizedProfit / finalizedInvestment) * 100;
+
+    this.summary.totalProfitLoss = openProfit + finalizedProfit;
+    this.summary.changePercent = (openInvestment + finalizedInvestment) === 0
+      ? 0 : ((openProfit + finalizedProfit) / (openInvestment + finalizedInvestment)) * 100;
+    this.summary.initialInvestment = openInvestment;
+    this.summary.currentValue = openCurrentValue;
+  }
+
+  private prepareAllocationPie(): void {
+    const openAssets = this.summary.byAsset.filter(a => !a.isSold);
+    this.allocationPieData = openAssets.map(a => ({
+      name: a.ticker,
+      value: a.currentValue
+    }));
+  }
+
+  onItemCreated(item: PortfolioItem): void {
+    this.showForm = false;
+    this.loadSummary(this.portfolio.id);
+  }
+
+  onCancel(): void {
+    this.showForm = false;
+  }
 
   startSell(asset: any): void {
     this.sellMode = true;
@@ -277,15 +265,25 @@ export class PortfolioDetailComponent implements OnInit {
         this.sellMode = false;
         this.loadSummary(this.portfolio.id);
       },
-      error: (err: any) => {
+      error: err => {
         console.error('Error selling asset', err);
       }
     });
-
-    console.log('Confirm Sell button clicked', this.itemToSell);
   }
 
   cancelSell(): void {
     this.sellMode = false;
+  }
+
+  deleteItem(id: number): void {
+    if (!confirm('Are you sure you want to delete this asset?')) return;
+
+    this.itemSvc.delete(id).subscribe({
+      next: () => this.loadSummary(this.portfolio.id),
+      error: err => {
+        console.error('Error deleting asset', err);
+        alert('Failed to delete asset.');
+      }
+    });
   }
 }

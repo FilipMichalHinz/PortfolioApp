@@ -1,9 +1,9 @@
-
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule }   from '@angular/common';
-import { RouterModule }   from '@angular/router';
-import { PortfolioOverview }  from '../model/portfolio-overview';
-import { PortfolioService }   from '../services/portfolio.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+import { PortfolioOverview } from '../model/portfolio-overview';
+import { PortfolioService } from '../services/portfolio.service';
 
 @Component({
   selector: 'app-portfolio-card',
@@ -13,32 +13,40 @@ import { PortfolioService }   from '../services/portfolio.service';
   styleUrls: ['./portfolio-card.component.scss']
 })
 export class PortfolioCardComponent {
-  @Input() portfolio!: PortfolioOverview;
-  @Output() deleted = new EventEmitter<number>();
+  @Input() portfolio!: PortfolioOverview; // 📦 Portfolio data coming from parent (PortfolioListComponent)
+  @Output() deleted = new EventEmitter<number>(); // 📤 Emit event back to parent when deleted
+
+  isDeleting: boolean = false; // 🔄 Show small visual if delete is in progress (optional UX polish)
 
   constructor(private portfolioService: PortfolioService) {}
 
+  /**
+   * 🔹 Confirm and delete a portfolio
+   * 🔹 Called when user clicks delete button
+   */
   confirmDelete(event: Event): void {
-    // Prevent link navigation. See portfolio-list for more details
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault(); // 🚫 Prevent link navigation
+    event.stopPropagation(); // 🚫 Stop event from bubbling up
 
-    // Simple confirmation dialog
     if (!confirm(`Are you sure you want to delete "${this.portfolio.portfolioName}"?`)) {
-      return;
+      return; // ❌ Cancel if user says no
     }
 
-    // Call backend to delete
-    this.portfolioService.deletePortfolio(this.portfolio.id).subscribe({ // we use deletePortfolio from portfolio.service
+    this.isDeleting = true; // 🔄 Start loading state
+
+    this.portfolioService.deletePortfolio(this.portfolio.id).subscribe({
       next: () => {
         console.log(`Deleted portfolio ${this.portfolio.id}`);
-        this.deleted.emit(this.portfolio.id);
+        this.deleted.emit(this.portfolio.id); // 📤 Notify parent component to remove it from list
+        this.isDeleting = false;
       },
       error: err => {
         console.error('Error deleting portfolio:', err);
         alert('Delete failed: ' + (err.message || 'Unknown error'));
+        this.isDeleting = false;
       }
     });
   }
+  
+  
 }
-

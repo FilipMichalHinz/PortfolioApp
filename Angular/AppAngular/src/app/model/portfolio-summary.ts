@@ -1,4 +1,5 @@
 export interface AssetPerformance {
+  id: number;
   ticker: string;
   name: string;
   quantity: number;
