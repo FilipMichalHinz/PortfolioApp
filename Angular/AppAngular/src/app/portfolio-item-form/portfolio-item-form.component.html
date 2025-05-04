@@ -27,19 +27,7 @@
       readonly /> <!-- 🧠 Name is fetched automatically; user cannot edit manually -->
     
 
-    <!-- 🔹 Asset Type Selection (User selects manually) -->
-    <label for="assetType">Asset Type</label>
-    <select
-      id="assetType"
-      [(ngModel)]="item.assetTypeId"
-      name="assetTypeId"
-      required
-    >
-      <option value="" disabled selected>Select Type</option>
-      <option *ngFor="let type of assetTypes" [value]="type.id">
-        {{ type.name }}
-      </option>
-    </select>
+  
 
     <!-- 🔹 Purchase Price Input (User types manually) -->
     <label for="price">Purchase Price</label>

@@ -10,13 +10,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 // 🔹 Services
 import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioItemService } from '../services/portfolio-item.service';
-import { AssetTypeService } from '../services/asset-type.service';
+
 import { YahooFinanceService } from '../services/yahoo-finance.service';
 
 // 🔹 Models
 import { Portfolio } from '../model/portfolio';
 import { PortfolioItem } from '../model/portfolio-item';
-import { AssetType } from '../model/asset-type';
+
 import { PortfolioSummary } from '../model/portfolio-summary';
 
 // 🔹 Components
@@ -56,13 +56,13 @@ export class PortfolioDetailComponent implements OnInit {
   colorScheme = 'cool';
 
   itemToSell!: PortfolioItem;
-  assetTypes: AssetType[] = [];
+  s: [] = [];
 
   constructor(
     private route: ActivatedRoute,
     private portfolioSvc: PortfolioService,
     private itemSvc: PortfolioItemService,
-    private assetTypeService: AssetTypeService,
+    // private Service: Service,
     private yahooService: YahooFinanceService
   ) { }
 
@@ -74,7 +74,7 @@ export class PortfolioDetailComponent implements OnInit {
       this.showForm = false;
       this.isLoading = true;
 
-      this.loadAssetTypes();
+      //this.();
 
       this.portfolioSvc.getPortfolio(id).subscribe({
         next: p => {
@@ -117,7 +117,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.isLoading = !(this.portfolio && this.summary);
   }
 
-  private loadSummary(id: number): void {
+  private ummary(id: number): void {
     this.isLoading = true;
     this.itemSvc.getSummary(id).subscribe({
       next: sum => this.applySummary(id, sum),
@@ -128,12 +128,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
-  private loadAssetTypes(): void {
-    this.assetTypeService.getAssetTypes().subscribe({
-      next: types => this.assetTypes = types,
-      error: err => console.error('Failed to load asset types', err)
-    });
-  }
+  
 
   private fetchNames(): void {
     if (!this.summary.byAsset?.length) {
@@ -220,7 +215,7 @@ export class PortfolioDetailComponent implements OnInit {
 
   onItemCreated(item: PortfolioItem): void {
     this.showForm = false;
-    this.loadSummary(this.portfolio.id);
+    this.ummary(this.portfolio.id);
   }
 
   onCancel(): void {
@@ -238,7 +233,7 @@ export class PortfolioDetailComponent implements OnInit {
       exitPrice: 0,
       exitDate: new Date().toISOString().split('T')[0],
       portfolioId: this.portfolio.id,
-      assetTypeId: asset.assetTypeId || 0,
+      
       name: asset.name || 'Unknown'
     };
   }
@@ -263,7 +258,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.itemSvc.sellPortfolioItem(sellRequest).subscribe({
       next: () => {
         this.sellMode = false;
-        this.loadSummary(this.portfolio.id);
+        this.ummary(this.portfolio.id);
       },
       error: err => {
         console.error('Error selling asset', err);
@@ -279,7 +274,7 @@ export class PortfolioDetailComponent implements OnInit {
     if (!confirm('Are you sure you want to delete this asset?')) return;
 
     this.itemSvc.delete(id).subscribe({
-      next: () => this.loadSummary(this.portfolio.id),
+      next: () => this.ummary(this.portfolio.id),
       error: err => {
         console.error('Error deleting asset', err);
         alert('Failed to delete asset.');

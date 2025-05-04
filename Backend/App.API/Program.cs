@@ -14,9 +14,8 @@ builder.Services.AddSwaggerGen();
 // Register repositories
 builder.Services.AddScoped<PortfolioRepository, PortfolioRepository>();
 builder.Services.AddScoped<PortfolioItemRepository, PortfolioItemRepository>();
-builder.Services.AddScoped<TransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<WatchlistRepository, WatchlistRepository>();
-builder.Services.AddScoped<AssetTypeRepository, AssetTypeRepository>();
+
 
 
 var app = builder.Build();

@@ -31,7 +31,7 @@ namespace App.Model.Repositories
                         PortfolioItem item = new PortfolioItem(Convert.ToInt32(data["id"]))
                         {
                             PortfolioId = Convert.ToInt32(data["portfolioid"]),
-                            AssetTypeId = Convert.ToInt32(data["assettypeid"]),
+                        
                             Ticker = data["ticker"].ToString()!,
                             Name = data["name"].ToString()!, // 🔥 Also load name
                             PurchasePrice = Convert.ToDecimal(data["purchaseprice"]),
@@ -63,12 +63,11 @@ namespace App.Model.Repositories
                 var cmd = dbConn.CreateCommand();
                 cmd.CommandText = @"
                     INSERT INTO portfolioitems 
-                    (portfolioid, assettypeid, ticker, name , purchaseprice, quantity, purchasedate) 
+                    (portfolioid,  ticker, name , purchaseprice, quantity, purchasedate) 
                     VALUES 
-                    (@portfolioId, @assetTypeId, @ticker, @name, @purchasePrice, @quantity, @purchaseDate)";
+                    (@portfolioId,  @ticker, @name, @purchasePrice, @quantity, @purchaseDate)";
 
                 cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, item.PortfolioId);
-                cmd.Parameters.AddWithValue("@assetTypeId", NpgsqlDbType.Integer, item.AssetTypeId);
                 cmd.Parameters.AddWithValue("@ticker", NpgsqlDbType.Text, item.Ticker);
                 cmd.Parameters.AddWithValue("@name", NpgsqlDbType.Text, item.Name);
                 cmd.Parameters.AddWithValue("@purchasePrice", NpgsqlDbType.Numeric, item.PurchasePrice);
@@ -125,7 +124,7 @@ namespace App.Model.Repositories
                     return new PortfolioItem(Convert.ToInt32(reader["id"]))
                     {
                         PortfolioId = Convert.ToInt32(reader["portfolioid"]),
-                        AssetTypeId = Convert.ToInt32(reader["assettypeid"]),
+                        
                         Ticker = reader["ticker"].ToString(),
                         PurchasePrice = Convert.ToDecimal(reader["purchaseprice"]),
                         Quantity = Convert.ToDecimal(reader["quantity"]),
@@ -161,9 +160,9 @@ namespace App.Model.Repositories
                     return new PortfolioItem(Convert.ToInt32(reader["id"]))
                     {
                         PortfolioId = Convert.ToInt32(reader["portfolioid"]),
-                        AssetTypeId = Convert.ToInt32(reader["assettypeid"]),
+                     
                         Ticker = reader["ticker"].ToString(),
-                        Name = reader["name"].ToString(), // 🆕 Don't forget Name field!
+                        Name = reader["name"].ToString(), //  Don't forget Name field!
                         PurchasePrice = Convert.ToDecimal(reader["purchaseprice"]),
                         Quantity = Convert.ToDecimal(reader["quantity"]),
                         PurchaseDate = Convert.ToDateTime(reader["purchasedate"]),
@@ -194,7 +193,7 @@ namespace App.Model.Repositories
             UPDATE portfolioitems
             SET
                 portfolioid = @portfolioId,
-                assettypeid = @assetTypeId,
+            
                 ticker = @ticker,
                 name = @name,
                 purchaseprice = @purchasePrice,
@@ -206,7 +205,7 @@ namespace App.Model.Repositories
             WHERE id = @id";
 
                 cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, item.PortfolioId);
-                cmd.Parameters.AddWithValue("@assetTypeId", NpgsqlDbType.Integer, item.AssetTypeId);
+                
                 cmd.Parameters.AddWithValue("@ticker", NpgsqlDbType.Text, item.Ticker);
                 cmd.Parameters.AddWithValue("@name", NpgsqlDbType.Text, item.Name);
                 cmd.Parameters.AddWithValue("@purchasePrice", NpgsqlDbType.Numeric, item.PurchasePrice);

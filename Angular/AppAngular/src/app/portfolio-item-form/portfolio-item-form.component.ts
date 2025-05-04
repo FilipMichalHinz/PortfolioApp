@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PortfolioItem } from '../model/portfolio-item';
 import { PortfolioItemService } from '../services/portfolio-item.service';
-import { AssetTypeService } from '../services/asset-type.service';
-import { AssetType } from '../model/asset-type';
+
 import { YahooFinanceService } from '../services/yahoo-finance.service'; // 🆕 Import YahooFinanceService
 
 @Component({
@@ -19,12 +18,12 @@ export class PortfolioItemFormComponent implements OnInit {
   @Output() created = new EventEmitter<PortfolioItem>(); // emit after creation
   @Output() cancel = new EventEmitter<void>(); // emit when cancel button clicked
 
-  assetTypes: AssetType[] = [];
+  s: [] = [];
 
   item: PortfolioItem = {
     id: 0,
     portfolioId: 0,
-    assetTypeId: 0,
+    //Id: 0,
     name: '',
     ticker: '',
     purchasePrice: 0,
@@ -34,22 +33,16 @@ export class PortfolioItemFormComponent implements OnInit {
 
   constructor(
     private portfolioItemService: PortfolioItemService,
-    private assetTypeService: AssetTypeService,
+    // private Service: Service,
     private yahooService: YahooFinanceService // 🆕 Inject YahooFinanceService
   ) {}
 
   ngOnInit(): void {
-    this.loadAssetTypes();
+    //this.loads();
     this.item.portfolioId = this.portfolioId;
   }
 
-  // 🔹 Fetches available asset types from API
-  loadAssetTypes(): void {
-    this.assetTypeService.getAssetTypes().subscribe({
-      next: types => this.assetTypes = types,
-      error: err => console.error('Failed to load asset types', err)
-    });
-  }
+ 
 
   // 🔹 Called when user finishes typing Ticker
   onTickerEntered(): void {
@@ -76,7 +69,7 @@ export class PortfolioItemFormComponent implements OnInit {
 
   // 🔹 Called when the form is submitted
   create(): void {
-    if (!this.item.ticker || !this.item.name || this.item.assetTypeId === 0 || 
+    if (!this.item.ticker || !this.item.name || 
         this.item.purchasePrice <= 0 || this.item.quantity <= 0 || !this.item.purchaseDate) {
       alert('Please fill in all required fields correctly.');
       return;
@@ -102,7 +95,7 @@ export class PortfolioItemFormComponent implements OnInit {
     this.item = {
       id: 0,
       portfolioId: this.portfolioId,
-      assetTypeId: 0,
+      //Id: 0,
       name: '',
       ticker: '',
       purchasePrice: 0,
