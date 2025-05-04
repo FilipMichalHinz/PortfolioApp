@@ -41,10 +41,14 @@ testem.log
 .DS_Store
 Thumbs.db
 
-#Angular
+# Angular build cache
 Angular/node_modules/
 Angular/dist/
+Angular/.angular/cache/
+*.tsbuildinfo
 
-#.NET outputs
-Backend/**/obj/
+# .NET build outputs
 Backend/**/bin/
+Backend/**/obj/
+
+
