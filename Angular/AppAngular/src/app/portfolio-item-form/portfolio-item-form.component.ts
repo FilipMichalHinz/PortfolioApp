@@ -65,6 +65,7 @@ export class PortfolioItemFormComponent implements OnInit {
   onTickerEntered(): void {
     const ticker = this.item.ticker;
   
+  
     if (!ticker) {
       // 🧠 If user deleted the ticker, clear the name immediately
       this.item.name = '';
@@ -82,7 +83,10 @@ export class PortfolioItemFormComponent implements OnInit {
       }
     });
   }
-  
+  onTickerChange(value: string): void {
+    // Normalize to uppercase and trim spaces
+    this.item.ticker = value.toUpperCase().trim();
+  }
 
   // 🔹 Called when the form is submitted
   create(): void {

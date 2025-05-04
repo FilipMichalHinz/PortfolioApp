@@ -220,13 +220,36 @@ export class PortfolioDetailComponent implements OnInit {
     this.summary.currentValue = openCurrentValue;
   }
 
-  private prepareAllocationPie(): void {
-    const openAssets = this.summary.byAsset.filter(a => !a.isSold);
-    this.allocationPieData = openAssets.map(a => ({
-      name: a.name,
-      value: a.currentValue
-    }));
+  /**
+ * 🔹 Prepares data for the allocation pie chart by grouping open (unsold) assets.
+ * 🔹 Assets with the same name (e.g., multiple Tesla entries) are merged into one slice.
+ */
+private prepareAllocationPie(): void {
+  // Step 1: Filter only open positions (unsold assets)
+  const openAssets = this.summary.byAsset.filter(a => !a.isSold);
+
+  // Step 2: Create a temporary object to group values by asset name
+  const grouped: { [key: string]: number } = {};
+
+  for (const asset of openAssets) {
+    // Use asset name if available, otherwise fallback to ticker
+    const label = asset.name || asset.ticker;
+
+    // Initialize the group if it doesn't exist
+    if (!grouped[label]) {
+      grouped[label] = 0;
+    }
+
+    // Sum the currentValue of assets with the same label
+    grouped[label] += asset.currentValue;
   }
+
+  // Step 3: Convert the grouped object into the format ngx-charts expects
+  this.allocationPieData = Object.entries(grouped).map(([name, value]) => ({
+    name,  // Label for the pie slice
+    value  // Total value for this group
+  }));
+}
 
   onItemCreated(item: PortfolioItem): void {
     this.showForm = false;

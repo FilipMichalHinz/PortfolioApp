@@ -11,6 +11,7 @@
       name="ticker"
       type="text"
       [(ngModel)]="item.ticker"
+      (ngModelChange)="onTickerChange($event)"
       required
       placeholder="e.g., TSLA"
       (blur)="onTickerEntered()" /> <!-- 🧠 When user finishes typing Ticker, auto-fetch Name -->
