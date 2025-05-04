@@ -49,6 +49,9 @@ export class PortfolioItemService {
   sellPortfolioItem(sellRequest: { id: number; exitPrice: number; exitDate: string }) {
     return this.http.put(`${this.baseUrl}/sell`, sellRequest);
   }
+  update(item: PortfolioItem): Observable<PortfolioItem> {
+    return this.http.put<PortfolioItem>(`${this.baseUrl}/update`, item);
+  }
 }
 
 

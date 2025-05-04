@@ -162,5 +162,14 @@
   justify-content: center;
 }
 
+.actions-row {
+  display: flex;
+  gap: 8px;
+  margin: 0.25rem 0 0.25rem 0;
+}
+
+.actions-row button {
+  margin-right: 10px;
+}
 
 

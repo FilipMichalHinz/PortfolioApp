@@ -26,4 +26,35 @@
   text-decoration: none;
 }
 
+.global-summary {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f6f6f6;
+  border-radius: 12px;
+  justify-content: space-around;
+}
+
+.summary-card {
+  text-align: center;
+}
+
+.summary-card .label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.summary-card .value {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.summary-card .value.positive {
+  color: green;
+}
+
+.summary-card .value.negative {
+  color: red;
+}
 

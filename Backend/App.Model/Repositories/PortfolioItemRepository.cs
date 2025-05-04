@@ -31,7 +31,7 @@ namespace App.Model.Repositories
                         PortfolioItem item = new PortfolioItem(Convert.ToInt32(data["id"]))
                         {
                             PortfolioId = Convert.ToInt32(data["portfolioid"]),
-                        
+
                             Ticker = data["ticker"].ToString()!,
                             Name = data["name"].ToString()!, // 🔥 Also load name
                             PurchasePrice = Convert.ToDecimal(data["purchaseprice"]),
@@ -124,7 +124,7 @@ namespace App.Model.Repositories
                     return new PortfolioItem(Convert.ToInt32(reader["id"]))
                     {
                         PortfolioId = Convert.ToInt32(reader["portfolioid"]),
-                        
+
                         Ticker = reader["ticker"].ToString(),
                         PurchasePrice = Convert.ToDecimal(reader["purchaseprice"]),
                         Quantity = Convert.ToDecimal(reader["quantity"]),
@@ -160,7 +160,7 @@ namespace App.Model.Repositories
                     return new PortfolioItem(Convert.ToInt32(reader["id"]))
                     {
                         PortfolioId = Convert.ToInt32(reader["portfolioid"]),
-                     
+
                         Ticker = reader["ticker"].ToString(),
                         Name = reader["name"].ToString(), //  Don't forget Name field!
                         PurchasePrice = Convert.ToDecimal(reader["purchaseprice"]),
@@ -205,7 +205,7 @@ namespace App.Model.Repositories
             WHERE id = @id";
 
                 cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, item.PortfolioId);
-                
+
                 cmd.Parameters.AddWithValue("@ticker", NpgsqlDbType.Text, item.Ticker);
                 cmd.Parameters.AddWithValue("@name", NpgsqlDbType.Text, item.Name);
                 cmd.Parameters.AddWithValue("@purchasePrice", NpgsqlDbType.Numeric, item.PurchasePrice);
@@ -224,6 +224,29 @@ namespace App.Model.Repositories
                 dbConn?.Close();
             }
         }
+        public bool UpdatePortfolioItemDetails(PortfolioItem item)
+        {
+            using var conn = new NpgsqlConnection(ConnectionString);
+            conn.Open();
 
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+        UPDATE portfolioitems
+        SET ticker = @ticker,
+            name = @name,
+            purchaseprice = @purchasePrice,
+            quantity = @quantity,
+            purchasedate = @purchaseDate
+        WHERE id = @id";
+
+            cmd.Parameters.AddWithValue("@id", item.Id);
+            cmd.Parameters.AddWithValue("@ticker", item.Ticker);
+            cmd.Parameters.AddWithValue("@name", item.Name);
+            cmd.Parameters.AddWithValue("@purchasePrice", item.PurchasePrice);
+            cmd.Parameters.AddWithValue("@quantity", item.Quantity);
+            cmd.Parameters.AddWithValue("@purchaseDate", item.PurchaseDate);
+
+            return cmd.ExecuteNonQuery() == 1;
+        }
     }
 }

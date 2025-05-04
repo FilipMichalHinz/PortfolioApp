@@ -20,12 +20,8 @@
       <div class="chart-wrapper">
         <div class="chart-title">Allocation Pie</div>
 
-        <ngx-charts-pie-chart *ngIf="allocationPieData?.length"
-        [results]="allocationPieData"
-        [colorScheme]="colorScheme"
-        [view]="[400, 300]"
-        [labels]="true"
-        [doughnut]="true">
+        <ngx-charts-pie-chart *ngIf="allocationPieData?.length" [results]="allocationPieData"
+          [colorScheme]="colorScheme" [view]="[400, 300]" [labels]="true" [doughnut]="true">
         </ngx-charts-pie-chart>
       </div>
 
@@ -43,7 +39,8 @@
       </div>
       <div class="metric-card">
         <div class="label">Total P/L</div>
-        <div class="value" [class.positive]="summary.totalProfitLoss >= 0" [class.negative]="summary.totalProfitLoss < 0">
+        <div class="value" [class.positive]="summary.totalProfitLoss >= 0"
+          [class.negative]="summary.totalProfitLoss < 0">
           {{ summary.totalProfitLoss | currency }}
           <span class="pct">({{ summary.changePercent | number:'1.0-0' }}%)</span>
         </div>
@@ -67,66 +64,82 @@
     <!-- 📊 Assets -->
     <section class="assets-panel">
 
-      <!-- 🔹 Open Positions -->
+      <!-- 🔹 Open Positions header with toggle -->
       <div class="assets-header" (click)="openPositionsExpanded = !openPositionsExpanded" style="cursor: pointer;">
         <span>{{ openPositionsExpanded ? '▲' : '▼' }}</span>
         <h2>Open Positions</h2>
       </div>
 
-      <div class="add-item-wrapper" *ngIf="openPositionsExpanded">
-        <button class="add-btn" *ngIf="!showForm" (click)="showForm = true">+ Add Item</button>
-      </div>
+      <!-- 🔹 This wrapper ALWAYS shows when expanded -->
+      <div *ngIf="openPositionsExpanded">
 
-      <div *ngIf="showForm && openPositionsExpanded">
-        <app-portfolio-item-form [portfolioId]="portfolio.id" (created)="onItemCreated($event)" (cancel)="onCancel()">
-        </app-portfolio-item-form>
-      </div>
+        <!-- ✅ Add Item button (always visible when expanded) -->
+        <div class="add-item-wrapper">
+          <button class="add-btn" *ngIf="!showForm" (click)="showForm = true">+ Add Item</button>
+        </div>
 
-      <table *ngIf="summary.byAsset.length > 0 && openPositionsExpanded">
-        <thead>
-          <tr>
-            <th>Sell</th>
-            <th>Name</th>
-            <th>Ticker</th>
-            <th>Qty</th>
-            <th>Buy Price</th>
-            <th>Current Price</th>
-            <th>Value</th>
-            <th>P/L</th>
-            <th>∆%</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let a of summary.byAsset">
-            <tr *ngIf="!a.isSold">
-              <td>
-                <button (click)="startSell(a)">Sell</button>
-                <button (click)="deleteItem(a.id)" style="margin-left: 5px;">Delete</button>
-              </td>
-              <td>{{ a.name || 'Loading...' }}</td>
-              <td>{{ a.ticker }}</td>
-              <td>{{ a.quantity }}</td>
-              <td>{{ a.purchasePrice | currency }}</td>
-              <td>{{ a.currentPrice | currency }}</td>
-              <td>{{ a.currentValue | currency }}</td>
-              <td [class.positive]="a.profitLoss >= 0" [class.negative]="a.profitLoss < 0">
-                {{ a.profitLoss | currency }}
-              </td>
-              <td>{{ a.changePercent | number:'1.0-0' }}%</td>
+        <!-- ✅ Form for adding assets -->
+        <div *ngIf="showForm">
+          <app-portfolio-item-form [portfolioId]="portfolio.id" [itemToEdit]="itemBeingEdited" [editMode]="isEditMode"
+            (created)="onItemCreated($event)" (updated)="onItemUpdated($event)" (cancel)="onCancel()">
+          </app-portfolio-item-form>
+        </div>
+
+        <!-- ✅ Table of open assets -->
+        <table *ngIf="summary.byAsset.length > 0">
+          <thead>
+            <tr>
+              <th style="width: 150px;">Actions</th>
+              <th>Name</th>
+              <th>Ticker</th>
+              <th>Qty</th>
+              <th>Buy Price</th>
+              <th>Current Price</th>
+              <th>Value</th>
+              <th>Profit/Loss</th>
+              <th>Return %</th>
             </tr>
-          </ng-container>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let a of summary.byAsset">
+              <tr *ngIf="!a.isSold">
+                <td>
+                  <div class="actions-row">
+                    <button (click)="startSell(a)">Sell</button>
+                    <button (click)="startEdit(a)">Edit</button>
+                    <button (click)="deleteItem(a.id)">Delete</button>
+                  </div>
+                </td>
+                <td>{{ a.name || 'Loading...' }}</td>
+                <td>{{ a.ticker }}</td>
+                <td>{{ a.quantity }}</td>
+                <td>{{ a.purchasePrice | currency }}</td>
+                <td>{{ a.currentPrice | currency }}</td>
+                <td>{{ a.currentValue | currency }}</td>
+                <td [class.positive]="a.profitLoss >= 0" [class.negative]="a.profitLoss < 0">
+                  {{ a.profitLoss | currency }}
+                </td>
+                <td>{{ a.changePercent | number:'1.0-0' }}%</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
 
+        <!-- 🧠 Friendly fallback message if no assets -->
+        <div *ngIf="summary?.byAsset?.length === 0 && !showForm" class="no-assets-placeholder">
+          No open positions yet. Click "+ Add Item" to get started.
+        </div>
+      </div>
       <!-- 🔹 Completed Trades -->
       <div class="assets-header" (click)="completedTradesExpanded = !completedTradesExpanded" style="cursor: pointer;">
         <span>{{ completedTradesExpanded ? '▲' : '▼' }}</span>
-        <h2>Completed Trades</h2>
+        <h2>Completed Positions</h2>
       </div>
 
       <table *ngIf="summary.byAsset.length > 0 && completedTradesExpanded">
         <thead>
           <tr>
+            <th style="width: 150px;">Actions</th>
             <th>Name</th>
             <th>Ticker</th>
             <th>Qty</th>
@@ -140,6 +153,12 @@
         <tbody>
           <ng-container *ngFor="let a of summary.byAsset">
             <tr *ngIf="a.isSold">
+              <td>
+                <div class="actions-row">
+                  <button (click)="startEdit(a)">Edit</button>
+                  <button (click)="deleteItem(a.id)">Delete</button>
+                </div>
+              </td>
               <td>{{ a.name || 'Loading...' }}</td>
               <td>{{ a.ticker }}</td>
               <td>{{ a.quantity }}</td>
@@ -165,8 +184,26 @@
           <input id="exitDate" type="date" [(ngModel)]="itemToSell.exitDate" name="exitDate">
 
           <div class="button-row">
-            <button (click)="confirmSell()" [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">Confirm Sell</button>
+            <button (click)="confirmSell()" [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">Confirm
+              Sell</button>
             <button (click)="cancelSell()">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <!-- 📝 Edit Completed Trade Modal -->
+      <div *ngIf="editSellMode" class="modal-overlay">
+        <div class="modal-content">
+          <h3>Edit Sale for {{ itemToEditSell?.ticker }}</h3>
+
+          <label for="editExitPrice">Exit Price:</label>
+          <input id="editExitPrice" type="number" [(ngModel)]="itemToEditSell.exitPrice" />
+
+          <label for="editExitDate">Exit Date:</label>
+          <input id="editExitDate" type="date" [(ngModel)]="itemToEditSell.exitDate" />
+
+          <div class="button-row">
+            <button (click)="confirmSellEdit()">Save</button>
+            <button (click)="editSellMode = false">Cancel</button>
           </div>
         </div>
       </div>

@@ -184,6 +184,17 @@ namespace App.API.Controllers
                 ByAsset = summaryList
             });
         }
+        // 🔹 Update a portfolio item
+        [HttpPut("update")]
+        public ActionResult UpdateItem([FromBody] PortfolioItem item)
+        {
+            if (item == null)
+                return BadRequest("Invalid portfolio item");
+
+            bool ok = Repository.UpdatePortfolioItemDetails(item);
+
+            return ok ? Ok(item) : BadRequest("Update failed");
+        }
         // 🔹 Sell a portfolio item
         [HttpPut("sell")]
         public ActionResult SellPortfolioItem([FromBody] SellAssetRequest request)
@@ -205,13 +216,16 @@ namespace App.API.Controllers
             else
                 return BadRequest("Failed to mark portfolio item as sold.");
         }
-    }
-    // 🔹 New helper class outside of controller
-    public class SellAssetRequest
-    {
-        public int Id { get; set; }
-        public decimal ExitPrice { get; set; }
-        public DateTime ExitDate { get; set; }
+
     }
 
 }
+// 🔹 New helper class outside of controller
+public class SellAssetRequest
+{
+    public int Id { get; set; }
+    public decimal ExitPrice { get; set; }
+    public DateTime ExitDate { get; set; }
+}
+
+

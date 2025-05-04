@@ -38,7 +38,14 @@ import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-ite
 })
 export class PortfolioDetailComponent implements OnInit {
   portfolio!: Portfolio;
-  summary!: PortfolioSummary;
+  summary: PortfolioSummary = {
+    portfolioId: 0,
+    byAsset: [], // ✅ Always initialize as an empty array
+    initialInvestment: 0,
+    currentValue: 0,
+    totalProfitLoss: 0,
+    changePercent: 0
+  };
 
   isLoading = true;
   showForm = false;
@@ -50,6 +57,14 @@ export class PortfolioDetailComponent implements OnInit {
   totalFinalizedReturnPercent = 0;
   totalOpenProfit = 0;
   totalOpenReturnPercent = 0;
+
+  itemBeingEdited: PortfolioItem | null = null; // currently selected for editing
+  isEditMode: boolean = false;
+
+  editSellMode = false;
+  itemToEditSell!: PortfolioItem;
+
+  
 
   allocationPieData: { name: string, value: number }[] = [];
 
@@ -117,7 +132,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.isLoading = !(this.portfolio && this.summary);
   }
 
-  private ummary(id: number): void {
+  private loadSummary(id: number): void {
     this.isLoading = true;
     this.itemSvc.getSummary(id).subscribe({
       next: sum => this.applySummary(id, sum),
@@ -208,14 +223,14 @@ export class PortfolioDetailComponent implements OnInit {
   private prepareAllocationPie(): void {
     const openAssets = this.summary.byAsset.filter(a => !a.isSold);
     this.allocationPieData = openAssets.map(a => ({
-      name: a.ticker,
+      name: a.name,
       value: a.currentValue
     }));
   }
 
   onItemCreated(item: PortfolioItem): void {
     this.showForm = false;
-    this.ummary(this.portfolio.id);
+    this.loadSummary(this.portfolio.id);
   }
 
   onCancel(): void {
@@ -258,7 +273,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.itemSvc.sellPortfolioItem(sellRequest).subscribe({
       next: () => {
         this.sellMode = false;
-        this.ummary(this.portfolio.id);
+        this.loadSummary(this.portfolio.id);
       },
       error: err => {
         console.error('Error selling asset', err);
@@ -274,11 +289,56 @@ export class PortfolioDetailComponent implements OnInit {
     if (!confirm('Are you sure you want to delete this asset?')) return;
 
     this.itemSvc.delete(id).subscribe({
-      next: () => this.ummary(this.portfolio.id),
+      next: () => this.loadSummary(this.portfolio.id),
       error: err => {
         console.error('Error deleting asset', err);
         alert('Failed to delete asset.');
       }
     });
   }
+
+
+// Start editing an item
+startEdit(asset: any): void {
+  this.itemBeingEdited = {
+    id: asset.id,
+    portfolioId: this.portfolio.id, // <- set explicitly
+    ticker: asset.ticker,
+    name: asset.name || 'Unknown',
+    quantity: asset.quantity,
+    purchasePrice: asset.purchasePrice,
+    purchaseDate: asset.purchaseDate ?? new Date().toISOString().split('T')[0], // fallback
+    exitPrice: asset.exitPrice,
+    exitDate: asset.exitDate
+  };
+  this.isEditMode = true;
+  this.showForm = true;
+}
+onItemUpdated(updatedItem: PortfolioItem): void {
+  this.showForm = false;
+  this.loadSummary(this.portfolio.id); // or rename to loadSummary if preferred
+  this.isEditMode = false;
+  this.itemBeingEdited = null;
+}
+
+editSell(asset: PortfolioItem): void {
+  this.editSellMode = true;
+  this.itemToEditSell = { ...asset };
+}
+confirmSellEdit(): void {
+  const req = {
+    id: this.itemToEditSell.id,
+    exitPrice: this.itemToEditSell.exitPrice!,
+    exitDate: this.itemToEditSell.exitDate!
+  };
+
+  this.itemSvc.sellPortfolioItem(req).subscribe({
+    next: () => {
+      this.editSellMode = false;
+      this.loadSummary(this.portfolio.id);
+    },
+    error: err => alert('Failed to update sale')
+  });
+}
+
 }

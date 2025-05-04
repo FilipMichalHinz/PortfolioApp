@@ -1,5 +1,21 @@
 <!-- src/app/portfolio-list/portfolio-list.component.html -->
-
+<!-- 🔝 Global Portfolio Summary -->
+<div class="global-summary">
+  <div class="summary-card">
+    <div class="label">Total Portfolios</div>
+    <div class="value">{{ totalPortfolioCount }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Total Value</div>
+    <div class="value">{{ totalPortfolioValue | currency }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Total P/L</div>
+    <div class="value" [class.positive]="totalProfitLoss >= 0" [class.negative]="totalProfitLoss < 0">
+      {{ totalProfitLoss | currency }}
+    </div>
+  </div>
+</div>
 <div *ngIf="isLoading" class="loading">
   Loading portfolios...
 </div>
@@ -21,7 +37,6 @@
   ></app-portfolio-card>
   </a>
 </div>
-
 <!-- Always show the "Add portfolio" form below -->
 <app-portfolio-form (created)="onPortfolioCreated($event)"></app-portfolio-form>
 

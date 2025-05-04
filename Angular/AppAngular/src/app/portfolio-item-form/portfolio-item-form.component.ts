@@ -15,8 +15,11 @@ import { YahooFinanceService } from '../services/yahoo-finance.service'; // 🆕
 })
 export class PortfolioItemFormComponent implements OnInit {
   @Input() portfolioId!: number; // required to associate item with portfolio
+  @Input() itemToEdit: PortfolioItem | null = null;
+  @Input() editMode: boolean = false; // true if editing an existing item
   @Output() created = new EventEmitter<PortfolioItem>(); // emit after creation
   @Output() cancel = new EventEmitter<void>(); // emit when cancel button clicked
+  @Output() updated = new EventEmitter<PortfolioItem>(); // emit when item is updated
 
   s: [] = [];
 
@@ -38,8 +41,22 @@ export class PortfolioItemFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //this.loads();
-    this.item.portfolioId = this.portfolioId;
+    if (this.editMode && this.itemToEdit) {
+      this.item = {
+        ...this.itemToEdit,
+        portfolioId: this.portfolioId  // ✅ Ensures this is not lost
+      };
+    } else {
+      this.item = {
+        id: 0,
+        portfolioId: this.portfolioId,
+        name: '',
+        ticker: '',
+        purchasePrice: 0,
+        quantity: 0,
+        purchaseDate: ''
+      };
+    }
   }
 
  
@@ -74,10 +91,27 @@ export class PortfolioItemFormComponent implements OnInit {
       alert('Please fill in all required fields correctly.');
       return;
     }
-
+  
+    if (this.editMode) {
+      // ✅ Send update to backend
+      this.portfolioItemService.update(this.item).subscribe({
+        next: (updatedItem: PortfolioItem) => {
+          console.log('Updated:', updatedItem);
+          this.updated.emit(updatedItem);  // 📤 Emit updated item to parent
+          this.resetForm();
+        },
+        error: (err: any) => {
+          console.error('Failed to update item', err);
+          alert('Failed to update item.');
+        }
+      });
+      return;
+    }
+  
+    // ✅ Create if not in edit mode
     this.portfolioItemService.create(this.item).subscribe({
       next: (createdItem: PortfolioItem) => {
-        this.created.emit(createdItem); // notify parent
+        this.created.emit(createdItem);
         this.resetForm();
       },
       error: err => console.error('Failed to create portfolio item', err)

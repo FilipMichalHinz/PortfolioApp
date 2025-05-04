@@ -37,20 +37,29 @@ export class PortfolioListComponent implements OnInit {
     this.loadOverviews();
   }
 
-  loadOverviews(): void {
-    this.isLoading = true;
-    this.portfolioService.getAllOverviews().subscribe({
-      next: (list) => {
-        this.portfolios = list;
-        this.isLoading = false;
-        console.log('OVERVIEW DATA', list); // For debugging
-      },
-      error: (err) => {
-        console.error('Failed to load portfolios', err);
-        this.isLoading = false;
-      }
-    });
-  }
+  totalPortfolioCount = 0;
+totalPortfolioValue = 0;
+totalProfitLoss = 0;
+
+loadOverviews(): void {
+  this.isLoading = true;
+  this.portfolioService.getAllOverviews().subscribe({
+    next: (list) => {
+      this.portfolios = list;
+
+      // ✅ Global summary logic
+      this.totalPortfolioCount = list.length;
+      this.totalPortfolioValue = list.reduce((acc, p) => acc + p.currentValue, 0);
+      this.totalProfitLoss = list.reduce((acc, p) => acc + p.totalProfitLoss, 0);
+
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Failed to load portfolios', err);
+      this.isLoading = false;
+    }
+  });
+}
 
   onPortfolioDeleted(id: number): void {
     // Remove from local list so the UI updates immediately
