@@ -1,25 +1,15 @@
-// 🔹 Angular and module imports
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { Color, ScaleType } from '@swimlane/ngx-charts';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
-
-// 🔹 Services
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioItemService } from '../services/portfolio-item.service';
-
 import { YahooFinanceService } from '../services/yahoo-finance.service';
-
-// 🔹 Models
 import { Portfolio } from '../model/portfolio';
 import { PortfolioItem } from '../model/portfolio-item';
-
 import { PortfolioSummary } from '../model/portfolio-summary';
-
-// 🔹 Components
 import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-item-form.component';
 
 @Component({
@@ -34,13 +24,13 @@ import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-ite
   ],
   templateUrl: './portfolio-detail.component.html',
   styleUrls: ['./portfolio-detail.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PortfolioDetailComponent implements OnInit {
   portfolio!: Portfolio;
   summary: PortfolioSummary = {
     portfolioId: 0,
-    byAsset: [], // ✅ Always initialize as an empty array
+    byAsset: [],
     initialInvestment: 0,
     currentValue: 0,
     totalProfitLoss: 0,
@@ -58,16 +48,13 @@ export class PortfolioDetailComponent implements OnInit {
   totalOpenProfit = 0;
   totalOpenReturnPercent = 0;
 
-  itemBeingEdited: PortfolioItem | null = null; // currently selected for editing
+  itemBeingEdited: PortfolioItem | null = null;
   isEditMode: boolean = false;
 
   editSellMode = false;
   itemToEditSell!: PortfolioItem;
 
-  
-
   allocationPieData: { name: string, value: number }[] = [];
-
   colorScheme = 'cool';
 
   itemToSell!: PortfolioItem;
@@ -77,19 +64,23 @@ export class PortfolioDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private portfolioSvc: PortfolioService,
     private itemSvc: PortfolioItemService,
-    // private Service: Service,
-    private yahooService: YahooFinanceService
-  ) { }
+    private yahooService: YahooFinanceService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    const token = localStorage.getItem('headerValue');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
       if (!id) return;
 
       this.showForm = false;
       this.isLoading = true;
-
-      //this.();
 
       this.portfolioSvc.getPortfolio(id).subscribe({
         next: p => {
@@ -124,7 +115,6 @@ export class PortfolioDetailComponent implements OnInit {
       totalProfitLoss: 0,
       changePercent: 0
     };
-    console.log("Loaded summary:", this.summary);
     this.fetchNames();
   }
 
@@ -142,8 +132,6 @@ export class PortfolioDetailComponent implements OnInit {
       }
     });
   }
-
-  
 
   private fetchNames(): void {
     if (!this.summary.byAsset?.length) {
@@ -209,7 +197,6 @@ export class PortfolioDetailComponent implements OnInit {
 
     this.totalOpenProfit = openProfit;
     this.totalOpenReturnPercent = openInvestment === 0 ? 0 : (openProfit / openInvestment) * 100;
-
     this.totalFinalizedProfit = finalizedProfit;
     this.totalFinalizedReturnPercent = finalizedInvestment === 0 ? 0 : (finalizedProfit / finalizedInvestment) * 100;
 
@@ -220,36 +207,23 @@ export class PortfolioDetailComponent implements OnInit {
     this.summary.currentValue = openCurrentValue;
   }
 
-  /**
- * 🔹 Prepares data for the allocation pie chart by grouping open (unsold) assets.
- * 🔹 Assets with the same name (e.g., multiple Tesla entries) are merged into one slice.
- */
-private prepareAllocationPie(): void {
-  // Step 1: Filter only open positions (unsold assets)
-  const openAssets = this.summary.byAsset.filter(a => !a.isSold);
+  private prepareAllocationPie(): void {
+    const openAssets = this.summary.byAsset.filter(a => !a.isSold);
+    const grouped: { [key: string]: number } = {};
 
-  // Step 2: Create a temporary object to group values by asset name
-  const grouped: { [key: string]: number } = {};
-
-  for (const asset of openAssets) {
-    // Use asset name if available, otherwise fallback to ticker
-    const label = asset.name || asset.ticker;
-
-    // Initialize the group if it doesn't exist
-    if (!grouped[label]) {
-      grouped[label] = 0;
+    for (const asset of openAssets) {
+      const label = asset.name || asset.ticker;
+      if (!grouped[label]) {
+        grouped[label] = 0;
+      }
+      grouped[label] += asset.currentValue;
     }
 
-    // Sum the currentValue of assets with the same label
-    grouped[label] += asset.currentValue;
+    this.allocationPieData = Object.entries(grouped).map(([name, value]) => ({
+      name,
+      value
+    }));
   }
-
-  // Step 3: Convert the grouped object into the format ngx-charts expects
-  this.allocationPieData = Object.entries(grouped).map(([name, value]) => ({
-    name,  // Label for the pie slice
-    value  // Total value for this group
-  }));
-}
 
   onItemCreated(item: PortfolioItem): void {
     this.showForm = false;
@@ -271,7 +245,6 @@ private prepareAllocationPie(): void {
       exitPrice: 0,
       exitDate: new Date().toISOString().split('T')[0],
       portfolioId: this.portfolio.id,
-      
       name: asset.name || 'Unknown'
     };
   }
@@ -320,48 +293,47 @@ private prepareAllocationPie(): void {
     });
   }
 
+  startEdit(asset: any): void {
+    this.itemBeingEdited = {
+      id: asset.id,
+      portfolioId: this.portfolio.id,
+      ticker: asset.ticker,
+      name: asset.name || 'Unknown',
+      quantity: asset.quantity,
+      purchasePrice: asset.purchasePrice,
+      purchaseDate: asset.purchaseDate ?? new Date().toISOString().split('T')[0],
+      exitPrice: asset.exitPrice,
+      exitDate: asset.exitDate
+    };
+    this.isEditMode = true;
+    this.showForm = true;
+  }
 
-// Start editing an item
-startEdit(asset: any): void {
-  this.itemBeingEdited = {
-    id: asset.id,
-    portfolioId: this.portfolio.id, // <- set explicitly
-    ticker: asset.ticker,
-    name: asset.name || 'Unknown',
-    quantity: asset.quantity,
-    purchasePrice: asset.purchasePrice,
-    purchaseDate: asset.purchaseDate ?? new Date().toISOString().split('T')[0], // fallback
-    exitPrice: asset.exitPrice,
-    exitDate: asset.exitDate
-  };
-  this.isEditMode = true;
-  this.showForm = true;
-}
-onItemUpdated(updatedItem: PortfolioItem): void {
-  this.showForm = false;
-  this.loadSummary(this.portfolio.id); // or rename to loadSummary if preferred
-  this.isEditMode = false;
-  this.itemBeingEdited = null;
-}
+  onItemUpdated(updatedItem: PortfolioItem): void {
+    this.showForm = false;
+    this.loadSummary(this.portfolio.id);
+    this.isEditMode = false;
+    this.itemBeingEdited = null;
+  }
 
-editSell(asset: PortfolioItem): void {
-  this.editSellMode = true;
-  this.itemToEditSell = { ...asset };
-}
-confirmSellEdit(): void {
-  const req = {
-    id: this.itemToEditSell.id,
-    exitPrice: this.itemToEditSell.exitPrice!,
-    exitDate: this.itemToEditSell.exitDate!
-  };
+  editSell(asset: PortfolioItem): void {
+    this.editSellMode = true;
+    this.itemToEditSell = { ...asset };
+  }
 
-  this.itemSvc.sellPortfolioItem(req).subscribe({
-    next: () => {
-      this.editSellMode = false;
-      this.loadSummary(this.portfolio.id);
-    },
-    error: err => alert('Failed to update sale')
-  });
-}
+  confirmSellEdit(): void {
+    const req = {
+      id: this.itemToEditSell.id,
+      exitPrice: this.itemToEditSell.exitPrice!,
+      exitDate: this.itemToEditSell.exitDate!
+    };
 
+    this.itemSvc.sellPortfolioItem(req).subscribe({
+      next: () => {
+        this.editSellMode = false;
+        this.loadSummary(this.portfolio.id);
+      },
+      error: err => alert('Failed to update sale')
+    });
+  }
 }

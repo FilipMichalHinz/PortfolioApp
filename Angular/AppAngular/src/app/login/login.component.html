@@ -1,14 +1,22 @@
-<div>
-    <label>Username</label>
-    <input type="text" [(ngModel)]="username"/>
-</div>
-<div>
-    <label>Password</label>
-    <input type="password" [(ngModel)]="password" />
-</div>
-<div>
-    <button type="button" (click)="login()">Login</button>
-</div>
-@if(!this.authenticated) {
-    <span>Credentials invalid</span>
-}
+<div class="login-container">
+    <h2>Login</h2>
+  
+    <div>
+      <label for="username">Username</label><br>
+      <input id="username" type="text" [(ngModel)]="username" />
+    </div>
+  
+    <div>
+      <label for="password">Password</label><br>
+      <input id="password" type="password" [(ngModel)]="password" />
+    </div>
+  
+    <div style="margin-top: 1rem;">
+      <button type="button" (click)="login()">Login</button>
+    </div>
+  
+    <div *ngIf="loginFailed" style="color: red; margin-top: 0.5rem;">
+      Login failed: Invalid username or password!
+    </div>
+  </div>
+  

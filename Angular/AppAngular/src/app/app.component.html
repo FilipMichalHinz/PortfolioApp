@@ -338,15 +338,16 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
 
-<header>
+<header *ngIf="isLoggedIn && !isLoginPage">
   <h1>Portfolio Management App</h1>
   <p>Manage users, assets, and portfolios efficiently</p>
 </header>
 
-<nav>
+<nav *ngIf="isLoggedIn && !isLoginPage">
   <ul>
     <li><a routerLink="/portfolio-list" routerLinkActive="active">📋 Portfolio overview</a></li>
-    <li><a routerLink="/portfolio" routerLinkActive="active">📊 Portfolio</a></li>
+    <li><a routerLink="" routerLinkActive="active">📊 Watchlist</a></li>
+    <li><a href="#" (click)="logout()">🚪 Logout</a></li>
   </ul>
 </nav>
 

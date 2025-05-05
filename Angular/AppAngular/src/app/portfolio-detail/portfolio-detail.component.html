@@ -193,7 +193,7 @@
       <!-- 📝 Edit Completed Trade Modal -->
       <div *ngIf="editSellMode" class="modal-overlay">
         <div class="modal-content">
-          <h3>Edit Sale for {{ itemToEditSell?.ticker }}</h3>
+          <h3>Edit Sale for {{ itemToEditSell.ticker }}</h3>
 
           <label for="editExitPrice">Exit Price:</label>
           <input id="editExitPrice" type="number" [(ngModel)]="itemToEditSell.exitPrice" />

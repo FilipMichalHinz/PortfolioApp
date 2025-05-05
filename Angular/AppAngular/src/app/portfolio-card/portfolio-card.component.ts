@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
 import { PortfolioOverview } from '../model/portfolio-overview';
 import { PortfolioService } from '../services/portfolio.service';
 
@@ -47,6 +46,4 @@ export class PortfolioCardComponent {
       }
     });
   }
-  
-  
 }

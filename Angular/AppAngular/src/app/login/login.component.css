@@ -1,0 +1,21 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* vertikal zentrieren */
+    align-items: center;       /* horizontal zentrieren */
+    height: 100vh;             /* volle Höhe des Bildschirms */
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .login-container input {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    width: 250px;
+  }
+  
+  .login-container button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  

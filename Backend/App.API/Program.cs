@@ -1,3 +1,4 @@
+using App.API.Middleware;
 using App.Model.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,7 @@ app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin())
 
 //app.UseHttpsRedirection();
 
+app.UseBasicAuthenticationMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();
