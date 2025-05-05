@@ -5,37 +5,62 @@ import { Observable } from 'rxjs';
 import { PortfolioSummary } from '../model/portfolio-summary';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root' // This service is provided globally in the app
 })
 export class PortfolioItemService {
+  // Base URL for all portfolio item-related endpoints
   baseUrl: string = 'http://localhost:5215/api/portfolioitem';
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Returns authentication headers using the locally stored basic auth token.
+   */
   private getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Authorization': localStorage.getItem('headerValue') ?? ''
     });
   }
 
+  /**
+   * Fetches all portfolio items associated with a given portfolio.
+   * @param portfolioId - ID of the portfolio
+   * @returns Observable of PortfolioItem[]
+   */
   getByPortfolio(portfolioId: number): Observable<PortfolioItem[]> {
     return this.http.get<PortfolioItem[]>(`${this.baseUrl}/portfolios/${portfolioId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
+  /**
+   * Creates a new portfolio item.
+   * @param item - The portfolio item to create
+   * @returns Observable of the created PortfolioItem
+   */
   create(item: PortfolioItem): Observable<PortfolioItem> {
     return this.http.post<PortfolioItem>(this.baseUrl, item, {
       headers: this.getAuthHeaders()
     });
   }
 
+  /**
+   * Deletes a portfolio item by ID.
+   * @param id - ID of the portfolio item to delete
+   * @returns Observable<void>
+   */
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, {
       headers: this.getAuthHeaders()
     });
   }
 
+  /**
+   * Fetches a computed summary of all items in a portfolio, including profit/loss and allocation data.
+   * Used for the detailed portfolio dashboard view.
+   * @param portfolioId - ID of the portfolio
+   * @returns Observable of PortfolioSummary
+   */
   getSummary(portfolioId: number): Observable<PortfolioSummary> {
     return this.http.get<PortfolioSummary>(
       `${this.baseUrl}/summary/${portfolioId}`,
@@ -45,12 +70,22 @@ export class PortfolioItemService {
     );
   }
 
+  /**
+   * Marks a portfolio item as sold by providing exit price and exit date.
+   * @param sellRequest - Object containing item ID, exit price, and exit date
+   * @returns Observable<any>
+   */
   sellPortfolioItem(sellRequest: { id: number; exitPrice: number; exitDate: string }): Observable<any> {
     return this.http.put(`${this.baseUrl}/sell`, sellRequest, {
       headers: this.getAuthHeaders()
     });
   }
 
+  /**
+   * Updates details of an existing portfolio item (e.g., after editing).
+   * @param item - The updated portfolio item
+   * @returns Observable of the updated PortfolioItem
+   */
   update(item: PortfolioItem): Observable<PortfolioItem> {
     return this.http.put<PortfolioItem>(`${this.baseUrl}/update`, item, {
       headers: this.getAuthHeaders()

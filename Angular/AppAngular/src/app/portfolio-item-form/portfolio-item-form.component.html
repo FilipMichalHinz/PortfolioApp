@@ -1,10 +1,13 @@
+<!-- Wrapper for the portfolio item form -->
 <div class="form-wrapper">
   <h3>Add Portfolio Item</h3>
 
-  <!-- 🔹 The form -->
+  <!-- Form container with two-way data binding and submission handler -->
   <form (ngSubmit)="create()" #portfolioForm="ngForm" class="form-grid">
 
-    <!-- 🔹 Ticker Input (User types manually) -->
+    <!-- Ticker input field -->
+    <!-- User enters a stock symbol (e.g., TSLA) -->
+    <!-- Input is normalized and name will be fetched automatically -->
     <label for="ticker">Ticker symbol</label>
     <input
       id="ticker"
@@ -14,10 +17,10 @@
       (ngModelChange)="onTickerChange($event)"
       required
       placeholder="e.g., TSLA"
-      (blur)="onTickerEntered()" /> <!-- 🧠 When user finishes typing Ticker, auto-fetch Name -->
-  
+      (blur)="onTickerEntered()" />
 
-    <!-- 🔹 Asset Name Input (Auto-filled, Readonly) -->
+    <!-- Asset name field -->
+    <!-- Automatically populated based on ticker, read-only -->
     <label for="name">Asset Name</label>
     <input
       type="text"
@@ -25,12 +28,10 @@
       [(ngModel)]="item.name"
       name="name"
       required
-      readonly /> <!-- 🧠 Name is fetched automatically; user cannot edit manually -->
-    
+      readonly />
 
-  
-
-    <!-- 🔹 Purchase Price Input (User types manually) -->
+    <!-- Purchase price input -->
+    <!-- User specifies the price per share/unit -->
     <label for="price">Purchase Price</label>
     <input
       type="number"
@@ -39,10 +40,10 @@
       name="purchasePrice"
       required
       step="0.01"
-      placeholder="e.g., 250.00"
-    />
+      placeholder="e.g., 250.00" />
 
-    <!-- 🔹 Quantity Input (User types manually) -->
+    <!-- Quantity input -->
+    <!-- Total number of shares or units purchased -->
     <label for="quantity">Quantity</label>
     <input
       type="number"
@@ -51,22 +52,24 @@
       name="quantity"
       required
       step="0.01"
-      placeholder="e.g., 5"
-    />
+      placeholder="e.g., 5" />
 
-    <!-- 🔹 Purchase Date Input (User selects manually) -->
+    <!-- Purchase date input -->
+    <!-- User selects the date the asset was bought -->
     <label for="date">Purchase Date</label>
     <input
       type="date"
       id="date"
       [(ngModel)]="item.purchaseDate"
       name="purchaseDate"
-      required
-    />
+      required />
 
-    <!-- 🔹 Action Buttons -->
+    <!-- Form actions: save or cancel -->
     <div class="button-row">
+      <!-- Save button is disabled if form is invalid -->
       <button type="submit" [disabled]="portfolioForm.invalid">Save</button>
+      
+      <!-- Cancel button triggers reset and notifies parent -->
       <button type="button" class="cancel" (click)="onCancel()">Cancel</button>
     </div>
   </form>

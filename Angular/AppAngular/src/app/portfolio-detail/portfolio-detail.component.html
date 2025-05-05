@@ -1,91 +1,118 @@
+<!-- Main container for the portfolio detail view -->
 <div class="detail-container">
 
-  <!-- 🔄 Loading Spinner -->
+  <!-- Display a loading indicator while portfolio and summary data are being fetched -->
   <div *ngIf="isLoading" class="loading-spinner">
     Loading portfolio...
   </div>
 
+  <!-- Render main content only after loading is complete -->
   <ng-container *ngIf="!isLoading">
 
-    <!-- 🔹 Header -->
+    <!-- Header with a back navigation button and the portfolio name -->
     <header class="detail-header">
       <button class="back-btn" routerLink="/portfolio-list">← Back</button>
       <h1 class="title">{{ portfolio.portfolioName || ('Portfolio ' + summary.portfolioId) }}</h1>
     </header>
 
-    <!-- 🔹 Charts -->
+    <!-- Section for displaying charts -->
     <section class="charts-panel">
-
-      <!-- 🔹 Allocation Pie -->
       <div class="chart-wrapper">
         <div class="chart-title">Allocation Pie</div>
 
-        <ngx-charts-pie-chart *ngIf="allocationPieData?.length" [results]="allocationPieData"
-          [colorScheme]="colorScheme" [view]="[400, 300]" [labels]="true" [doughnut]="true">
+        <!-- Render pie chart only if data is available -->
+        <ngx-charts-pie-chart
+          *ngIf="allocationPieData?.length"
+          [results]="allocationPieData"
+          [colorScheme]="colorScheme"
+          [view]="[400, 300]"
+          [labels]="true"
+          [doughnut]="true">
         </ngx-charts-pie-chart>
       </div>
-
     </section>
 
-    <!-- 📉 Metrics Overview -->
+    <!-- Section showing various financial metrics for the portfolio -->
     <section class="metrics-panel">
+      <!-- Initial investment amount -->
       <div class="metric-card">
         <div class="label">Invested</div>
         <div class="value">{{ summary.initialInvestment | currency }}</div>
       </div>
+
+      <!-- Current market value of all open positions -->
       <div class="metric-card">
         <div class="label">Current Value</div>
         <div class="value">{{ summary.currentValue | currency }}</div>
       </div>
+
+      <!-- Combined profit or loss from all positions -->
       <div class="metric-card">
         <div class="label">Total P/L</div>
-        <div class="value" [class.positive]="summary.totalProfitLoss >= 0"
+        <div
+          class="value"
+          [class.positive]="summary.totalProfitLoss >= 0"
           [class.negative]="summary.totalProfitLoss < 0">
           {{ summary.totalProfitLoss | currency }}
           <span class="pct">({{ summary.changePercent | number:'1.0-0' }}%)</span>
         </div>
       </div>
+
+      <!-- Profit/loss from finalized (sold) positions only -->
       <div class="metric-card">
         <div class="label">Finalized P/L</div>
-        <div class="value" [class.positive]="totalFinalizedProfit >= 0" [class.negative]="totalFinalizedProfit < 0">
+        <div
+          class="value"
+          [class.positive]="totalFinalizedProfit >= 0"
+          [class.negative]="totalFinalizedProfit < 0">
           {{ totalFinalizedProfit | currency }}
           <span class="pct">({{ totalFinalizedReturnPercent | number:'1.0-0' }}%)</span>
         </div>
       </div>
+
+      <!-- Profit/loss from currently open positions only -->
       <div class="metric-card">
         <div class="label">Open P/L</div>
-        <div class="value" [class.positive]="totalOpenProfit >= 0" [class.negative]="totalOpenProfit < 0">
+        <div
+          class="value"
+          [class.positive]="totalOpenProfit >= 0"
+          [class.negative]="totalOpenProfit < 0">
           {{ totalOpenProfit | currency }}
           <span class="pct">({{ totalOpenReturnPercent | number:'1.0-0' }}%)</span>
         </div>
       </div>
     </section>
 
-    <!-- 📊 Assets -->
+    <!-- Section displaying all assets in the portfolio -->
     <section class="assets-panel">
 
-      <!-- 🔹 Open Positions header with toggle -->
+      <!-- Header row for open positions, includes toggle for expand/collapse -->
       <div class="assets-header" (click)="openPositionsExpanded = !openPositionsExpanded" style="cursor: pointer;">
         <span>{{ openPositionsExpanded ? '▲' : '▼' }}</span>
         <h2>Open Positions</h2>
       </div>
 
-      <!-- 🔹 This wrapper ALWAYS shows when expanded -->
+      <!-- Content for open positions -->
       <div *ngIf="openPositionsExpanded">
 
-        <!-- ✅ Add Item button (always visible when expanded) -->
+        <!-- Button to open the add item form -->
         <div class="add-item-wrapper">
           <button class="add-btn" *ngIf="!showForm" (click)="showForm = true">+ Add Item</button>
         </div>
 
-        <!-- ✅ Form for adding assets -->
+        <!-- Form for adding or editing an asset -->
         <div *ngIf="showForm">
-          <app-portfolio-item-form [portfolioId]="portfolio.id" [itemToEdit]="itemBeingEdited" [editMode]="isEditMode"
-            (created)="onItemCreated($event)" (updated)="onItemUpdated($event)" (cancel)="onCancel()">
+          <app-portfolio-item-form
+            [portfolioId]="portfolio.id"
+            [itemToEdit]="itemBeingEdited"
+            [editMode]="isEditMode"
+            (created)="onItemCreated($event)"
+            (updated)="onItemUpdated($event)"
+            (cancel)="onCancel()">
           </app-portfolio-item-form>
         </div>
 
-        <!-- ✅ Table of open assets -->
+        <!-- Table displaying all open (unsold) assets -->
         <table *ngIf="summary.byAsset.length > 0">
           <thead>
             <tr>
@@ -125,17 +152,19 @@
           </tbody>
         </table>
 
-        <!-- 🧠 Friendly fallback message if no assets -->
+        <!-- Message when no open assets exist -->
         <div *ngIf="summary?.byAsset?.length === 0 && !showForm" class="no-assets-placeholder">
           No open positions yet. Click "+ Add Item" to get started.
         </div>
       </div>
-      <!-- 🔹 Completed Trades -->
+
+      <!-- Header row for completed (sold) positions -->
       <div class="assets-header" (click)="completedTradesExpanded = !completedTradesExpanded" style="cursor: pointer;">
         <span>{{ completedTradesExpanded ? '▲' : '▼' }}</span>
         <h2>Completed Positions</h2>
       </div>
 
+      <!-- Table showing completed trades (sold assets) -->
       <table *ngIf="summary.byAsset.length > 0 && completedTradesExpanded">
         <thead>
           <tr>
@@ -172,7 +201,7 @@
         </tbody>
       </table>
 
-      <!-- 🔥 Sell Modal -->
+      <!-- Modal for selling an asset (provides exit price and date) -->
       <div *ngIf="sellMode" class="modal-overlay">
         <div class="modal-content">
           <h3>Sell {{ itemToSell.ticker }}</h3>
@@ -184,13 +213,15 @@
           <input id="exitDate" type="date" [(ngModel)]="itemToSell.exitDate" name="exitDate">
 
           <div class="button-row">
-            <button (click)="confirmSell()" [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">Confirm
-              Sell</button>
+            <button (click)="confirmSell()" [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
+              Confirm Sell
+            </button>
             <button (click)="cancelSell()">Cancel</button>
           </div>
         </div>
       </div>
-      <!-- 📝 Edit Completed Trade Modal -->
+
+      <!-- Modal for editing the sale details of a sold asset -->
       <div *ngIf="editSellMode" class="modal-overlay">
         <div class="modal-content">
           <h3>Edit Sale for {{ itemToEditSell.ticker }}</h3>

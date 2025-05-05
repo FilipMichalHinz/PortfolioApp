@@ -4,9 +4,11 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioItemService } from '../services/portfolio-item.service';
 import { YahooFinanceService } from '../services/yahoo-finance.service';
+
 import { Portfolio } from '../model/portfolio';
 import { PortfolioItem } from '../model/portfolio-item';
 import { PortfolioSummary } from '../model/portfolio-summary';
@@ -19,7 +21,7 @@ import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-ite
     CommonModule,
     RouterModule,
     FormsModule,
-    NgxChartsModule,
+    NgxChartsModule, // For pie charts (allocation visualization)
     PortfolioItemFormComponent
   ],
   templateUrl: './portfolio-detail.component.html',
@@ -27,7 +29,10 @@ import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-ite
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PortfolioDetailComponent implements OnInit {
+  // Current portfolio being viewed
   portfolio!: Portfolio;
+
+  // Aggregated summary data for this portfolio
   summary: PortfolioSummary = {
     portfolioId: 0,
     byAsset: [],
@@ -43,6 +48,7 @@ export class PortfolioDetailComponent implements OnInit {
   completedTradesExpanded = true;
   sellMode = false;
 
+  // Aggregated values for current profit stats
   totalFinalizedProfit = 0;
   totalFinalizedReturnPercent = 0;
   totalOpenProfit = 0;
@@ -54,6 +60,7 @@ export class PortfolioDetailComponent implements OnInit {
   editSellMode = false;
   itemToEditSell!: PortfolioItem;
 
+  // Pie chart data for allocation visualization
   allocationPieData: { name: string, value: number }[] = [];
   colorScheme = 'cool';
 
@@ -68,6 +75,7 @@ export class PortfolioDetailComponent implements OnInit {
     private router: Router
   ) {}
 
+  // Initialization: check login, load portfolio + summary
   ngOnInit(): void {
     const token = localStorage.getItem('headerValue');
     if (!token) {
@@ -82,6 +90,7 @@ export class PortfolioDetailComponent implements OnInit {
       this.showForm = false;
       this.isLoading = true;
 
+      // Load portfolio data
       this.portfolioSvc.getPortfolio(id).subscribe({
         next: p => {
           this.portfolio = p;
@@ -93,6 +102,7 @@ export class PortfolioDetailComponent implements OnInit {
         }
       });
 
+      // Load summary (aggregate info by asset)
       this.itemSvc.getSummary(id).subscribe({
         next: sum => {
           this.applySummary(id, sum);
@@ -106,6 +116,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
+  // Store summary and fetch asset names
   private applySummary(id: number, sum: PortfolioSummary | null): void {
     this.summary = sum ?? {
       portfolioId: id,
@@ -115,13 +126,15 @@ export class PortfolioDetailComponent implements OnInit {
       totalProfitLoss: 0,
       changePercent: 0
     };
-    this.fetchNames();
+    this.fetchNames(); // Resolve asset names from tickers
   }
 
+  // Toggle loading spinner once both portfolio and summary are loaded
   private checkLoadingFinished(): void {
     this.isLoading = !(this.portfolio && this.summary);
   }
 
+  // Reload only the summary part (e.g. after changes)
   private loadSummary(id: number): void {
     this.isLoading = true;
     this.itemSvc.getSummary(id).subscribe({
@@ -133,6 +146,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
+  // Resolve ticker names using YahooFinanceService
   private fetchNames(): void {
     if (!this.summary.byAsset?.length) {
       this.calculateProfitMetrics();
@@ -174,6 +188,7 @@ export class PortfolioDetailComponent implements OnInit {
     }
   }
 
+  // Calculate open and finalized profits and total return percentages
   private calculateProfitMetrics(): void {
     const openAssets = this.summary.byAsset.filter(a => !a.isSold);
     const finalizedAssets = this.summary.byAsset.filter(a => a.isSold);
@@ -207,6 +222,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.summary.currentValue = openCurrentValue;
   }
 
+  // Build pie chart data grouped by asset label
   private prepareAllocationPie(): void {
     const openAssets = this.summary.byAsset.filter(a => !a.isSold);
     const grouped: { [key: string]: number } = {};
@@ -225,6 +241,7 @@ export class PortfolioDetailComponent implements OnInit {
     }));
   }
 
+  // Callback when a new portfolio item is created
   onItemCreated(item: PortfolioItem): void {
     this.showForm = false;
     this.loadSummary(this.portfolio.id);
@@ -234,6 +251,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.showForm = false;
   }
 
+  // Starts the "sell asset" process
   startSell(asset: any): void {
     this.sellMode = true;
     this.itemToSell = {
@@ -249,6 +267,7 @@ export class PortfolioDetailComponent implements OnInit {
     };
   }
 
+  // Confirm asset sale (validates input, then calls service)
   confirmSell(): void {
     if (this.itemToSell.exitPrice == null || this.itemToSell.exitPrice <= 0) {
       alert('Please enter a valid Exit Price!');
@@ -281,6 +300,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.sellMode = false;
   }
 
+  // Delete a single asset after confirmation
   deleteItem(id: number): void {
     if (!confirm('Are you sure you want to delete this asset?')) return;
 
@@ -293,6 +313,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
+  // Open form to edit an asset
   startEdit(asset: any): void {
     this.itemBeingEdited = {
       id: asset.id,
@@ -309,6 +330,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.showForm = true;
   }
 
+  // Callback after item was edited
   onItemUpdated(updatedItem: PortfolioItem): void {
     this.showForm = false;
     this.loadSummary(this.portfolio.id);
@@ -316,11 +338,13 @@ export class PortfolioDetailComponent implements OnInit {
     this.itemBeingEdited = null;
   }
 
+  // Open edit-sell dialog
   editSell(asset: PortfolioItem): void {
     this.editSellMode = true;
     this.itemToEditSell = { ...asset };
   }
 
+  // Confirm edit of sell data
   confirmSellEdit(): void {
     const req = {
       id: this.itemToEditSell.id,

@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PortfolioItem } from '../model/portfolio-item';
 import { PortfolioItemService } from '../services/portfolio-item.service';
-
-import { YahooFinanceService } from '../services/yahoo-finance.service'; // 🆕 Import YahooFinanceService
+import { YahooFinanceService } from '../services/yahoo-finance.service';
 
 @Component({
   selector: 'app-portfolio-item-form',
@@ -14,39 +13,49 @@ import { YahooFinanceService } from '../services/yahoo-finance.service'; // 🆕
   styleUrls: ['./portfolio-item-form.component.css']
 })
 export class PortfolioItemFormComponent implements OnInit {
-  @Input() portfolioId!: number; // required to associate item with portfolio
+  // Input: ID of the portfolio the item belongs to
+  @Input() portfolioId!: number;
+
+  // Input: existing item data for editing (optional)
   @Input() itemToEdit: PortfolioItem | null = null;
-  @Input() editMode: boolean = false; // true if editing an existing item
-  @Output() created = new EventEmitter<PortfolioItem>(); // emit after creation
-  @Output() cancel = new EventEmitter<void>(); // emit when cancel button clicked
-  @Output() updated = new EventEmitter<PortfolioItem>(); // emit when item is updated
 
-  s: [] = [];
+  // Input: whether the form is in edit mode or create mode
+  @Input() editMode: boolean = false;
 
+  // Output: emit newly created item to parent
+  @Output() created = new EventEmitter<PortfolioItem>();
+
+  // Output: notify parent when form is cancelled
+  @Output() cancel = new EventEmitter<void>();
+
+  // Output: emit updated item to parent after edit
+  @Output() updated = new EventEmitter<PortfolioItem>();
+
+  // Local model for the form inputs
   item: PortfolioItem = {
     id: 0,
     portfolioId: 0,
-    //Id: 0,
     name: '',
     ticker: '',
     purchasePrice: 0,
     quantity: 0,
-    purchaseDate: '' // e.g., '2024-04-26'
+    purchaseDate: ''
   };
 
   constructor(
     private portfolioItemService: PortfolioItemService,
-    // private Service: Service,
-    private yahooService: YahooFinanceService // 🆕 Inject YahooFinanceService
+    private yahooService: YahooFinanceService
   ) {}
 
   ngOnInit(): void {
+    // Pre-fill the form if in edit mode
     if (this.editMode && this.itemToEdit) {
       this.item = {
         ...this.itemToEdit,
-        portfolioId: this.portfolioId  // ✅ Ensures this is not lost
+        portfolioId: this.portfolioId // ensure correct association
       };
     } else {
+      // Set defaults for a new item
       this.item = {
         id: 0,
         portfolioId: this.portfolioId,
@@ -59,49 +68,47 @@ export class PortfolioItemFormComponent implements OnInit {
     }
   }
 
- 
-
-  // 🔹 Called when user finishes typing Ticker
+  // Called when the user finishes entering a ticker symbol
   onTickerEntered(): void {
     const ticker = this.item.ticker;
-  
-  
+
     if (!ticker) {
-      // 🧠 If user deleted the ticker, clear the name immediately
+      // Clear name if ticker was removed
       this.item.name = '';
       return;
     }
-  
-    // 🧠 If ticker exists, fetch name normally
+
+    // Use YahooFinanceService to fetch the asset name for the ticker
     this.yahooService.getTickerInfo(ticker).subscribe({
       next: (data) => {
         this.item.name = data.name;
       },
       error: (err) => {
         console.error('Failed to fetch ticker info', err);
-        this.item.name = 'Unknown'; // fallback if error
+        this.item.name = 'Unknown';
       }
     });
   }
+
+  // Normalizes ticker input as the user types
   onTickerChange(value: string): void {
-    // Normalize to uppercase and trim spaces
     this.item.ticker = value.toUpperCase().trim();
   }
 
-  // 🔹 Called when the form is submitted
+  // Called when form is submitted (create or update)
   create(): void {
+    // Basic form validation
     if (!this.item.ticker || !this.item.name || 
         this.item.purchasePrice <= 0 || this.item.quantity <= 0 || !this.item.purchaseDate) {
       alert('Please fill in all required fields correctly.');
       return;
     }
-  
+
     if (this.editMode) {
-      // ✅ Send update to backend
+      // Update existing item
       this.portfolioItemService.update(this.item).subscribe({
         next: (updatedItem: PortfolioItem) => {
-          console.log('Updated:', updatedItem);
-          this.updated.emit(updatedItem);  // 📤 Emit updated item to parent
+          this.updated.emit(updatedItem); // notify parent
           this.resetForm();
         },
         error: (err: any) => {
@@ -111,29 +118,28 @@ export class PortfolioItemFormComponent implements OnInit {
       });
       return;
     }
-  
-    // ✅ Create if not in edit mode
+
+    // Create new item
     this.portfolioItemService.create(this.item).subscribe({
       next: (createdItem: PortfolioItem) => {
-        this.created.emit(createdItem);
+        this.created.emit(createdItem); // notify parent
         this.resetForm();
       },
       error: err => console.error('Failed to create portfolio item', err)
     });
   }
 
-  // 🔹 Called when the cancel button is clicked
+  // Triggered when cancel is clicked
   onCancel(): void {
     this.cancel.emit();
     this.resetForm();
   }
 
-  // 🔹 Clears the form for re-use
+  // Resets the internal form model
   private resetForm(): void {
     this.item = {
       id: 0,
       portfolioId: this.portfolioId,
-      //Id: 0,
       name: '',
       ticker: '',
       purchasePrice: 0,

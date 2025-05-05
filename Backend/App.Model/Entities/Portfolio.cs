@@ -15,6 +15,5 @@ namespace App.Model.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-
     }
 }

@@ -1,22 +1,26 @@
+<!-- Container for login form styling -->
 <div class="login-container">
-    <h2>Login</h2>
-  
-    <div>
-      <label for="username">Username</label><br>
-      <input id="username" type="text" [(ngModel)]="username" />
-    </div>
-  
-    <div>
-      <label for="password">Password</label><br>
-      <input id="password" type="password" [(ngModel)]="password" />
-    </div>
-  
-    <div style="margin-top: 1rem;">
-      <button type="button" (click)="login()">Login</button>
-    </div>
-  
-    <div *ngIf="loginFailed" style="color: red; margin-top: 0.5rem;">
-      Login failed: Invalid username or password!
-    </div>
+  <h2>Login</h2>
+
+  <!-- Username input field bound to 'username' property in the component -->
+  <div>
+    <label for="username">Username</label><br>
+    <input id="username" type="text" [(ngModel)]="username" />
   </div>
-  
+
+  <!-- Password input field bound to 'password' property in the component -->
+  <div>
+    <label for="password">Password</label><br>
+    <input id="password" type="password" [(ngModel)]="password" />
+  </div>
+
+  <!-- Login button triggers the login() method when clicked -->
+  <div style="margin-top: 1rem;">
+    <button type="button" (click)="login()">Login</button>
+  </div>
+
+  <!-- Error message shown only when login has failed -->
+  <div *ngIf="loginFailed" style="color: red; margin-top: 0.5rem;">
+    Login failed: Invalid username or password!
+  </div>
+</div>

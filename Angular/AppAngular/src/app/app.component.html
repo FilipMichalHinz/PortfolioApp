@@ -338,19 +338,27 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
 
+<!-- Header: Only visible when user is logged in and not on the login page -->
 <header *ngIf="isLoggedIn && !isLoginPage">
   <h1>Portfolio Management App</h1>
   <p>Manage users, assets, and portfolios efficiently</p>
 </header>
 
+<!-- Navigation menu: Shown only when logged in and not on the login page -->
 <nav *ngIf="isLoggedIn && !isLoginPage">
   <ul>
+    <!-- Link to portfolio list view -->
     <li><a routerLink="/portfolio-list" routerLinkActive="active">📋 Portfolio overview</a></li>
+
+    <!-- Link placeholder for watchlist (should likely be updated to an actual route) -->
     <li><a routerLink="" routerLinkActive="active">📊 Watchlist</a></li>
+
+    <!-- Logout link triggers the logout() method in the component -->
     <li><a href="#" (click)="logout()">🚪 Logout</a></li>
   </ul>
 </nav>
 
+<!-- Main content: dynamically filled by routed components -->
 <main>
   <router-outlet></router-outlet>
 </main>

@@ -1,5 +1,4 @@
-
-// We use different class from Portfolio, as most of these properties are not found in the database
+// We use different class, as most of these properties are not found in the database
 namespace App.Model.Entities
 {
     public class PortfolioOverview
@@ -10,6 +9,6 @@ namespace App.Model.Entities
         public decimal CurrentValue { get; set; }        
         public decimal TotalProfitLoss { get; set; }     
         public decimal ChangePercent { get; set; }       
-        public int AssetCount { get; set; }     // how many assets are in the portfolio         
+        public int AssetCount { get; set; }     // Number of assets in the portfolio       
     }
 }

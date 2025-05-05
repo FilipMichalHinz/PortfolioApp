@@ -1,14 +1,30 @@
+<!-- Container for the entire form and toggle button -->
 <div class="form-container">
-  <button (click)="toggleForm()" *ngIf="!showForm">+ Add portfolio</button>
 
+  <!-- Button to show the form, only visible when form is hidden -->
+  <button (click)="toggleForm()" *ngIf="!showForm">
+    + Add portfolio
+  </button>
+
+  <!-- Form for entering a new portfolio name -->
   <form *ngIf="showForm" (ngSubmit)="onSubmit()" #form="ngForm">
+    
+    <!-- Input field for the portfolio name -->
     <div class="form-group">
       <label>Portfolio Name</label>
-      <input [(ngModel)]="newPortfolio.portfolioName" name="portfolioName" required />
+      <input
+        [(ngModel)]="newPortfolio.portfolioName"
+        name="portfolioName"
+        required
+      />
     </div>
 
+    <!-- Form buttons: submit and cancel -->
     <div class="buttons">
+      <!-- Submits the form (calls onSubmit()) -->
       <button type="submit">Create</button>
+
+      <!-- Cancels the form input and hides the form -->
       <button type="button" class="cancel" (click)="cancel()">Cancel</button>
     </div>
   </form>

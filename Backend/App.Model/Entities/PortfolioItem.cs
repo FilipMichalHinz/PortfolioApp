@@ -13,8 +13,6 @@ namespace App.Model.Entities
 
         public int PortfolioId { get; set; }
 
-        // public int Id { get; set; }
-
         public string Name { get; set; } // Example: "Tesla", "Apple", "Google"
 
         public string Ticker { get; set; } // Example: "TSLA", "AAPL", "GOOGL"

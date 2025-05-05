@@ -5,10 +5,13 @@ using NpgsqlTypes;
 
 namespace App.Model.Repositories
 {
+    // Repository class for performing CRUD operations on Portfolio entities
     public class PortfolioRepository : BaseRepository
     {
+        // Constructor receives configuration and passes it to the base repository
         public PortfolioRepository(IConfiguration configuration) : base(configuration) { }
 
+        // Retrieves a single Portfolio by its ID from the database
         public Portfolio GetPortfolioById(int id)
         {
             NpgsqlConnection dbConn = null;
@@ -22,6 +25,7 @@ namespace App.Model.Repositories
                 var data = GetData(dbConn, cmd);
                 if (data != null && data.Read())
                 {
+                    // Map the data to a Portfolio object
                     return new Portfolio(Convert.ToInt32(data["id"]))
                     {
                         PortfolioName = data["name"].ToString(),
@@ -32,10 +36,12 @@ namespace App.Model.Repositories
             }
             finally
             {
+                // Ensure the connection is always closed
                 dbConn?.Close();
             }
         }
 
+        // Retrieves a list of all portfolios from the database
         public List<Portfolio> GetPortfolios()
         {
             NpgsqlConnection dbConn = null;
@@ -50,6 +56,7 @@ namespace App.Model.Repositories
                 var data = GetData(dbConn, cmd);
                 if (data != null)
                 {
+                    // Iterate through each record and map to Portfolio objects
                     while (data.Read())
                     {
                         Portfolio portfolio = new Portfolio(Convert.ToInt32(data["id"]))
@@ -68,8 +75,9 @@ namespace App.Model.Repositories
             }
         }
 
-        // Add new Portfolio
-       public bool InsertPortfolio(Portfolio portfolio)
+        // Inserts a new portfolio into the database
+        // Returns true if successful and sets the generated ID back to the portfolio object
+        public bool InsertPortfolio(Portfolio portfolio)
         {
             NpgsqlConnection dbConn = null;
             try
@@ -79,16 +87,16 @@ namespace App.Model.Repositories
                 cmd.CommandText = @"
                     INSERT INTO portfolios (name, createdat) 
                     VALUES (@portfolioName, @createdAt)
-                    RETURNING id";
+                    RETURNING id"; // Returns the ID of the newly inserted row
 
                 cmd.Parameters.AddWithValue("@portfolioName", NpgsqlDbType.Text, portfolio.PortfolioName);
                 cmd.Parameters.AddWithValue("@createdAt", NpgsqlDbType.Timestamp, portfolio.CreatedAt.ToLocalTime());
 
                 dbConn.Open();
-                var result = cmd.ExecuteScalar();
+                var result = cmd.ExecuteScalar(); // Get the generated ID
                 if (result != null)
                 {
-                    portfolio.Id = Convert.ToInt32(result); // ← neue ID setzen
+                    portfolio.Id = Convert.ToInt32(result);
                     return true;
                 }
                 return false;
@@ -99,6 +107,7 @@ namespace App.Model.Repositories
             }
         }
 
+        // Updates an existing portfolio's name based on its ID
         public bool UpdatePortfolio(Portfolio portfolio)
         {
             NpgsqlConnection dbConn = null;
@@ -109,7 +118,6 @@ namespace App.Model.Repositories
                 cmd.CommandText = @"
                     UPDATE portfolios SET 
                         name = @portfolioName
-                        
                     WHERE id = @id";
 
                 cmd.Parameters.AddWithValue("@portfolioName", NpgsqlDbType.Text, portfolio.PortfolioName);
@@ -123,6 +131,7 @@ namespace App.Model.Repositories
             }
         }
 
+        // Deletes a portfolio by its ID
         public bool DeletePortfolio(int id)
         {
             NpgsqlConnection dbConn = null;

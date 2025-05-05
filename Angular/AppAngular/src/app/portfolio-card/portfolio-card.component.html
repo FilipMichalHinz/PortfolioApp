@@ -1,52 +1,57 @@
+<!-- Wrapper for a single portfolio card -->
 <div class="portfolio-card">
-    <div class="header">{{ portfolio.portfolioName }}</div>
-  
-    <div class="metrics">
-      <!-- Total value (current value) -->
-      <div class="metric">
-        <span class="icon">💰</span>
-        <div>
-          <div class="label">Total value</div>
-          <div class="value">
-            {{ portfolio.currentValue | currency }}
-          </div>
-        </div>
-      </div>
-  
-      <!-- Asset count -->
-      <div class="metric">
-        <span class="icon">🏦</span>
-        <div>
-          <div class="label">Assets</div>
-          <div class="value">
-            {{ portfolio.assetCount }}
-          </div>
-        </div>
-      </div>
-  
-      <!-- Profit/Loss -->
-      <div class="metric">
-        <span class="icon">📈</span>
-        <div>
-          <div class="label">Profit/Loss</div>
-          <div
-            class="value"
-            [class.negative]="portfolio.totalProfitLoss < 0"
-            [class.positive]="portfolio.totalProfitLoss >= 0"
-          >
-            {{ portfolio.totalProfitLoss | currency }}
-            <span class="percent">
-              ({{ portfolio.changePercent | number:'1.0-0' }}%)
-            </span>
-          </div>
+  <!-- Portfolio name as card header -->
+  <div class="header">{{ portfolio.portfolioName }}</div>
+
+  <!-- Section with key financial metrics -->
+  <div class="metrics">
+    
+    <!-- Total current value of the portfolio -->
+    <div class="metric">
+      <span class="icon">💰</span>
+      <div>
+        <div class="label">Total value</div>
+        <div class="value">
+          {{ portfolio.currentValue | currency }} <!-- Formats value as currency -->
         </div>
       </div>
     </div>
-  
-    <div class="actions">
-      <button (click)="confirmDelete($event)">
-        Delete
-      </button>
+
+    <!-- Number of assets in the portfolio -->
+    <div class="metric">
+      <span class="icon">🏦</span>
+      <div>
+        <div class="label">Assets</div>
+        <div class="value">
+          {{ portfolio.assetCount }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Total profit or loss -->
+    <div class="metric">
+      <span class="icon">📈</span>
+      <div>
+        <div class="label">Profit/Loss</div>
+        <div
+          class="value"
+          [class.negative]="portfolio.totalProfitLoss < 0"   <!-- Apply red style if loss -->
+          [class.positive]="portfolio.totalProfitLoss >= 0" <!-- Apply green style if gain -->
+        >
+          {{ portfolio.totalProfitLoss | currency }}
+          <span class="percent">
+            ({{ portfolio.changePercent | number:'1.0-0' }}%) <!-- Rounded percent -->
+          </span>
+        </div>
+      </div>
     </div>
   </div>
-  
+
+  <!-- Action buttons section -->
+  <div class="actions">
+    <!-- Delete button triggers confirmDelete() in component -->
+    <button (click)="confirmDelete($event)">
+      Delete
+    </button>
+  </div>
+</div>

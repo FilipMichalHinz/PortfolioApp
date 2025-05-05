@@ -1,42 +1,56 @@
-<!-- src/app/portfolio-list/portfolio-list.component.html -->
-<!-- 🔝 Global Portfolio Summary -->
+<!-- Global summary section: displays aggregate values across all portfolios -->
 <div class="global-summary">
+  <!-- Number of portfolios -->
   <div class="summary-card">
     <div class="label">Total Portfolios</div>
     <div class="value">{{ totalPortfolioCount }}</div>
   </div>
+
+  <!-- Combined current value of all portfolios -->
   <div class="summary-card">
     <div class="label">Total Value</div>
     <div class="value">{{ totalPortfolioValue | currency }}</div>
   </div>
+
+  <!-- Combined profit/loss across all portfolios -->
+  <!-- Styled conditionally based on positive or negative value -->
   <div class="summary-card">
     <div class="label">Total P/L</div>
-    <div class="value" [class.positive]="totalProfitLoss >= 0" [class.negative]="totalProfitLoss < 0">
+    <div
+      class="value"
+      [class.positive]="totalProfitLoss >= 0"
+      [class.negative]="totalProfitLoss < 0">
       {{ totalProfitLoss | currency }}
     </div>
   </div>
 </div>
+
+<!-- Loading indicator shown while portfolio data is being fetched -->
 <div *ngIf="isLoading" class="loading">
   Loading portfolios...
 </div>
 
+<!-- Message shown when no portfolios exist -->
 <div *ngIf="!isLoading && portfolios.length === 0" class="empty">
   No portfolios found.
 </div>
 
+<!-- Portfolio list display -->
+<!-- Each portfolio is shown using a reusable card component inside a link -->
 <div *ngIf="!isLoading && portfolios.length > 0" class="portfolio-list">
   <a
     *ngFor="let p of portfolios"
     [routerLink]="['/portfolio', p.id]"
-    class="card-link"
-  >
-  <app-portfolio-card
+    class="card-link">
     
-    [portfolio]="p"
-    (deleted)="onPortfolioDeleted($event)"
-  ></app-portfolio-card>
+    <!-- Portfolio card displays name, value, metrics, and delete option -->
+    <app-portfolio-card
+      [portfolio]="p"
+      (deleted)="onPortfolioDeleted($event)">
+    </app-portfolio-card>
   </a>
 </div>
-<!-- Always show the "Add portfolio" form below -->
-<app-portfolio-form (created)="onPortfolioCreated($event)"></app-portfolio-form>
 
+<!-- Always render the form to add a new portfolio -->
+<!-- Emits 'created' event when a new portfolio is submitted -->
+<app-portfolio-form (created)="onPortfolioCreated($event)"></app-portfolio-form>

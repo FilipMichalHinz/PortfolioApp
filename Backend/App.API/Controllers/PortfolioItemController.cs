@@ -5,10 +5,12 @@ using YahooFinanceApi;
 
 namespace App.API.Controllers
 {
+    // API route: api/portfolioitem
     [Route("api/[controller]")]
     [ApiController]
     public class PortfolioItemController : ControllerBase
     {
+        // Repository for accessing and modifying portfolio items
         protected PortfolioItemRepository Repository { get; }
 
         public PortfolioItemController(PortfolioItemRepository repository)
@@ -16,7 +18,8 @@ namespace App.API.Controllers
             Repository = repository;
         }
 
-        // Get all portfolio items for a specific portfolio
+        // GET: api/portfolioitem/portfolios/{portfolioId}
+        // Returns all items belonging to a specific portfolio
         [HttpGet("portfolios/{portfolioId}")]
         public ActionResult<IEnumerable<PortfolioItem>> GetByUser([FromRoute] int portfolioId)
         {
@@ -24,24 +27,24 @@ namespace App.API.Controllers
             return Ok(items);
         }
 
-        // Add a new portfolio item
+        // POST: api/portfolioitem
+        // Inserts a new portfolio item into the database
         [HttpPost]
         public ActionResult Post([FromBody] PortfolioItem item)
         {
             if (item == null)
-
                 return BadRequest("PortfolioItem info not correct");
-
 
             bool ok = Repository.InsertPortfolioItem(item);
             if (ok)
             {
-                return Ok(item); // returns full object
+                return Ok(item); // Return the inserted object
             }
             return BadRequest("Unable to insert portfolio item");
         }
 
-        // Delete a portfolio item by ID
+        // DELETE: api/portfolioitem/{id}
+        // Deletes a portfolio item by ID
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
@@ -53,7 +56,8 @@ namespace App.API.Controllers
             return BadRequest($"Unable to delete portfolio item with id {id}");
         }
 
-        // Get value of a single portfolio item using Yahoo Finance
+        // GET: api/portfolioitem/value?ticker=AAPL
+        // Returns current value of a single asset using Yahoo Finance
         [HttpGet("value")]
         public async Task<ActionResult> GetValue([FromQuery] string ticker)
         {
@@ -102,7 +106,8 @@ namespace App.API.Controllers
             }
         }
 
-        // Get summary of the entire portfolio
+        // GET: api/portfolioitem/summary/{portfolioId}
+        // Returns a detailed summary of all assets in a portfolio including live prices and gains/losses
         [HttpGet("summary/{portfolioId}")]
         public async Task<IActionResult> GetPortfolioSummary(int portfolioId)
         {
@@ -134,15 +139,15 @@ namespace App.API.Controllers
 
                 if (item.IsSold)
                 {
-                    // 🔥 Sold asset → lock values
+                    // Sold asset → use recorded exit price
                     currentPrice = item.ExitPrice ?? 0;
-                    currentValue = (item.ExitPrice ?? 0) * item.Quantity;
+                    currentValue = currentPrice * item.Quantity;
                     profitLoss = currentValue - initialInvestment;
                     changePercent = initialInvestment == 0 ? 0 : (profitLoss / initialInvestment) * 100;
                 }
                 else
                 {
-                    // 🔥 Open asset → live price
+                    // Open asset → use live market price
                     if (!prices.ContainsKey(item.Ticker)) continue;
 
                     currentPrice = (decimal)prices[item.Ticker][Field.RegularMarketPrice];
@@ -184,7 +189,9 @@ namespace App.API.Controllers
                 ByAsset = summaryList
             });
         }
-        // 🔹 Update a portfolio item
+
+        // PUT: api/portfolioitem/update
+        // Updates basic details of a portfolio item
         [HttpPut("update")]
         public ActionResult UpdateItem([FromBody] PortfolioItem item)
         {
@@ -195,7 +202,9 @@ namespace App.API.Controllers
 
             return ok ? Ok(item) : BadRequest("Update failed");
         }
-        // 🔹 Sell a portfolio item
+
+        // PUT: api/portfolioitem/sell
+        // Marks a portfolio item as sold, including exit price and date
         [HttpPut("sell")]
         public ActionResult SellPortfolioItem([FromBody] SellAssetRequest request)
         {
@@ -206,6 +215,7 @@ namespace App.API.Controllers
             if (item == null)
                 return NotFound($"Portfolio item with ID {request.Id} not found.");
 
+            // Set sale information
             item.ExitPrice = request.ExitPrice;
             item.ExitDate = request.ExitDate;
             item.IsSold = true;
@@ -216,16 +226,13 @@ namespace App.API.Controllers
             else
                 return BadRequest("Failed to mark portfolio item as sold.");
         }
-
     }
-
 }
-// 🔹 New helper class outside of controller
+
+// DTO for marking an asset as sold
 public class SellAssetRequest
 {
     public int Id { get; set; }
     public decimal ExitPrice { get; set; }
     public DateTime ExitDate { get; set; }
 }
-
-

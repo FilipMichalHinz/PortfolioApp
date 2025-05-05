@@ -5,10 +5,13 @@ using NpgsqlTypes;
 
 namespace App.Model.Repositories
 {
+    // Repository class responsible for CRUD operations on the 'watchlist' table
     public class WatchlistRepository : BaseRepository
     {
+        // Constructor passes the configuration to the base repository
         public WatchlistRepository(IConfiguration configuration) : base(configuration) { }
 
+        // Retrieves all watchlist items associated with a specific portfolio
         public List<Watchlist> GetWatchlistByPortfolio(int portfolioId)
         {
             NpgsqlConnection dbConn = null;
@@ -26,6 +29,7 @@ namespace App.Model.Repositories
                 {
                     while (data.Read())
                     {
+                        // Map each row from the result to a Watchlist object
                         Watchlist item = new Watchlist(Convert.ToInt32(data["id"]))
                         {
                             PortfolioId = Convert.ToInt32(data["portfolioid"]),
@@ -39,11 +43,11 @@ namespace App.Model.Repositories
             }
             finally
             {
-                dbConn?.Close();
+                dbConn?.Close(); // Ensure the database connection is closed
             }
         }
 
-        // Add new Watchlist item
+        // Inserts a new item into the watchlist table
         public bool InsertWatchlistItem(Watchlist item)
         {
             NpgsqlConnection dbConn = null;
@@ -61,6 +65,7 @@ namespace App.Model.Repositories
                 cmd.Parameters.AddWithValue("@assetName", NpgsqlDbType.Text, item.AssetName);
                 cmd.Parameters.AddWithValue("@targetPrice", NpgsqlDbType.Numeric, item.TargetPrice);
 
+                // Use base method to execute insert command
                 bool result = InsertData(dbConn, cmd);
                 return result;
             }
@@ -70,6 +75,7 @@ namespace App.Model.Repositories
             }
         }
 
+        // Deletes a watchlist item by its unique ID
         public bool DeleteWatchlistItem(int id)
         {
             NpgsqlConnection dbConn = null;
@@ -80,6 +86,7 @@ namespace App.Model.Repositories
                 cmd.CommandText = "DELETE FROM watchlist WHERE id = @id";
                 cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
 
+                // Use base method to execute delete command
                 bool result = DeleteData(dbConn, cmd);
                 return result;
             }
