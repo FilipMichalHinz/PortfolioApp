@@ -212,7 +212,7 @@ export class PortfolioDetailComponent implements OnInit {
     const grouped: { [key: string]: number } = {};
 
     for (const asset of openAssets) {
-      const label = asset.name || asset.ticker;
+      const label = asset.ticker || asset.ticker;
       if (!grouped[label]) {
         grouped[label] = 0;
       }
