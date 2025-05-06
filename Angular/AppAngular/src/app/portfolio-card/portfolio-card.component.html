@@ -33,10 +33,11 @@
       <span class="icon">📈</span>
       <div>
         <div class="label">Profit/Loss</div>
+        <!-- Apply red style if loss, green if gain -->
         <div
           class="value"
-          [class.negative]="portfolio.totalProfitLoss < 0"   <!-- Apply red style if loss -->
-          [class.positive]="portfolio.totalProfitLoss >= 0" <!-- Apply green style if gain -->
+          [class.negative]="portfolio.totalProfitLoss < 0"
+          [class.positive]="portfolio.totalProfitLoss >= 0"
         >
           {{ portfolio.totalProfitLoss | currency }}
           <span class="percent">
