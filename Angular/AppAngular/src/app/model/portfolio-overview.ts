@@ -1,6 +1,6 @@
 export interface PortfolioOverview {
   id: number;
-  portfolioName: string;
+  name: string;
   initialInvestment: number;
   currentValue: number;
   totalProfitLoss: number;

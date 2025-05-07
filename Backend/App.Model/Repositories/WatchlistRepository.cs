@@ -8,92 +8,86 @@ namespace App.Model.Repositories
     // Repository class responsible for CRUD operations on the 'watchlist' table
     public class WatchlistRepository : BaseRepository
     {
-        // Constructor passes the configuration to the base repository
         public WatchlistRepository(IConfiguration configuration) : base(configuration) { }
 
-        // Retrieves all watchlist items associated with a specific portfolio
-        public List<Watchlist> GetWatchlistByPortfolio(int portfolioId)
+        // Retrieves all watchlist items for a specific user
+        public List<Watchlist> GetWatchlistByUser(int userId)
         {
-            NpgsqlConnection dbConn = null;
             var watchlist = new List<Watchlist>();
+            using var dbConn = new NpgsqlConnection(ConnectionString);
+            dbConn.Open();
 
-            try
+            var cmd = dbConn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM watchlists WHERE userid = @userId";
+            cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userId);
+
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM watchlist WHERE portfolioid = @portfolioId";
-                cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, portfolioId);
-
-                var data = GetData(dbConn, cmd);
-                if (data != null)
+                Watchlist item = new Watchlist(Convert.ToInt32(reader["id"]))
                 {
-                    while (data.Read())
-                    {
-                        // Map each row from the result to a Watchlist object
-                        Watchlist item = new Watchlist(Convert.ToInt32(data["id"]))
-                        {
-                            PortfolioId = Convert.ToInt32(data["portfolioid"]),
-                            AssetName = data["assetname"].ToString(),
-                            TargetPrice = Convert.ToDecimal(data["targetprice"])
-                        };
-                        watchlist.Add(item);
-                    }
-                }
-                return watchlist;
+                    UserId = Convert.ToInt32(reader["userid"]),
+                    AssetName = reader["assetname"].ToString(),
+                    TargetPrice = Convert.ToDecimal(reader["targetprice"])
+                };
+                watchlist.Add(item);
             }
-            finally
-            {
-                dbConn?.Close(); // Ensure the database connection is closed
-            }
+
+            return watchlist;
         }
 
-        // Inserts a new item into the watchlist table
+        // Retrieves a single watchlist item by ID
+        public Watchlist? GetById(int id)
+        {
+            using var dbConn = new NpgsqlConnection(ConnectionString);
+            dbConn.Open();
+
+            var cmd = dbConn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM watchlists WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
+
+            var reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                return new Watchlist(Convert.ToInt32(reader["id"]))
+                {
+                    UserId = Convert.ToInt32(reader["userid"]),
+                    AssetName = reader["assetname"].ToString(),
+                    TargetPrice = Convert.ToDecimal(reader["targetprice"])
+                };
+            }
+
+            return null;
+        }
+
+        // Inserts a new watchlist item
         public bool InsertWatchlistItem(Watchlist item)
         {
-            NpgsqlConnection dbConn = null;
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT INTO watchlist 
-                    (portfolioid, assetname, targetprice) 
-                    VALUES 
-                    (@portfolioId, @assetName, @targetPrice)";
+            using var dbConn = new NpgsqlConnection(ConnectionString);
+            dbConn.Open();
 
-                cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, item.PortfolioId);
-                cmd.Parameters.AddWithValue("@assetName", NpgsqlDbType.Text, item.AssetName);
-                cmd.Parameters.AddWithValue("@targetPrice", NpgsqlDbType.Numeric, item.TargetPrice);
+            var cmd = dbConn.CreateCommand();
+            cmd.CommandText = @"
+                INSERT INTO watchlists (userid, assetname, targetprice) 
+                VALUES (@userId, @assetName, @targetPrice)";
+            cmd.Parameters.AddWithValue("@userId", item.UserId);
+            cmd.Parameters.AddWithValue("@assetName", item.AssetName);
+            cmd.Parameters.AddWithValue("@targetPrice", item.TargetPrice);
 
-                // Use base method to execute insert command
-                bool result = InsertData(dbConn, cmd);
-                return result;
-            }
-            finally
-            {
-                dbConn?.Close();
-            }
+            return cmd.ExecuteNonQuery() == 1;
         }
 
-        // Deletes a watchlist item by its unique ID
+        // Deletes a watchlist item by ID
         public bool DeleteWatchlistItem(int id)
         {
-            NpgsqlConnection dbConn = null;
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "DELETE FROM watchlist WHERE id = @id";
-                cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
+            using var dbConn = new NpgsqlConnection(ConnectionString);
+            dbConn.Open();
 
-                // Use base method to execute delete command
-                bool result = DeleteData(dbConn, cmd);
-                return result;
-            }
-            finally
-            {
-                dbConn?.Close();
-            }
+            var cmd = dbConn.CreateCommand();
+            cmd.CommandText = "DELETE FROM watchlists WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+
+            return cmd.ExecuteNonQuery() == 1;
         }
     }
 }

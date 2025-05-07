@@ -21,7 +21,7 @@ export class PortfolioFormComponent {
   // Object bound to the input fields in the form
   newPortfolio: Portfolio = {
     id: 0,
-    portfolioName: '',
+    name: '',
     createdAt: new Date()
   };
 
@@ -56,7 +56,7 @@ export class PortfolioFormComponent {
   resetForm() {
     this.newPortfolio = {
       id: 0,
-      portfolioName: '',
+      name: '',
       createdAt: new Date()
     };
   }
@@ -69,6 +69,6 @@ export class PortfolioFormComponent {
 
   // Returns true if the form input is valid (non-empty name)
   isValid(): boolean {
-    return this.newPortfolio.portfolioName.trim() !== '';
+    return this.newPortfolio.name.trim() !== '';
   }
 }

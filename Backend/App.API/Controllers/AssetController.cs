@@ -5,68 +5,81 @@ using YahooFinanceApi;
 
 namespace App.API.Controllers
 {
-    // API route: api/portfolioitem
     [Route("api/[controller]")]
     [ApiController]
-    public class PortfolioItemController : ControllerBase
+    public class AssetController : ControllerBase
     {
-        // Repository for accessing and modifying portfolio items
-        protected PortfolioItemRepository Repository { get; }
+        protected AssetRepository Repository { get; }
+        protected PortfolioRepository PortfolioRepository { get; }
 
-        public PortfolioItemController(PortfolioItemRepository repository)
+        public AssetController(AssetRepository repository, PortfolioRepository portfolioRepository)
         {
             Repository = repository;
+            PortfolioRepository = portfolioRepository;
         }
 
-        // GET: api/portfolioitem/portfolios/{portfolioId}
-        // Returns all items belonging to a specific portfolio
-        [HttpGet("portfolios/{portfolioId}")]
-        public ActionResult<IEnumerable<PortfolioItem>> GetByUser([FromRoute] int portfolioId)
+        private int GetAuthenticatedUserId()
         {
-            var items = Repository.getByPortfolio(portfolioId);
+            if (HttpContext.Items.TryGetValue("UserId", out var userIdObj) && userIdObj is int userId)
+                return userId;
+
+            throw new UnauthorizedAccessException("User is not authenticated.");
+        }
+
+        [HttpGet("portfolios/{portfolioId}")]
+        public ActionResult<IEnumerable<Asset>> GetByUser([FromRoute] int portfolioId)
+        {
+            var userId = GetAuthenticatedUserId();
+            var portfolio = PortfolioRepository.GetPortfolioById(portfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
+
+            var items = Repository.GetByPortfolio(portfolioId);
             return Ok(items);
         }
 
-        // POST: api/portfolioitem
-        // Inserts a new portfolio item into the database
         [HttpPost]
-        public ActionResult Post([FromBody] PortfolioItem item)
+        public ActionResult Post([FromBody] Asset item)
         {
             if (item == null)
-                return BadRequest("PortfolioItem info not correct");
+                return BadRequest("Asset info not correct");
 
-            bool ok = Repository.InsertPortfolioItem(item);
-            if (ok)
-            {
-                return Ok(item); // Return the inserted object
-            }
-            return BadRequest("Unable to insert portfolio item");
+            var userId = GetAuthenticatedUserId();
+            var portfolio = PortfolioRepository.GetPortfolioById(item.PortfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
+
+            bool ok = Repository.InsertAsset(item);
+            return ok ? Ok(item) : BadRequest("Unable to insert asset");
         }
 
-        // DELETE: api/portfolioitem/{id}
-        // Deletes a portfolio item by ID
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            bool status = Repository.delete(id);
-            if (status)
-            {
-                return NoContent();
-            }
-            return BadRequest($"Unable to delete portfolio item with id {id}");
+            var userId = GetAuthenticatedUserId();
+            var item = Repository.GetById(id);
+            if (item == null)
+                return NotFound();
+
+            var portfolio = PortfolioRepository.GetPortfolioById(item.PortfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
+
+            bool status = Repository.DeleteAsset(id);
+            return status ? NoContent() : BadRequest($"Unable to delete asset with id {id}");
         }
 
-        // GET: api/portfolioitem/value?ticker=AAPL
-        // Returns current value of a single asset using Yahoo Finance
         [HttpGet("value")]
         public async Task<ActionResult> GetValue([FromQuery] string ticker)
         {
-            PortfolioItem item = Repository.GetByTicker(ticker);
-
+            var item = Repository.GetByTicker(ticker);
             if (item == null)
-            {
-                return NotFound("Portfolio item not found.");
-            }
+                return NotFound("Asset not found.");
+
+            var userId = GetAuthenticatedUserId();
+            var portfolio = PortfolioRepository.GetPortfolioById(item.PortfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
 
             try
             {
@@ -76,9 +89,7 @@ namespace App.API.Controllers
                     .QueryAsync();
 
                 if (!data.ContainsKey(ticker))
-                {
                     return NotFound("Ticker not found on Yahoo.");
-                }
 
                 decimal currentPrice = (decimal)data[ticker][Field.RegularMarketPrice];
                 decimal quantity = item.Quantity;
@@ -100,25 +111,32 @@ namespace App.API.Controllers
                     ChangePercent = Math.Round(changePercent, 2)
                 });
             }
-            catch (Exception)
+            catch
             {
                 return StatusCode(500, "Error while fetching Yahoo data.");
             }
         }
 
-        // GET: api/portfolioitem/summary/{portfolioId}
-        // Returns a detailed summary of all assets in a portfolio including live prices and gains/losses
         [HttpGet("summary/{portfolioId}")]
         public async Task<IActionResult> GetPortfolioSummary(int portfolioId)
         {
-            var items = Repository.getByPortfolio(portfolioId);
+            var userId = GetAuthenticatedUserId();
+            var portfolio = PortfolioRepository.GetPortfolioById(portfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
+
+            var items = Repository.GetByPortfolio(portfolioId);
             if (items == null || !items.Any())
-            {
-                return NotFound("No portfolio items found for this portfolio.");
-            }
+                return Ok(new {
+                    PortfolioId = portfolioId,
+                    InitialInvestment = 0m,
+                    CurrentValue = 0m,
+                    TotalProfitLoss = 0m,
+                    ChangePercent = 0m,
+                    ByAsset = new List<object>()
+                });
 
             var tickers = items.Select(i => i.Ticker).Distinct().ToArray();
-
             var prices = await Yahoo
                 .Symbols(tickers)
                 .Fields(Field.RegularMarketPrice)
@@ -139,7 +157,6 @@ namespace App.API.Controllers
 
                 if (item.IsSold)
                 {
-                    // Sold asset → use recorded exit price
                     currentPrice = item.ExitPrice ?? 0;
                     currentValue = currentPrice * item.Quantity;
                     profitLoss = currentValue - initialInvestment;
@@ -147,7 +164,6 @@ namespace App.API.Controllers
                 }
                 else
                 {
-                    // Open asset → use live market price
                     if (!prices.ContainsKey(item.Ticker)) continue;
 
                     currentPrice = (decimal)prices[item.Ticker][Field.RegularMarketPrice];
@@ -190,49 +206,49 @@ namespace App.API.Controllers
             });
         }
 
-        // PUT: api/portfolioitem/update
-        // Updates basic details of a portfolio item
         [HttpPut("update")]
-        public ActionResult UpdateItem([FromBody] PortfolioItem item)
+        public ActionResult UpdateItem([FromBody] Asset item)
         {
             if (item == null)
-                return BadRequest("Invalid portfolio item");
+                return BadRequest("Invalid asset");
 
-            bool ok = Repository.UpdatePortfolioItemDetails(item);
+            var userId = GetAuthenticatedUserId();
+            var portfolio = PortfolioRepository.GetPortfolioById(item.PortfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
 
+            bool ok = Repository.UpdateAssetDetails(item);
             return ok ? Ok(item) : BadRequest("Update failed");
         }
 
-        // PUT: api/portfolioitem/sell
-        // Marks a portfolio item as sold, including exit price and date
         [HttpPut("sell")]
-        public ActionResult SellPortfolioItem([FromBody] SellAssetRequest request)
+        public ActionResult SellAsset([FromBody] SellAssetRequest request)
         {
             if (request == null)
                 return BadRequest("Invalid sell request.");
 
+            var userId = GetAuthenticatedUserId();
             var item = Repository.GetById(request.Id);
             if (item == null)
-                return NotFound($"Portfolio item with ID {request.Id} not found.");
+                return NotFound($"Asset with ID {request.Id} not found.");
 
-            // Set sale information
+            var portfolio = PortfolioRepository.GetPortfolioById(item.PortfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
+
             item.ExitPrice = request.ExitPrice;
             item.ExitDate = request.ExitDate;
             item.IsSold = true;
 
-            bool updated = Repository.UpdatePortfolioItem(item);
-            if (updated)
-                return Ok(item); // Return updated item
-            else
-                return BadRequest("Failed to mark portfolio item as sold.");
+            bool updated = Repository.UpdateAsset(item);
+            return updated ? Ok(item) : BadRequest("Failed to mark asset as sold.");
         }
     }
-}
 
-// DTO for marking an asset as sold
-public class SellAssetRequest
-{
-    public int Id { get; set; }
-    public decimal ExitPrice { get; set; }
-    public DateTime ExitDate { get; set; }
+    public class SellAssetRequest
+    {
+        public int Id { get; set; }
+        public decimal ExitPrice { get; set; }
+        public DateTime ExitDate { get; set; }
+    }
 }

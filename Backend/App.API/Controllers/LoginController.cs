@@ -1,43 +1,41 @@
+using App.Model.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace App.API.Controllers
 {
-    // Route: api/login
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
-        // Static credentials for demonstration (should be stored securely in real applications)
-        private const string USERNAME = "Champion";
-        private const string PASSWORD = "Password";
+        private readonly UserRepository _userRepo;
 
-        // Allows unauthenticated users to call this endpoint
+        public LoginController(UserRepository userRepo)
+        {
+            _userRepo = userRepo;
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public ActionResult Login([FromBody] Login credentials)
         {
-            // Validate submitted credentials against hardcoded values
-            if (credentials.Username == USERNAME && credentials.Password == PASSWORD)
+            var user = _userRepo.GetByCredentials(credentials.Username, credentials.Password);
+
+            if (user == null)
+                return Unauthorized("Invalid username or password");
+
+            // Generiere Basic Auth Header zur Verwendung im Frontend
+            var raw = $"{credentials.Username}:{credentials.Password}";
+            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(raw));
+            var headerValue = $"Basic {encoded}";
+
+            return Ok(new
             {
-                // 1. Format the credentials as "username:password"
-                var text = $"{credentials.Username}:{credentials.Password}";
-
-                // 2. Convert the string to Base64
-                var bytes = System.Text.Encoding.Default.GetBytes(text);
-                var encodedCredentials = Convert.ToBase64String(bytes);
-
-                // 3. Add "Basic" prefix for use in Authorization header
-                var headerValue = $"Basic {encodedCredentials}";
-
-                // Return the Authorization header string to the client
-                return Ok(new { headerValue = headerValue });
-            }
-            else
-            {
-                // Return 401 Unauthorized if credentials are incorrect
-                return Unauthorized();
-            }
+                userId = user.Id,
+                username = user.Username,
+                authHeader = headerValue
+            });
         }
     }
 }

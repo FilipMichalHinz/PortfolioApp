@@ -5,149 +5,124 @@ using NpgsqlTypes;
 
 namespace App.Model.Repositories
 {
-    // Repository class for performing CRUD operations on Portfolio entities
     public class PortfolioRepository : BaseRepository
     {
-        // Constructor receives configuration and passes it to the base repository
         public PortfolioRepository(IConfiguration configuration) : base(configuration) { }
 
-        // Retrieves a single Portfolio by its ID from the database
+        // Neu: Portfolios nach UserId filtern
+        public List<Portfolio> GetPortfoliosByUser(int userId)
+        {
+            var portfolios = new List<Portfolio>();
+            using var conn = new NpgsqlConnection(ConnectionString);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM portfolios WHERE userid = @userId";
+            cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userId);
+
+            var data = GetData(conn, cmd);
+            while (data.Read())
+            {
+                portfolios.Add(new Portfolio(Convert.ToInt32(data["id"]))
+                {
+                    Name = data["name"].ToString(),
+                    CreatedAt = Convert.ToDateTime(data["createdat"]),
+                    UserId = Convert.ToInt32(data["userid"])
+                });
+            }
+
+            return portfolios;
+        }
+
+        public Portfolio GetPortfolioById(int id, int userId)
+        {
+            using var conn = new NpgsqlConnection(ConnectionString);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM portfolios WHERE id = @id AND userid = @userId";
+            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
+            cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userId);
+
+            var data = GetData(conn, cmd);
+            if (data.Read())
+            {
+                return new Portfolio(Convert.ToInt32(data["id"]))
+                {
+                    Name = data["name"].ToString(),
+                    CreatedAt = Convert.ToDateTime(data["createdat"]),
+                    UserId = Convert.ToInt32(data["userid"])
+                };
+            }
+
+            return null;
+        }
+
         public Portfolio GetPortfolioById(int id)
         {
-            NpgsqlConnection dbConn = null;
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM portfolios WHERE id = @id";
-                cmd.Parameters.Add("@id", NpgsqlDbType.Integer).Value = id;
+            using var conn = new NpgsqlConnection(ConnectionString);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM portfolios WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
 
-                var data = GetData(dbConn, cmd);
-                if (data != null && data.Read())
-                {
-                    // Map the data to a Portfolio object
-                    return new Portfolio(Convert.ToInt32(data["id"]))
-                    {
-                        PortfolioName = data["name"].ToString(),
-                        CreatedAt = Convert.ToDateTime(data["createdat"])
-                    };
-                }
-                return null;
-            }
-            finally
+            var data = GetData(conn, cmd);
+            if (data.Read())
             {
-                // Ensure the connection is always closed
-                dbConn?.Close();
+                return new Portfolio(Convert.ToInt32(data["id"]))
+                {
+                    Name = data["name"].ToString(),
+                    CreatedAt = Convert.ToDateTime(data["createdat"]),
+                    UserId = Convert.ToInt32(data["userid"])
+                };
             }
+
+            return null;
         }
 
-        // Retrieves a list of all portfolios from the database
-        public List<Portfolio> GetPortfolios()
-        {
-            NpgsqlConnection dbConn = null;
-            var portfolios = new List<Portfolio>();
-
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM portfolios";
-
-                var data = GetData(dbConn, cmd);
-                if (data != null)
-                {
-                    // Iterate through each record and map to Portfolio objects
-                    while (data.Read())
-                    {
-                        Portfolio portfolio = new Portfolio(Convert.ToInt32(data["id"]))
-                        {
-                            PortfolioName = data["name"].ToString(),
-                            CreatedAt = Convert.ToDateTime(data["createdat"])
-                        };
-                        portfolios.Add(portfolio);
-                    }
-                }
-                return portfolios;
-            }
-            finally
-            {
-                dbConn?.Close();
-            }
-        }
-
-        // Inserts a new portfolio into the database
-        // Returns true if successful and sets the generated ID back to the portfolio object
         public bool InsertPortfolio(Portfolio portfolio)
         {
-            NpgsqlConnection dbConn = null;
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT INTO portfolios (name, createdat) 
-                    VALUES (@portfolioName, @createdAt)
-                    RETURNING id"; // Returns the ID of the newly inserted row
+            using var conn = new NpgsqlConnection(ConnectionString);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                INSERT INTO portfolios (name, createdat, userid) 
+                VALUES (@Name, @createdAt, @userId)
+                RETURNING id";
 
-                cmd.Parameters.AddWithValue("@portfolioName", NpgsqlDbType.Text, portfolio.PortfolioName);
-                cmd.Parameters.AddWithValue("@createdAt", NpgsqlDbType.Timestamp, portfolio.CreatedAt.ToLocalTime());
+            cmd.Parameters.AddWithValue("@Name", NpgsqlDbType.Text, portfolio.Name);
+            cmd.Parameters.AddWithValue("@createdAt", NpgsqlDbType.Timestamp, portfolio.CreatedAt.ToLocalTime());
+            cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, portfolio.UserId);
 
-                dbConn.Open();
-                var result = cmd.ExecuteScalar(); // Get the generated ID
-                if (result != null)
-                {
-                    portfolio.Id = Convert.ToInt32(result);
-                    return true;
-                }
-                return false;
-            }
-            finally
+            conn.Open();
+            var result = cmd.ExecuteScalar();
+            if (result != null)
             {
-                dbConn?.Close();
+                portfolio.Id = Convert.ToInt32(result);
+                return true;
             }
+
+            return false;
         }
 
-        // Updates an existing portfolio's name based on its ID
         public bool UpdatePortfolio(Portfolio portfolio)
         {
-            NpgsqlConnection dbConn = null;
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = @"
-                    UPDATE portfolios SET 
-                        name = @portfolioName
-                    WHERE id = @id";
+            using var conn = new NpgsqlConnection(ConnectionString);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                UPDATE portfolios SET 
+                    name = @Name
+                WHERE id = @id AND userid = @userId";
 
-                cmd.Parameters.AddWithValue("@portfolioName", NpgsqlDbType.Text, portfolio.PortfolioName);
-                cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, portfolio.Id);
+            cmd.Parameters.AddWithValue("@Name", NpgsqlDbType.Text, portfolio.Name);
+            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, portfolio.Id);
+            cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, portfolio.UserId);
 
-                return UpdateData(dbConn, cmd);
-            }
-            finally
-            {
-                dbConn?.Close();
-            }
+            return UpdateData(conn, cmd);
         }
 
-        // Deletes a portfolio by its ID
         public bool DeletePortfolio(int id)
         {
-            NpgsqlConnection dbConn = null;
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "DELETE FROM portfolios WHERE id = @id";
-                cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
+            using var conn = new NpgsqlConnection(ConnectionString);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "DELETE FROM portfolios WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
 
-                return DeleteData(dbConn, cmd);
-            }
-            finally
-            {
-                dbConn?.Close();
-            }
+            return DeleteData(conn, cmd);
         }
     }
 }

@@ -1,5 +1,5 @@
 export interface Portfolio {
     id: number;
-    portfolioName: string;
+    name: string;
     createdAt: Date;
 }

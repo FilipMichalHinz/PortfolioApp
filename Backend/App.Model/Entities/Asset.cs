@@ -1,10 +1,10 @@
 namespace App.Model.Entities
 {
-    public class PortfolioItem
+    public class Asset
     {
-        public PortfolioItem() { }
+        public Asset() { }
 
-        public PortfolioItem(int id)
+        public Asset(int id)
         {
             Id = id;
         }

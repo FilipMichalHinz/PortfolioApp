@@ -99,6 +99,7 @@ export class PortfolioDetailComponent implements OnInit {
         error: err => {
           console.error('Error loading portfolio', err);
           this.isLoading = false;
+          alert('Error loading portfolio. Please try again later.');
         }
       });
 
@@ -111,6 +112,7 @@ export class PortfolioDetailComponent implements OnInit {
         error: err => {
           console.error('Error loading summary', err);
           this.isLoading = false;
+          alert('Error loading summary. Please try again later.');
         }
       });
     });
@@ -142,6 +144,7 @@ export class PortfolioDetailComponent implements OnInit {
       error: err => {
         console.error('Error loading summary', err);
         this.isLoading = false;
+        alert('Error loading summary. Please try again later.');
       }
     });
   }
@@ -292,6 +295,7 @@ export class PortfolioDetailComponent implements OnInit {
       },
       error: err => {
         console.error('Error selling asset', err);
+        alert('Error seeling asset. Please check your input.');
       }
     });
   }

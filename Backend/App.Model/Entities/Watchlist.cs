@@ -2,7 +2,7 @@ namespace App.Model.Entities
 {
     public class Watchlist
     {
-        public Watchlist() { }
+        public Watchlist() {}
 
         public Watchlist(int id)
         {
@@ -11,10 +11,10 @@ namespace App.Model.Entities
 
         public int Id { get; set; }
 
-        public string AssetName { get; set; } = null!; // Example: "Tesla", "Bitcoin"
+        public int UserId { get; set; }
 
-        public decimal TargetPrice { get; set; }  // Price at which the user wants to be notified
+        public string AssetName { get; set; }
 
-        public int PortfolioId { get; set; }
+        public decimal TargetPrice { get; set; }
     }
 }

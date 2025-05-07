@@ -9,4 +9,9 @@ export interface PortfolioItem {
   exitPrice?: number;
   exitDate?: string;
   IsSold?: boolean;
+
+  currentPrice?: number;
+  currentValue?: number;
+  profitLoss?: number;
+  changePercent?: number;
 }

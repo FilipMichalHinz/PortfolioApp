@@ -11,7 +11,9 @@ namespace App.Model.Entities
 
         public int Id { get; set; }
 
-        public string PortfolioName { get; set; }
+        public string Name { get; set; }
+
+        public int UserId { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

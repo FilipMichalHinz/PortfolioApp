@@ -5,22 +5,22 @@ using NpgsqlTypes;
 
 namespace App.Model.Repositories
 {
-    // Repository class responsible for managing PortfolioItem entities in the database
-    public class PortfolioItemRepository : BaseRepository
+    // Repository class responsible for managing Asset entities in the database
+    public class AssetRepository : BaseRepository
     {
-        public PortfolioItemRepository(IConfiguration configuration) : base(configuration) { }
+        public AssetRepository(IConfiguration configuration) : base(configuration) { }
 
-        // Retrieves all portfolio items belonging to a specific portfolio
-        public List<PortfolioItem> getByPortfolio(int portfolioId)
+        // Retrieves all assets belonging to a specific portfolio
+        public List<Asset> GetByPortfolio(int portfolioId)
         {
             NpgsqlConnection dbConn = null;
-            var items = new List<PortfolioItem>();
+            var items = new List<Asset>();
 
             try
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM portfolioitems WHERE portfolioid = @portfolioId";
+                cmd.CommandText = "SELECT * FROM assets WHERE portfolioid = @portfolioId";
                 cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, portfolioId);
 
                 var data = GetData(dbConn, cmd);
@@ -28,8 +28,8 @@ namespace App.Model.Repositories
                 {
                     while (data.Read())
                     {
-                        // Map the database fields to a PortfolioItem object
-                        PortfolioItem item = new PortfolioItem(Convert.ToInt32(data["id"]))
+                        // Map the database fields to a Asset object
+                        Asset item = new Asset(Convert.ToInt32(data["id"]))
                         {
                             PortfolioId = Convert.ToInt32(data["portfolioid"]),
                             Ticker = data["ticker"].ToString()!,
@@ -52,8 +52,8 @@ namespace App.Model.Repositories
             }
         }
 
-        // Inserts a new PortfolioItem into the database
-        public bool InsertPortfolioItem(PortfolioItem item)
+        // Inserts a new Asset into the database
+        public bool InsertAsset(Asset item)
         {
             NpgsqlConnection dbConn = null;
             try
@@ -61,7 +61,7 @@ namespace App.Model.Repositories
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
                 cmd.CommandText = @"
-                    INSERT INTO portfolioitems 
+                    INSERT INTO assets
                     (portfolioid, ticker, name, purchaseprice, quantity, purchasedate) 
                     VALUES 
                     (@portfolioId, @ticker, @name, @purchasePrice, @quantity, @purchaseDate)";
@@ -81,15 +81,15 @@ namespace App.Model.Repositories
             }
         }
 
-        // Deletes a PortfolioItem by its ID
-        public bool delete(int id)
+        // Deletes a Asset by its ID
+        public bool DeleteAsset(int id)
         {
             NpgsqlConnection dbConn = null;
             try
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "DELETE FROM portfolioitems WHERE id = @id";
+                cmd.CommandText = "DELETE FROM assets WHERE id = @id";
                 cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
 
                 return DeleteData(dbConn, cmd);
@@ -100,8 +100,8 @@ namespace App.Model.Repositories
             }
         }
 
-        // Retrieves a PortfolioItem by its ticker (symbol)
-        public PortfolioItem? GetByTicker(string ticker)
+        // Retrieves a Asset by its ticker (symbol)
+        public Asset? GetByTicker(string ticker)
         {
             NpgsqlConnection dbConn = null;
 
@@ -109,14 +109,14 @@ namespace App.Model.Repositories
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM portfolioitems WHERE ticker = @ticker LIMIT 1";
+                cmd.CommandText = "SELECT * FROM assets WHERE ticker = @ticker LIMIT 1";
                 cmd.Parameters.AddWithValue("@ticker", NpgsqlDbType.Text, ticker);
 
                 var reader = GetData(dbConn, cmd);
 
                 if (reader != null && reader.Read())
                 {
-                    return new PortfolioItem(Convert.ToInt32(reader["id"]))
+                    return new Asset(Convert.ToInt32(reader["id"]))
                     {
                         PortfolioId = Convert.ToInt32(reader["portfolioid"]),
                         Ticker = reader["ticker"].ToString(),
@@ -134,8 +134,8 @@ namespace App.Model.Repositories
             }
         }
 
-        // Retrieves a PortfolioItem by its ID
-        public PortfolioItem? GetById(int id)
+        // Retrieves a Asset by its ID
+        public Asset? GetById(int id)
         {
             NpgsqlConnection dbConn = null;
 
@@ -143,14 +143,14 @@ namespace App.Model.Repositories
             {
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM portfolioitems WHERE id = @id LIMIT 1";
+                cmd.CommandText = "SELECT * FROM assets WHERE id = @id LIMIT 1";
                 cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
 
                 var reader = GetData(dbConn, cmd);
 
                 if (reader != null && reader.Read())
                 {
-                    return new PortfolioItem(Convert.ToInt32(reader["id"]))
+                    return new Asset(Convert.ToInt32(reader["id"]))
                     {
                         PortfolioId = Convert.ToInt32(reader["portfolioid"]),
                         Ticker = reader["ticker"].ToString(),
@@ -172,8 +172,8 @@ namespace App.Model.Repositories
             }
         }
 
-        // Updates all fields of a PortfolioItem, including sale-related data
-        public bool UpdatePortfolioItem(PortfolioItem item)
+        // Updates all fields of a Asset, including sale-related data
+        public bool UpdateAsset(Asset item)
         {
             NpgsqlConnection dbConn = null;
 
@@ -182,7 +182,7 @@ namespace App.Model.Repositories
                 dbConn = new NpgsqlConnection(ConnectionString);
                 var cmd = dbConn.CreateCommand();
                 cmd.CommandText = @"
-                    UPDATE portfolioitems
+                    UPDATE assets
                     SET
                         portfolioid = @portfolioId,
                         ticker = @ticker,
@@ -215,14 +215,14 @@ namespace App.Model.Repositories
         }
 
         // Updates only basic item details (not sale-related fields)
-        public bool UpdatePortfolioItemDetails(PortfolioItem item)
+        public bool UpdateAssetDetails(Asset item)
         {
             using var conn = new NpgsqlConnection(ConnectionString);
             conn.Open();
 
             var cmd = conn.CreateCommand();
             cmd.CommandText = @"
-                UPDATE portfolioitems
+                UPDATE assets
                 SET ticker = @ticker,
                     name = @name,
                     purchaseprice = @purchasePrice,

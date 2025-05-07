@@ -9,7 +9,7 @@ import { PortfolioSummary } from '../model/portfolio-summary';
 })
 export class PortfolioItemService {
   // Base URL for all portfolio item-related endpoints
-  baseUrl: string = 'http://localhost:5215/api/portfolioitem';
+  baseUrl: string = 'http://localhost:5215/api/asset';
 
   constructor(private http: HttpClient) {}
 

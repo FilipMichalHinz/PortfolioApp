@@ -1,3 +1,6 @@
 export interface Login {
-    headerValue: string
-}
+    userId: number;
+    username: string;
+    authHeader: string;
+  }
+  

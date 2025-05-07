@@ -34,7 +34,7 @@ export class PortfolioCardComponent {
     event.stopPropagation();
 
     // Ask the user for confirmation before deleting
-    if (!confirm(`Are you sure you want to delete "${this.portfolio.portfolioName}"?`)) {
+    if (!confirm(`Are you sure you want to delete "${this.portfolio.name}"?`)) {
       return; // User cancelled the action
     }
 
