@@ -133,26 +133,33 @@
   text-align: center;
   font-style: italic; /* 💬 Slight italic to differentiate the message */
 }
-/* 🔥 Modal Background Overlay */
+/* Styles for the modal overlay (the backdrop) */
 .modal-overlay {
-  position: fixed;
+  position: fixed; /* Cover the entire viewport */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5); /* Semi-transparent background */
-  display: flex;
-  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black backdrop */
+  z-index: 1000; /* Ensures it's on top of other page content */
+  display: flex; /* Helps in centering the modal content */
   justify-content: center;
+  align-items: center;
+  overflow-y: auto; /* Allows scrolling if the modal content itself is too tall */
 }
 
-/* 🔥 Modal Content Box */
+/* Styles for the actual modal content box */
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  min-width: 300px;
-  box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+  background-color: #ffffff; /* White background for the modal box */
+  padding: 25px 30px; /* Adjust padding as you like */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* A bit of shadow for depth */
+  z-index: 1001; /* Ensures modal box is on top of its own overlay backdrop */
+  width: auto; /* Let content define width, or set a specific width e.g., 500px */
+  min-width: 300px; /* Minimum width for smaller modals */
+  max-width: 90%; /* Prevents modal from being too wide on large screens */
+  max-height: 90vh; /* Maximum height, allows some viewport margin */
+  overflow-y: auto; /* If content inside modal-content overflows, it will scroll */
 }
 
 .button-row {

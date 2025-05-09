@@ -32,10 +32,10 @@ export class LoginComponent {
         if (response?.authHeader) {
           localStorage.setItem('headerValue', response.authHeader);
           this.loginFailed = false;
-          this.router.navigate(['/portfolio-list']);
+          this.router.navigate(['/dashboard']);
         } else {
           this.loginFailed = true;
-          alert('Login fehlgeschlagen. Keine gültige Antwort vom Server.');
+          alert('Login failed. Invalid authentication.');
         }
       },
       error: (err) => {

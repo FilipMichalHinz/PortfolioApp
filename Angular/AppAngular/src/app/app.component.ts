@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterOutlet, NavigationEnd } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { SharedModule } from './shared/shared.module';
 
 @Component({
   selector: 'app-root',
   standalone: true, // This component uses Angular Standalone Component architecture
-  imports: [RouterOutlet, RouterLink, CommonModule], // Import required features for routing and templates
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, SharedModule], // Import required features for routing and templates
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

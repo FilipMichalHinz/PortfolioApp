@@ -51,5 +51,36 @@ nav a.active {
 }
 
 main {
-  padding: 2rem;
+  padding: 1rem;
 }
+
+/* app.component.css or styles.scss/css */
+.app-toolbar {
+  position: fixed; /* Make toolbar sticky at the top */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100; /* Ensure it's above other content if needed */
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto; /* Pushes items to the right of the span */
+}
+
+.app-toolbar a { /* Style for router links in the toolbar */
+  margin: 0 8px;
+  text-decoration: none;
+  color: white; /* Assuming primary toolbar has dark text by default or vice-versa */
+}
+
+.app-toolbar a.active-link { /* Style for the active router link */
+  font-weight: bold;
+  border-bottom: 2px solid currentColor; /* Or your accent color */
+}
+
+.content-below-toolbar {
+  padding-top: 64px; /* Height of the toolbar (adjust if your toolbar height is different) */
+  /* If using a shorter toolbar on mobile, you'll need media queries to adjust padding-top */
+}
+
+

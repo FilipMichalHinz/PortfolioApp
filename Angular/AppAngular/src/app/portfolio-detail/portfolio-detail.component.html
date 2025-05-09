@@ -1,7 +1,7 @@
-<!-- Main container for the portfolio detail view -->
+
 <div class="detail-container">
 
-  <!-- Display a loading indicator while portfolio and summary data are being fetched -->
+
   <div *ngIf="isLoading" class="loading-spinner">
     Loading portfolio...
   </div>
@@ -9,7 +9,6 @@
   <!-- Render main content only after loading is complete -->
   <ng-container *ngIf="!isLoading">
 
-    <!-- Header with a back navigation button and the portfolio name -->
     <header class="detail-header">
       <button class="back-btn" routerLink="/portfolio-list">← Back</button>
       <h1 class="title">{{ portfolio.name || ('Portfolio ' + summary.portfolioId) }}</h1>
@@ -97,7 +96,7 @@
 
         <!-- Button to open the add item form -->
         <div class="add-item-wrapper">
-          <button class="add-btn" *ngIf="!showForm" (click)="showForm = true">+ Add Item</button>
+          <button mat-raised-button color="primary" *ngIf="!showForm" (click)="showForm = true">+ Add Item</button>
         </div>
 
         <!-- Form for adding or editing an asset -->
@@ -113,44 +112,67 @@
         </div>
 
         <!-- Table displaying all open (unsold) assets -->
-        <table *ngIf="summary.byAsset.length > 0">
-          <thead>
-            <tr>
-              <th style="width: 150px;">Actions</th>
-              <th>Name</th>
-              <th>Ticker</th>
-              <th>Qty</th>
-              <th>Buy Price</th>
-              <th>Current Price</th>
-              <th>Value</th>
-              <th>Profit/Loss</th>
-              <th>Return %</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ng-container *ngFor="let a of summary.byAsset">
-              <tr *ngIf="!a.isSold">
-                <td>
-                  <div class="actions-row">
-                    <button (click)="startSell(a)">Sell</button>
-                    <button (click)="startEdit(a)">Edit</button>
-                    <button (click)="deleteItem(a.id)">Delete</button>
-                  </div>
-                </td>
-                <td>{{ a.name || 'Loading...' }}</td>
-                <td>{{ a.ticker }}</td>
-                <td>{{ a.quantity }}</td>
-                <td>{{ a.purchasePrice | currency }}</td>
-                <td>{{ a.currentPrice | currency }}</td>
-                <td>{{ a.currentValue | currency }}</td>
-                <td [class.positive]="a.profitLoss >= 0" [class.negative]="a.profitLoss < 0">
-                  {{ a.profitLoss | currency }}
-                </td>
-                <td>{{ a.changePercent | number:'1.0-0' }}%</td>
-              </tr>
-            </ng-container>
-          </tbody>
+        <table mat-table [dataSource]="openPositions" *ngIf="summary.byAsset.length > 0" class="mat-elevation-z8">
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let a">
+              <div class="actions-row">
+                <button mat-button color="primary" (click)="startSell(a)">Sell</button>
+                <button mat-button color="primary" (click)="editAsset(a)">Edit</button>
+                <button mat-button color="warn" (click)="deleteItem(a.id)">Delete</button>
+            </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let a">{{ a.name || 'Loading...' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="ticker">
+            <th mat-header-cell *matHeaderCellDef>Ticker</th>
+            <td mat-cell *matCellDef="let a">{{ a.ticker }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef>Qty</th>
+            <td mat-cell *matCellDef="let a">{{ a.quantity }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="purchasePrice">
+            <th mat-header-cell *matHeaderCellDef>Buy Price</th>
+            <td mat-cell *matCellDef="let a">{{ a.purchasePrice | currency }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="currentPrice">
+            <th mat-header-cell *matHeaderCellDef>Current Price</th>
+            <td mat-cell *matCellDef="let a">{{ a.currentPrice | currency }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="currentValue">
+            <th mat-header-cell *matHeaderCellDef>Value</th>
+            <td mat-cell *matCellDef="let a">{{ a.currentValue | currency }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="profitLoss">
+            <th mat-header-cell *matHeaderCellDef>Profit/Loss</th>
+            <td mat-cell *matCellDef="let a" [class.positive]="a.profitLoss >= 0"
+              [class.negative]="a.profitLoss < 0">
+              {{ a.profitLoss | currency }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="returnPercent">
+            <th mat-header-cell *matHeaderCellDef>Return %</th>
+            <td mat-cell *matCellDef="let a">
+              {{ a.changePercent | number:'1.0-0' }}%
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="openPositionsColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: openPositionsColumns;"></tr>
         </table>
+
 
         <!-- Message when no open assets exist -->
         <div *ngIf="summary?.byAsset?.length === 0 && !showForm" class="no-assets-placeholder">
@@ -158,84 +180,132 @@
         </div>
       </div>
 
+
       <!-- Header row for completed (sold) positions -->
       <div class="assets-header" (click)="completedTradesExpanded = !completedTradesExpanded" style="cursor: pointer;">
         <span>{{ completedTradesExpanded ? '▲' : '▼' }}</span>
         <h2>Completed Positions</h2>
       </div>
 
-      <!-- Table showing completed trades (sold assets) -->
-      <table *ngIf="summary.byAsset.length > 0 && completedTradesExpanded">
-        <thead>
-          <tr>
-            <th style="width: 150px;">Actions</th>
-            <th>Name</th>
-            <th>Ticker</th>
-            <th>Qty</th>
-            <th>Buy Price</th>
-            <th>Sell Price</th>
-            <th>Sold Date</th>
-            <th>Profit/Loss</th>
-            <th>Return %</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let a of summary.byAsset">
-            <tr *ngIf="a.isSold">
-              <td>
-                <div class="actions-row">
-                  <button (click)="startEdit(a)">Edit</button>
-                  <button (click)="deleteItem(a.id)">Delete</button>
-                </div>
-              </td>
-              <td>{{ a.name || 'Loading...' }}</td>
-              <td>{{ a.ticker }}</td>
-              <td>{{ a.quantity }}</td>
-              <td>{{ a.purchasePrice | currency }}</td>
-              <td>{{ a.exitPrice | currency }}</td>
-              <td>{{ a.exitDate | date }}</td>
-              <td>{{ (a.exitPrice! - a.purchasePrice) * a.quantity | currency }}</td>
-              <td>{{ ((a.exitPrice! - a.purchasePrice) / a.purchasePrice) * 100 | number:'1.0-0' }}%</td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
+      <table mat-table [dataSource]="completedPositions" *ngIf="summary.byAsset.length > 0 && completedTradesExpanded"
+        class="mat-elevation-z8">
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let a">
+              <div class="actions-row">
+                <button mat-button color="primary" (click)="editAsset(a, true)">Edit Sell Price</button>
+                <button mat-button color="warn" (click)="deleteItem(a.id)">Delete</button>
+            </div>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let a">{{ a.name || 'Loading...' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="ticker">
+            <th mat-header-cell *matHeaderCellDef>Ticker</th>
+            <td mat-cell *matCellDef="let a">{{ a.ticker }}</td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef>Qty</th>
+            <td mat-cell *matCellDef="let a">{{ a.quantity }}</td>
+        </ng-container>
+        <ng-container matColumnDef="purchasePrice">
+            <th mat-header-cell *matHeaderCellDef>Buy Price</th>
+            <td mat-cell *matCellDef="let a">{{ a.purchasePrice | currency }}</td>
+        </ng-container>
+        <ng-container matColumnDef="sellPrice">
+            <th mat-header-cell *matHeaderCellDef>Sell Price</th>
+            <td mat-cell *matCellDef="let a">{{ a.exitPrice | currency }}</td>
+        </ng-container>
+        <ng-container matColumnDef="soldDate">
+            <th mat-header-cell *matHeaderCellDef>Sold Date</th>
+            <td mat-cell *matCellDef="let a">{{ a.exitDate | date }}</td>
+        </ng-container>
+        <ng-container matColumnDef="profitLoss">
+            <th mat-header-cell *matHeaderCellDef>Profit/Loss</th>
+            <td mat-cell *matCellDef="let a">{{ (a.exitPrice! - a.purchasePrice) * a.quantity | currency }}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="returnPercent">
+            <th mat-header-cell *matHeaderCellDef>Return %</th>
+            <td mat-cell *matCellDef="let a">
+                {{ ((a.exitPrice! - a.purchasePrice) / a.purchasePrice) * 100 | number:'1.0-0' }}%</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="completedPositionsColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: completedPositionsColumns;"></tr>
+    </table>
+
+    
 
       <!-- Modal for selling an asset (provides exit price and date) -->
       <div *ngIf="sellMode" class="modal-overlay">
         <div class="modal-content">
           <h3>Sell {{ itemToSell.ticker }}</h3>
+          <mat-form-field>
+            <mat-label for="exitPrice">Exit Price:</mat-label>
+            <input matInput type="number" [(ngModel)]="itemToSell.exitPrice" name="exitPrice">
+          </mat-form-field>
+          
+          <mat-form-field>
+            <mat-label for="exitPrice">Exit Date:</mat-label>
+            <input matInput type="date" [(ngModel)]="itemToSell.exitDate" name="exitDate">
+          </mat-form-field>
 
-          <label for="exitPrice">Exit Price:</label>
-          <input id="exitPrice" type="number" [(ngModel)]="itemToSell.exitPrice" name="exitPrice">
-
-          <label for="exitDate">Exit Date:</label>
-          <input id="exitDate" type="date" [(ngModel)]="itemToSell.exitDate" name="exitDate">
 
           <div class="button-row">
-            <button (click)="confirmSell()" [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
+            <button mat-raised-button color='primary' (click)="confirmSell()" 
+            [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
               Confirm Sell
             </button>
-            <button (click)="cancelSell()">Cancel</button>
+            <button mat-button (click)="cancelSell()">Cancel</button>
           </div>
         </div>
       </div>
 
-      <!-- Modal for editing the sale details of a sold asset -->
-      <div *ngIf="editSellMode" class="modal-overlay">
+      <!-- Modal for editing tiems -->
+      <div *ngIf="editingItemId" class="modal-overlay">
         <div class="modal-content">
-          <h3>Edit Sale for {{ itemToEditSell.ticker }}</h3>
+          <h3 *ngIf="currentEditingAsset && !currentEditingAsset.isSold">Edit Asset</h3>
+          <h3 *ngIf="currentEditingAsset && currentEditingAsset.isSold">Edit Sale for
+              {{ currentEditingAsset.ticker }}</h3>
 
-          <label for="editExitPrice">Exit Price:</label>
-          <input id="editExitPrice" type="number" [(ngModel)]="itemToEditSell.exitPrice" />
+              <ng-container *ngIf="currentEditingAsset">
+                <mat-form-field *ngIf="!currentEditingAsset.isSold">
+                  <mat-label for="editPrice">Purchase Price</mat-label>
+                  <input matInput type="number" [(ngModel)]="tempEditValues.purchasePrice" name="editPrice">
+                </mat-form-field>
+            
+                <mat-form-field *ngIf="!currentEditingAsset.isSold">
+                  <mat-label for="editQuantity">Quantity</mat-label>
+                  <input matInput type="number" [(ngModel)]="tempEditValues.quantity" name="editQuantity">
+                </mat-form-field>
+            
+                <mat-form-field *ngIf="!currentEditingAsset.isSold">
+                  <mat-label for="editDate">Purchase Date</mat-label>
+                  <input matInput type="date" [(ngModel)]="tempEditValues.purchaseDate" name="editDate">
+                </mat-form-field>
+            
+                <mat-form-field *ngIf="currentEditingAsset.isSold">
+                  <mat-label for="editExitPrice">Exit Price:</mat-label>
+                  <input matInput type="number" [(ngModel)]="tempEditValues.exitPrice" name="editExitPrice">
+                </mat-form-field>
+            
+                <mat-form-field *ngIf="currentEditingAsset.isSold">
+                  <mat-label for="editExitDate">Exit Date:</mat-label>
+                  <input matInput type="date" [(ngModel)]="tempEditValues.exitDate" name="editExitDate">
+                </mat-form-field>
+            </ng-container>
 
-          <label for="editExitDate">Exit Date:</label>
-          <input id="editExitDate" type="date" [(ngModel)]="itemToEditSell.exitDate" />
+        
 
-          <div class="button-row">
-            <button (click)="confirmSellEdit()">Save</button>
-            <button (click)="editSellMode = false">Cancel</button>
-          </div>
+            <button mat-raised-button color="primary" (click)="saveEdit()"
+            [disabled]="isSaveDisabled">Save</button>
+
+            <button mat-button (click)="cancelEdit()">Cancel</button>
+            
+          
         </div>
       </div>
 

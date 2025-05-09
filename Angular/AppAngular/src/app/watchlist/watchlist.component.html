@@ -1,0 +1,83 @@
+
+
+<!-- 2) Loading indicator -->
+<div *ngIf="isLoading" class="loading">Loading…</div>
+
+
+<div class="container">
+  <h1>My Watchlist</h1>
+
+<button mat-raised-button color="primary" (click)="toggleAddForm()">
+    {{ showAddForm ? 'Hide Add Form' : 'Add Item' }} 
+</button>
+
+  <div *ngIf="showAddForm" class="add-form">
+      <mat-form-field>
+          <mat-label>Ticker</mat-label>
+          <input matInput [(ngModel)]="newTicker" />
+      </mat-form-field>
+
+      <mat-form-field>
+          <mat-label>Target Price</mat-label>
+          <input matInput type="number" [(ngModel)]="newTarget" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="addItem()">Add</button>
+  </div>
+
+  <div *ngIf="isLoading">Loading...</div>
+
+  <div class="table-container" *ngIf="items.data.length > 0 && !isLoading">
+      <table mat-table [dataSource]="items" class="mat-elevation-z8">
+          <ng-container matColumnDef="ticker">
+              <th mat-header-cell *matHeaderCellDef>Ticker</th>
+              <td mat-cell *matCellDef="let item">{{item.ticker}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="assetName">
+              <th mat-header-cell *matHeaderCellDef>Asset Name</th>
+              <td mat-cell *matCellDef="let item">{{item.assetName}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="targetPrice">
+              <th mat-header-cell *matHeaderCellDef>Target Price</th>
+              <td mat-cell *matCellDef="let item">
+                  <span *ngIf="!editMode || editingItem?.id !== item.id">{{item.targetPrice}}</span>
+                  <mat-form-field *ngIf="editMode && editingItem?.id === item.id">
+                      <input matInput type="number" [(ngModel)]="tempTargetPrice" autofocus (keydown.enter)="saveEdit()"
+                          (keydown.escape)="cancelEdit()" />
+                  </mat-form-field>
+              </td>
+          </ng-container>
+
+          <ng-container matColumnDef="currentPrice">
+              <th mat-header-cell *matHeaderCellDef>Current Price</th>
+              <td mat-cell *matCellDef="let item">{{item.currentPrice}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let item">
+                  <div *ngIf="!editMode || editingItem?.id !== item.id">
+                      <button mat-raised-button color="primary" (click)="startEdit(item)">Edit</button>
+                      <button mat-raised-button color="warn" (click)="deleteItem(item.id)">Delete</button>
+                  </div>
+                  <div *ngIf="editMode && editingItem?.id === item.id" class="edit-buttons">
+                      <button mat-raised-button color="accent" (click)="saveEdit()">Save</button>
+                      <button mat-button (click)="cancelEdit()">Cancel</button>
+                  </div>
+              </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+  </div>
+
+
+  <div *ngIf="items.data.length === 0 && !isLoading">No items in watchlist.</div>
+</div>
+
+
+
+

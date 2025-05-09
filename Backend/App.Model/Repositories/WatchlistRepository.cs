@@ -2,92 +2,130 @@ using App.Model.Entities;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using NpgsqlTypes;
+using System.Collections.Generic;
 
 namespace App.Model.Repositories
 {
-    // Repository class responsible for CRUD operations on the 'watchlist' table
     public class WatchlistRepository : BaseRepository
     {
         public WatchlistRepository(IConfiguration configuration) : base(configuration) { }
 
-        // Retrieves all watchlist items for a specific user
         public List<Watchlist> GetWatchlistByUser(int userId)
         {
+           
             var watchlist = new List<Watchlist>();
-            using var dbConn = new NpgsqlConnection(ConnectionString);
-            dbConn.Open();
 
-            var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM watchlists WHERE userid = @userId";
-            cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, userId);
+            // create and open connection
+            using var conn = new NpgsqlConnection(ConnectionString);
+            conn.Open();
+                
+            // create SQL command
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+            SELECT id, userid, ticker, assetname, targetprice
+            FROM watchlists
+            WHERE userid = @userId";
+            cmd.Parameters.AddWithValue("@userId", userId);
 
-            var reader = cmd.ExecuteReader();
+            //Execute and map data
+            using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                Watchlist item = new Watchlist(Convert.ToInt32(reader["id"]))
-                {
-                    UserId = Convert.ToInt32(reader["userid"]),
-                    AssetName = reader["assetname"].ToString(),
-                    TargetPrice = Convert.ToDecimal(reader["targetprice"])
+                var item = new Watchlist(reader.GetInt32(reader.GetOrdinal("id")))
+                {        
+                    UserId = reader.GetInt32(reader.GetOrdinal("userid")),// Check this after login functionality
+                    Ticker = reader.GetString(reader.GetOrdinal("ticker")),
+                    AssetName = reader.GetString(reader.GetOrdinal("assetname")),
+                    TargetPrice = reader.GetDecimal(reader.GetOrdinal("targetprice"))
                 };
                 watchlist.Add(item);
             }
-
+                
             return watchlist;
+            
         }
 
-        // Retrieves a single watchlist item by ID
-        public Watchlist? GetById(int id)
-        {
-            using var dbConn = new NpgsqlConnection(ConnectionString);
-            dbConn.Open();
-
-            var cmd = dbConn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM watchlists WHERE id = @id";
-            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
-
-            var reader = cmd.ExecuteReader();
-            if (reader.Read())
-            {
-                return new Watchlist(Convert.ToInt32(reader["id"]))
-                {
-                    UserId = Convert.ToInt32(reader["userid"]),
-                    AssetName = reader["assetname"].ToString(),
-                    TargetPrice = Convert.ToDecimal(reader["targetprice"])
-                };
-            }
-
-            return null;
-        }
-
-        // Inserts a new watchlist item
+        // Add new Watchlist item
         public bool InsertWatchlistItem(Watchlist item)
         {
+            
             using var dbConn = new NpgsqlConnection(ConnectionString);
-            dbConn.Open();
+            using var  cmd = dbConn.CreateCommand();
 
-            var cmd = dbConn.CreateCommand();
+             
             cmd.CommandText = @"
-                INSERT INTO watchlists (userid, assetname, targetprice) 
-                VALUES (@userId, @assetName, @targetPrice)";
-            cmd.Parameters.AddWithValue("@userId", item.UserId);
-            cmd.Parameters.AddWithValue("@assetName", item.AssetName);
-            cmd.Parameters.AddWithValue("@targetPrice", item.TargetPrice);
+                    INSERT INTO watchlists 
+                    (userid, ticker, assetname, targetprice) 
+                    VALUES 
+                    (@userId, @ticker, @assetName, @targetPrice)";
 
-            return cmd.ExecuteNonQuery() == 1;
+                cmd.Parameters.AddWithValue("@userId", NpgsqlDbType.Integer, item.UserId); // Will likely not be here
+                cmd.Parameters.AddWithValue("@ticker", NpgsqlDbType.Text, item.Ticker);
+                cmd.Parameters.AddWithValue("@assetName", NpgsqlDbType.Text, item.AssetName);
+                cmd.Parameters.AddWithValue("@targetPrice", NpgsqlDbType.Numeric, item.TargetPrice);
+
+                return InsertData(dbConn, cmd); // Check if the item was inserted successfully
+            
         }
 
-        // Deletes a watchlist item by ID
+        public bool UpdateWatchlistItem(Watchlist item){
+            using var dbConn = new NpgsqlConnection(ConnectionString);
+            using var cmd = dbConn.CreateCommand();
+
+            cmgd.CommandText = @"
+            UPDATE watchlists
+            SET targetprice = @targetPrice
+            WHERE id = @id";
+
+            cmd.Parameters.AddWithValue("@targetPrice", NpgsqlDbType.Numeric, item.TargetPrice);
+            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, item.Id);
+
+            return UpdateData(dbConn, cmd); // Check if the item was updated successfully
+        }
+
         public bool DeleteWatchlistItem(int id)
         {
+            
             using var dbConn = new NpgsqlConnection(ConnectionString);
-            dbConn.Open();
+            using var cmd = dbConn.CreateCommand();
 
-            var cmd = dbConn.CreateCommand();
             cmd.CommandText = "DELETE FROM watchlists WHERE id = @id";
-            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
 
-            return cmd.ExecuteNonQuery() == 1;
+                //bool result = DeleteData(dbConn, cmd);
+                return DeleteData(dbConn, cmd); // Check if the item was deleted successfully
+            
         }
+
+        // Get a specific watchlist item by ID
+        //used for updating a single item
+
+        public Watchlist? GetWatchlistItemById(int id)
+{
+    using var conn = new NpgsqlConnection(ConnectionString);
+    conn.Open();
+
+    using var cmd = conn.CreateCommand();
+    cmd.CommandText = @"
+        SELECT id, userid, ticker, assetname, targetprice
+        FROM watchlists
+        WHERE id = @id";
+    cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, id);
+
+    using var reader = cmd.ExecuteReader();
+    if (reader.Read())
+    {
+        var item = new Watchlist(reader.GetInt32(reader.GetOrdinal("id")))
+        {
+            UserId = reader.GetInt32(reader.GetOrdinal("userid")),
+            Ticker = reader.GetString(reader.GetOrdinal("ticker")),
+            AssetName = reader.GetString(reader.GetOrdinal("assetname")),
+            TargetPrice = reader.GetDecimal(reader.GetOrdinal("targetprice"))
+        };
+        return item;
+    }
+
+    return null;
+}
     }
 }

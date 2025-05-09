@@ -1,7 +1,15 @@
 using App.API.Middleware;
+using App.Model.Entities;
 using App.Model.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+
+/*
+var hasher = new PasswordHasher<User>();
+var hash2 = hasher.HashPassword(new User(), "Tofire24");
+Console.WriteLine(hash2);
+return;
+*/
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,12 +75,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.Run();
 
 
+
+
 /*
-var hasher = new PasswordHasher<User>();
-var hash1 = hasher.HashPassword(new User(), "password");
 var hash2 = hasher.HashPassword(new User(), "password");
 var hash3 = hasher.HashPassword(new User(), "password");
 
@@ -80,3 +89,4 @@ Console.WriteLine(hash1);
 Console.WriteLine(hash2);
 Console.WriteLine(hash3);
 */
+

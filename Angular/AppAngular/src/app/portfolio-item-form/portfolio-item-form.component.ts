@@ -4,14 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { PortfolioItem } from '../model/portfolio-item';
 import { PortfolioItemService } from '../services/portfolio-item.service';
 import { YahooFinanceService } from '../services/yahoo-finance.service';
+import { SharedModule } from '../shared/shared.module';
 
 @Component({
   selector: 'app-portfolio-item-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SharedModule],
+  
   templateUrl: './portfolio-item-form.component.html',
   styleUrls: ['./portfolio-item-form.component.css']
 })
+
 export class PortfolioItemFormComponent implements OnInit {
   // Input: ID of the portfolio the item belongs to
   @Input() portfolioId!: number;

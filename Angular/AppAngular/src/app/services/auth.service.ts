@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Login } from '../model/login';
 
 @Injectable({
@@ -23,6 +23,31 @@ export class AuthService {
     return this.http.post<Login>(`${this.baseUrl}/login`, {
       username: username,
       password: password
-    });
+    }).pipe(
+      tap(response => {
+        if(response?.authHeader && response?.username) {
+          localStorage.setItem('headerValue', response.authHeader); // Store the auth header in local storage
+          localStorage.setItem('username', response.username); // Store the username in local storage
+        } else {
+          this.clearAuthData();
+        }
+      })
+    );
   }
+
+  public getUsername(): string | null {
+    return localStorage.getItem('username');
+  }
+
+  public isAuthenticated(): boolean {
+    return !!localStorage.getItem('headerValue');
+  }
+
+  public clearAuthData(): void {
+    localStorage.removeItem('headerValue');
+    localStorage.removeItem('username');
+    
+  }
+
+
 }

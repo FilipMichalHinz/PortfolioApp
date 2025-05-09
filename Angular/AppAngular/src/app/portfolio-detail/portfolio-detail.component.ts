@@ -11,8 +11,11 @@ import { YahooFinanceService } from '../services/yahoo-finance.service';
 
 import { Portfolio } from '../model/portfolio';
 import { PortfolioItem } from '../model/portfolio-item';
-import { PortfolioSummary } from '../model/portfolio-summary';
+import { AssetPerformance, PortfolioSummary } from '../model/portfolio-summary';
 import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-item-form.component';
+
+import { SharedModule } from '../shared/shared.module';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-portfolio-detail',
@@ -22,7 +25,8 @@ import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-ite
     RouterModule,
     FormsModule,
     NgxChartsModule, // For pie charts (allocation visualization)
-    PortfolioItemFormComponent
+    PortfolioItemFormComponent,
+    SharedModule
   ],
   templateUrl: './portfolio-detail.component.html',
   styleUrls: ['./portfolio-detail.component.css'],
@@ -57,8 +61,17 @@ export class PortfolioDetailComponent implements OnInit {
   itemBeingEdited: PortfolioItem | null = null;
   isEditMode: boolean = false;
 
+  // see if these are redundant - maybe remove
   editSellMode = false;
   itemToEditSell!: PortfolioItem;
+
+  //
+  editingItemId: number | null = null; // for in item editing
+  tempEditValues: any = {}; // for in item editing
+
+  // for in item editing - maybe remove
+  editingSellPriceId: number | null = null;
+  tempExitPrice: number | null = null;
 
   // Pie chart data for allocation visualization
   allocationPieData: { name: string, value: number }[] = [];
@@ -66,6 +79,13 @@ export class PortfolioDetailComponent implements OnInit {
 
   itemToSell!: PortfolioItem;
   s: [] = [];
+
+  // Use angular mt table data source
+  openPositions = new MatTableDataSource<any>([]); // could be input PortfolioItem[]?
+  completedPositions = new MatTableDataSource<any>([]); 
+
+  openPositionsColumns: string[] = ['ticker', 'name', 'quantity', 'purchasePrice', 'currentPrice', 'currentValue', 'profitLoss', 'returnPercent', 'actions'];
+  completedPositionsColumns: string[] = ['ticker', 'name', 'quantity', 'purchasePrice', 'sellPrice', 'soldDate', 'profitLoss','returnPercent', 'actions'];
 
   constructor(
     private route: ActivatedRoute,
@@ -129,6 +149,12 @@ export class PortfolioDetailComponent implements OnInit {
       changePercent: 0
     };
     this.fetchNames(); // Resolve asset names from tickers
+    this.updateTableData(); // delete maybe
+  }
+
+  private updateTableData(): void {
+    this.openPositions.data = this.summary.byAsset.filter(a => !a.isSold);
+    this.completedPositions.data = this.summary.byAsset.filter(a => a.isSold);
   }
 
   // Toggle loading spinner once both portfolio and summary are loaded
@@ -253,6 +279,99 @@ export class PortfolioDetailComponent implements OnInit {
   onCancel(): void {
     this.showForm = false;
   }
+  ///// CHECK THIS - THERE"S REDUNDANCY
+
+  /*----------- this is for editing ------------ */
+
+  // Combined edit functionality
+  editAsset(asset: any, isSellEdit: boolean = false): void{
+    this.editingItemId = asset.id;
+    this.tempEditValues = {...asset};
+    if(isSellEdit){
+      this.tempEditValues.exitDate = this.tempEditValues.exitDate ? new Date(this.tempEditValues.exitDate) : new Date();
+    }
+  }
+  cancelEdit(): void {
+    this.editingItemId = null;
+    this.tempEditValues = {};
+  }
+
+  saveEdit(): void {
+    if (!this.editingItemId || !this.tempEditValues) return;
+
+    const asset = this.summary.byAsset.find(a=> a.id == this.editingItemId);
+    if (!asset) return;
+
+    let updateObservable;
+    let updateData: any = { id: this.editingItemId };
+
+    if (asset.isSold){
+      //update sell data
+      if (this.tempEditValues.exitPrice == null || this.tempEditValues.exitDate == null) {
+        alert('Please enter valid Exit Price and Exit Date!');
+        return;
+      }
+      updateData.exitPrice = this.tempEditValues.exitPrice;
+      updateData.exitDate = this.tempEditValues.exitDate;
+      updateObservable = this.itemSvc.sellPortfolioItem(updateData);
+    } else {
+      updateData = {
+        id: this.editingItemId, // maybe remove this
+        ticker: this.tempEditValues.ticker, // maybe remove this
+        name: this.tempEditValues.name,
+        quantity: this.tempEditValues.quantity,
+        purchasePrice: this.tempEditValues.purchasePrice,
+        purchaseDate: this.tempEditValues.purchaseDate
+      };
+      updateObservable = this.itemSvc.update(updateData);
+    }
+    updateObservable.subscribe({
+      next: () => {
+        this.editingItemId = null;
+        this.tempEditValues = {};
+        this.loadSummary(this.portfolio.id);
+      },
+      error: err => alert('Error updating asset')
+    });
+  }
+// FInds the asset which is being edited
+  get currentEditingAsset(): AssetPerformance | undefined {
+    if (!this.editingItemId || !this.summary.byAsset) {
+    return undefined;
+  }
+  return this.summary.byAsset.find(a => a.id === this.editingItemId);
+
+}
+
+  confirmSell(): void {
+    if (this.itemToSell.exitPrice == null || this.itemToSell.exitPrice <= 0) {
+      alert('Please enter a valid Exit Price!');
+      return;
+    }
+    if (!this.itemToSell.exitDate) {
+      alert('Please enter an Exit Date!');
+      return;
+    }
+    const sellRequest = {
+      id: this.itemToSell.id,
+      exitPrice: this.itemToSell.exitPrice,
+      exitDate: this.itemToSell.exitDate
+    };
+    this.itemSvc.sellPortfolioItem(sellRequest).subscribe({
+      next: () => {
+        this.sellMode = false;
+        this.loadSummary(this.portfolio.id);
+      },
+      error: err => {
+        console.error('Error selling asset', err);
+        alert('Error selling asset. Please check your input.');
+      }
+    });
+  }
+
+  cancelSell():void{
+    this.sellMode = false;
+  }
 
   // Starts the "sell asset" process
   startSell(asset: any): void {
@@ -271,6 +390,7 @@ export class PortfolioDetailComponent implements OnInit {
   }
 
   // Confirm asset sale (validates input, then calls service)
+  /*
   confirmSell(): void {
     if (this.itemToSell.exitPrice == null || this.itemToSell.exitPrice <= 0) {
       alert('Please enter a valid Exit Price!');
@@ -299,10 +419,9 @@ export class PortfolioDetailComponent implements OnInit {
       }
     });
   }
+*/
 
-  cancelSell(): void {
-    this.sellMode = false;
-  }
+
 
   // Delete a single asset after confirmation
   deleteItem(id: number): void {
@@ -343,13 +462,25 @@ export class PortfolioDetailComponent implements OnInit {
   }
 
   // Open edit-sell dialog
+  // this is likely redundant
   editSell(asset: PortfolioItem): void {
     this.editSellMode = true;
     this.itemToEditSell = { ...asset };
   }
 
+startEditSellPrice(asset: any): void{
+  this.editingSellPriceId = asset.id;
+  this.tempExitPrice = asset.exitPrice;
+}
+cancelEditSellPrice(): void {
+  this.editingSellPriceId = null;
+  this.tempExitPrice = null;
+}
+
+
   // Confirm edit of sell data
-  confirmSellEdit(): void {
+  saveEditSellPrice(): void {
+    if (this.tempExitPrice == null || this.tempExitPrice <= 0) {
     const req = {
       id: this.itemToEditSell.id,
       exitPrice: this.itemToEditSell.exitPrice!,
@@ -358,10 +489,21 @@ export class PortfolioDetailComponent implements OnInit {
 
     this.itemSvc.sellPortfolioItem(req).subscribe({
       next: () => {
-        this.editSellMode = false;
+        this.editingSellPriceId = null
+        this.tempExitPrice = null;
         this.loadSummary(this.portfolio.id);
       },
       error: err => alert('Failed to update sale')
     });
   }
+}
+
+// to simplify html
+get isSaveDisabled(): boolean {
+  if (!this.currentEditingAsset) {
+    return true; // Disabled if no asset is being edited
+  }
+  // The original logic: disabled if summary.byAsset is falsy OR if no asset matches editingItemId
+  return false;
+}
 }
