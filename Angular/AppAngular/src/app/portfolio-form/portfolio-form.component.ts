@@ -52,6 +52,11 @@ export class PortfolioFormComponent {
         }
       });
     }
+    else {
+      // ✅ ADDED: show alert if the name is empty
+      alert('Please fill in all required fields correctly.');
+  }
+
   }
 
   // Resets the form input model to initial state
