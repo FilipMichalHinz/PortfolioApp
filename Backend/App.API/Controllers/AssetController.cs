@@ -38,6 +38,7 @@ namespace App.API.Controllers
             return Ok(items);
         }
 
+        /*
         [HttpPost]
         public ActionResult Post([FromBody] Asset item)
         {
@@ -52,6 +53,23 @@ namespace App.API.Controllers
             bool ok = Repository.InsertAsset(item);
             return ok ? Ok(item) : BadRequest("Unable to insert asset");
         }
+        */
+
+        [HttpPost]
+        public ActionResult Post([FromBody] Asset item)
+        {
+            if (item == null)
+                return BadRequest("Asset info not correct");
+
+            var userId = GetAuthenticatedUserId();
+            var portfolio = PortfolioRepository.GetPortfolioById(item.PortfolioId, userId);
+            if (portfolio == null)
+                return Unauthorized("You do not own this portfolio.");
+
+            var result = Repository.InsertAssetAndReturn(item);
+            return result != null ? Ok(result) : BadRequest("Unable to insert asset");
+        }
+
 
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)

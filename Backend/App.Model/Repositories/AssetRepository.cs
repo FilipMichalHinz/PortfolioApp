@@ -52,6 +52,7 @@ namespace App.Model.Repositories
             }
         }
 
+        /*
         // Inserts a new Asset into the database
         public bool InsertAsset(Asset item)
         {
@@ -80,6 +81,35 @@ namespace App.Model.Repositories
                 dbConn?.Close();
             }
         }
+        */
+
+        public Asset? InsertAssetAndReturn(Asset item)
+        {
+            using var conn = new NpgsqlConnection(ConnectionString);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                INSERT INTO assets (portfolioid, ticker, name, purchaseprice, quantity, purchasedate)
+                VALUES (@portfolioId, @ticker, @name, @purchasePrice, @quantity, @purchaseDate)
+                RETURNING id";
+
+            cmd.Parameters.AddWithValue("@portfolioId", item.PortfolioId);
+            cmd.Parameters.AddWithValue("@ticker", item.Ticker);
+            cmd.Parameters.AddWithValue("@name", item.Name);
+            cmd.Parameters.AddWithValue("@purchasePrice", item.PurchasePrice);
+            cmd.Parameters.AddWithValue("@quantity", item.Quantity);
+            cmd.Parameters.AddWithValue("@purchaseDate", item.PurchaseDate);
+
+            conn.Open();
+            var id = cmd.ExecuteScalar();
+            if (id != null)
+            {
+                item.Id = Convert.ToInt32(id);
+                return item;
+            }
+
+            return null;
+        }
+
 
         // Deletes a Asset by its ID
         public bool DeleteAsset(int id)

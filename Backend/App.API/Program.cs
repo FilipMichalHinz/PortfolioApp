@@ -78,8 +78,7 @@ app.MapControllers();
 
 app.Run();
 
-
-
+public partial class Program { }
 
 /*
 var hash2 = hasher.HashPassword(new User(), "password");
@@ -89,4 +88,3 @@ Console.WriteLine(hash1);
 Console.WriteLine(hash2);
 Console.WriteLine(hash3);
 */
-
