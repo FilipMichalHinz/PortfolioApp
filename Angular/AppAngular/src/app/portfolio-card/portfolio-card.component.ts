@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PortfolioOverview } from '../model/portfolio-overview';
 import { PortfolioService } from '../services/portfolio.service';
+import { SharedModule } from '../shared/shared.module';
 
 @Component({
   selector: 'app-portfolio-card',
   standalone: true, // Uses Angular's standalone component architecture
-  imports: [CommonModule, RouterModule], // Enables *ngIf, *ngFor, routerLink, etc.
+  imports: [CommonModule, RouterModule, SharedModule], // Enables *ngIf, *ngFor, routerLink, etc.
   templateUrl: './portfolio-card.component.html',
   styleUrls: ['./portfolio-card.component.scss']
 })

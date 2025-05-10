@@ -1,0 +1,17 @@
+.button-row {
+    justify-content: center;
+    display: flex;
+    gap: 10px;
+   
+  }
+
+.add-item-wrapper {
+    display: flex;
+    
+    margin-bottom: 1.5rem; /* Space below the button */
+}
+
+/* to center Action column */
+.mat-column-actions .mat-header-cell {
+    text-align: center;
+  }

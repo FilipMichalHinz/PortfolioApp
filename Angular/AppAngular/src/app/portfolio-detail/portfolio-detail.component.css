@@ -77,53 +77,32 @@
   margin-left: 0.3rem;
 }
 
-.assets-panel h2 {
-  /* 💬 Updated to flex layout to allow h2 and button to be side-by-side */
+/* Optional: Add a container style if your table needs specific margins or rounded corners */
+.table-container {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  border-radius: 8px; /* Optional: if you want rounded corners for the table area */
+  overflow: hidden; /* Required if using border-radius on the container */
+  /* box-shadow: 0 1px 3px rgba(0,0,0,0.04); */ /* Very subtle shadow, optional */
+}
+
+
+
+
+
+
+
+
+
+
+.add-item-wrapper {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 1.3rem;
+  
+  margin-bottom: 1.5rem; /* Space below the button */
+  margin-top: 1.5rem;
 }
 
-.assets-panel table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
 
-.assets-panel th,
-.assets-panel td {
-  padding: 0.6rem 0.8rem;
-  border-bottom: 1px solid #e0e0e0;
-  text-align: right;
-}
-
-.assets-panel th:first-child,
-.assets-panel td:first-child {
-  text-align: left;
-}
-
-.assets-panel tr:hover {
-  background: #fafafa;
-}
-
-.add-btn {
-  /* 💬 Styled the "+ Add Item" button to stand out and match Bootstrap feel */
-  background-color: #007bff;
-  border: none;
-  color: white;
-  padding: 0.3rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem; /* Slightly smaller text for a compact look */
-  transition: background-color 0.3s ease; /* 💬 Smooth hover transition */
-}
-
-.add-btn:hover {
-  /* 💬 Slightly darker blue on hover */
-  background-color: #0069d9;
-}
 
 /* 🆕 Added for "No assets yet" friendly message */
 .no-assets-placeholder {
@@ -133,6 +112,9 @@
   text-align: center;
   font-style: italic; /* 💬 Slight italic to differentiate the message */
 }
+
+
+
 /* Styles for the modal overlay (the backdrop) */
 .modal-overlay {
   position: fixed; /* Cover the entire viewport */
@@ -173,6 +155,7 @@
   display: flex;
   gap: 8px;
   margin: 0.25rem 0 0.25rem 0;
+  justify-content: center;
 }
 
 .actions-row button {

@@ -3,17 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Portfolio } from '../model/portfolio';
 import { PortfolioService } from '../services/portfolio.service';
+import { SharedModule } from '../shared/shared.module';
 
 @Component({
   selector: 'app-portfolio-form',
   standalone: true, // This component does not rely on an NgModule
-  imports: [CommonModule, FormsModule], // Required for template syntax like ngIf and ngModel
+  imports: [CommonModule, FormsModule, SharedModule], // Required for template syntax like ngIf and ngModel
   templateUrl: './portfolio-form.component.html',
   styleUrls: ['./portfolio-form.component.css']
 })
 export class PortfolioFormComponent {
   // Emits the newly created Portfolio object to the parent component
   @Output() created = new EventEmitter<Portfolio>();
+  @Output() cancelled = new EventEmitter<void>();
 
   // Controls whether the form is visible
   showForm = false;
@@ -46,7 +48,7 @@ export class PortfolioFormComponent {
 
           // Reset form state and hide form
           this.resetForm();
-          this.showForm = false;
+          
         }
       });
     }
@@ -62,9 +64,9 @@ export class PortfolioFormComponent {
   }
 
   // Triggered when user cancels the form input
-  cancel() {
+  onCancel() : void {
     this.resetForm();
-    this.showForm = false;
+    this.cancelled.emit();
   }
 
   // Returns true if the form input is valid (non-empty name)

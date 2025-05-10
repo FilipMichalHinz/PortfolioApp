@@ -9,6 +9,8 @@ import { Portfolio } from '../model/portfolio';
 import { PortfolioCardComponent } from '../portfolio-card/portfolio-card.component';
 import { PortfolioFormComponent } from '../portfolio-form/portfolio-form.component';
 
+import { SharedModule } from '../shared/shared.module';
+
 @Component({
   selector: 'app-portfolio-list',
   standalone: true,
@@ -16,7 +18,8 @@ import { PortfolioFormComponent } from '../portfolio-form/portfolio-form.compone
     CommonModule,
     PortfolioCardComponent,   // Used to display each portfolio as a card
     PortfolioFormComponent,   // Used to add a new portfolio
-    RouterModule
+    RouterModule,
+    SharedModule             // Shared components and directives
   ],
   templateUrl: './portfolio-list.component.html',
   styleUrls: ['./portfolio-list.component.css']
@@ -32,6 +35,8 @@ export class PortfolioListComponent implements OnInit {
   totalPortfolioCount = 0;
   totalPortfolioValue = 0;
   totalProfitLoss = 0;
+
+  showAddPortfolioForm = false; // Controls visibility of the portfolio creation form
 
   constructor(
     private portfolioService: PortfolioService,
@@ -79,11 +84,21 @@ export class PortfolioListComponent implements OnInit {
   onPortfolioDeleted(id: number): void {
     // Remove the portfolio from the local list
     this.portfolios = this.portfolios.filter(p => p.id !== id);
+    
   }
 
   // Called when a new portfolio is created
   onPortfolioCreated(created: Portfolio): void {
     // Reload all overviews to include the new one
     this.loadOverviews();
+    this.showAddPortfolioForm = false; // Hide the form after creation
+  }
+
+openAddPortfolioForm(): void {
+    this.showAddPortfolioForm = true; // Show the form for creating a new portfolio
+  }
+
+onAddPortfolioFormCancelled(): void {
+    this.showAddPortfolioForm = false; // Hide the form when cancelled
   }
 }

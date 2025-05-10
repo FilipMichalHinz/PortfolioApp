@@ -3,8 +3,8 @@
     Welcome<ng-container *ngIf="username">, {{ username }}</ng-container>!
   </h2>
   <p class="tagline">Your central hub for managing financial assets and insights.</p>
-  <div class="dashboard-actions">
+  <div class="button-row" >
     <a routerLink="/portfolio-list" mat-raised-button color="primary" class="dashboard-button">View My Portfolios</a>
-    <a routerLink="/watchlist" mat-raised-button color="accent" class="dashboard-button">Explore Watchlist</a>
+    <a routerLink="/watchlist" mat-stroked-button color="accent" class="dashboard-button">Explore Watchlist</a>
   </div>
 </div>

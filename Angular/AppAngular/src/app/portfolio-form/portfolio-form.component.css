@@ -2,16 +2,7 @@
   margin-top: 2rem;
 }
 
-button {
-  background-color: #333;
-  color: white;
-  border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  margin-right: 0.5rem;
-}
+
 
 button.cancel {
   background-color: #aaa;
@@ -43,4 +34,9 @@ input {
 .buttons {
   display: flex;
   justify-content: flex-start;
+  gap: 8px; /* Adds 8px space BETWEEN the buttons */
+  margin-top: 16px; 
 }
+
+
+

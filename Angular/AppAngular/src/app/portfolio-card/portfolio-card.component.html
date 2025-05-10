@@ -51,7 +51,8 @@
   <!-- Action buttons section -->
   <div class="actions">
     <!-- Delete button triggers confirmDelete() in component -->
-    <button (click)="confirmDelete($event)">
+    <button mat-stroked-button color="warn" (click)="confirmDelete($event)">
+      <mat-icon>delete_outline</mat-icon> 
       Delete
     </button>
   </div>

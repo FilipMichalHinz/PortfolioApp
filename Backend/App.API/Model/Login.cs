@@ -14,10 +14,3 @@ public class Login
     [JsonPropertyName("password")]
     public string Password { get; set; }
 }
-
-// src/app/model/login.ts
-export interface Login {
-  userId: number;       // Matches what your C# backend sends
-  username: string;     // Matches what your C# backend sends
-  authHeader: string;   // Matches what your C# backend sends
-}

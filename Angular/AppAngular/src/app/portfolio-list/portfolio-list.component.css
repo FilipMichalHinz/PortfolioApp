@@ -1,3 +1,29 @@
+
+.page-header {
+  text-align: center; 
+  padding: 40px 20px;
+  margin-bottom: 30px; 
+}
+
+.page-header h1 {
+  font-size: 2.8em; 
+  font-weight: 300; 
+  color: #2c3e50;  /* Dark, professional color */
+  margin-top: 0;
+  margin-bottom: 10px; /* Space between heading and subtitle */
+}
+
+.page-header .subtitle {
+  font-size: 1.1em;
+  color: #7f8c8d; /* Softer grey for the subtitle */
+  line-height: 1.6;
+  max-width: 600px; /* Limit width for readability */
+  margin-left: auto;
+  margin-right: auto; /* Center the subtitle if it's narrower than the container */
+  margin-bottom: 0;
+}
+
+
 .loading,
 .empty {
   text-align: center;
@@ -31,12 +57,16 @@
   gap: 2rem;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: #f6f6f6;
   border-radius: 12px;
   justify-content: space-around;
 }
 
 .summary-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   text-align: center;
 }
 
@@ -57,4 +87,5 @@
 .summary-card .value.negative {
   color: red;
 }
+
 

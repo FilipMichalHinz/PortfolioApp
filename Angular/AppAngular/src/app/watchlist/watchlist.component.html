@@ -6,11 +6,12 @@
 
 <div class="container">
   <h1>My Watchlist</h1>
-
+<div class="add-item-wrapper">
 <button mat-raised-button color="primary" (click)="toggleAddForm()">
+     <mat-icon>add_circle_outline</mat-icon>
     {{ showAddForm ? 'Hide Add Form' : 'Add Item' }} 
 </button>
-
+</div>
   <div *ngIf="showAddForm" class="add-form">
       <mat-form-field>
           <mat-label>Ticker</mat-label>
@@ -22,7 +23,7 @@
           <input matInput type="number" [(ngModel)]="newTarget" />
       </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="addItem()">Add</button>
+      <button mat-button (click)="addItem()">Add</button>
   </div>
 
   <div *ngIf="isLoading">Loading...</div>
@@ -58,9 +59,12 @@
           <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let item">
-                  <div *ngIf="!editMode || editingItem?.id !== item.id">
-                      <button mat-raised-button color="primary" (click)="startEdit(item)">Edit</button>
-                      <button mat-raised-button color="warn" (click)="deleteItem(item.id)">Delete</button>
+                  <div class="button-row" *ngIf="!editMode || editingItem?.id !== item.id">
+                      <button mat-stroked-button  (click)="startEdit(item)">
+                        <mat-icon>edit</mat-icon>Edit</button>
+                      <button mat-stroked-button color="warn" (click)="deleteItem(item.id)">
+                        <mat-icon>delete_outline</mat-icon> 
+                        Delete</button>
                   </div>
                   <div *ngIf="editMode && editingItem?.id === item.id" class="edit-buttons">
                       <button mat-raised-button color="accent" (click)="saveEdit()">Save</button>

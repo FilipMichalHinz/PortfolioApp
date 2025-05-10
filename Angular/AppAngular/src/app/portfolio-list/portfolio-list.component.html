@@ -1,3 +1,9 @@
+
+<div class="page-header">
+  <h1>My Portfolios</h1>
+  <p class="subtitle">An overview of your investment portfolios and their performance.</p>
+</div>
+
 <!-- Global summary section: displays aggregate values across all portfolios -->
 <div class="global-summary">
   <!-- Number of portfolios -->
@@ -35,6 +41,7 @@
   No portfolios found.
 </div>
 
+
 <!-- Portfolio list display -->
 <!-- Each portfolio is shown using a reusable card component inside a link -->
 <div *ngIf="!isLoading && portfolios.length > 0" class="portfolio-list">
@@ -51,6 +58,20 @@
   </a>
 </div>
 
-<!-- Always render the form to add a new portfolio -->
-<!-- Emits 'created' event when a new portfolio is submitted -->
-<app-portfolio-form (created)="onPortfolioCreated($event)"></app-portfolio-form>
+<div class="add-portfolio-action-bar">
+  <button mat-raised-button color="primary" (click)="openAddPortfolioForm()">
+    <mat-icon>add_circle_outline</mat-icon>
+    Add New Portfolio
+  </button>
+</div>
+
+<div *ngIf="!isLoading && portfolios.length > 0" class="portfolio-list">
+  </div>
+
+<div *ngIf="showAddPortfolioForm" class="modal-overlay">
+  <div class="modal-content portfolio-form-modal-content"> <app-portfolio-form
+      (created)="onPortfolioCreated($event)"
+      (cancelled)="onAddPortfolioFormCancelled()">
+    </app-portfolio-form>
+  </div>
+</div>
