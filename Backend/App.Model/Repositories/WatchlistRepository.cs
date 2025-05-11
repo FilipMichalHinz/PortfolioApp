@@ -70,7 +70,7 @@ namespace App.Model.Repositories
         public bool UpdateWatchlistItem(Watchlist item, int userId)
         {
             using var dbConn = new NpgsqlConnection(ConnectionString);
-            dbConn.Open();
+            //dbConn.Open();
 
             using var cmd = dbConn.CreateCommand();
             cmd.CommandText = @"
