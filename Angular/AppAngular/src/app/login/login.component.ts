@@ -20,14 +20,14 @@ export class LoginComponent {
 
   login(): void {
     if (!this.username.trim() || !this.password.trim()) {
-      alert('Bitte gib Benutzername und Passwort ein.');
+      alert('Please insert username and password.');
       this.loginFailed = true;
       return;
     }
 
     this.auth.authenticate(this.username, this.password).subscribe({
       next: (response) => {
-        console.log('Login response:', response); // Debug-Hilfe
+        console.log('Login response:', response);
 
         if (response?.authHeader) {
           localStorage.setItem('headerValue', response.authHeader);
@@ -42,14 +42,14 @@ export class LoginComponent {
         this.loginFailed = true;
 
         if (err.status === 401) {
-          alert('Falscher Benutzername oder Passwort.');
+          alert('Login failed.');
         } else if (err.status === 0) {
-          alert('Verbindung zum Server fehlgeschlagen.');
+          alert('Connection to the server failed.');
         } else {
-          alert('Ein Fehler ist aufgetreten: ' + (err.error?.message || err.message));
+          alert('An error has occurred: ' + (err.error?.message || err.message));
         }
 
-        console.error('Login-Fehler:', err);
+        console.error('Logon error:', err);
       }
     });
   }
