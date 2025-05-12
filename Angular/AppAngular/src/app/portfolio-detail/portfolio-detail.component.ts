@@ -13,6 +13,7 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioItemService } from '../services/portfolio-item.service';
@@ -21,10 +22,9 @@ import { YahooFinanceService } from '../services/yahoo-finance.service';
 import { Portfolio } from '../model/portfolio';
 import { PortfolioItem } from '../model/portfolio-item';
 import { AssetPerformance, PortfolioSummary } from '../model/portfolio-summary';
-import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-item-form.component';
 
+import { PortfolioItemFormComponent } from '../portfolio-item-form/portfolio-item-form.component';
 import { SharedModule } from '../shared/shared.module';
-import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-portfolio-detail',
@@ -42,9 +42,11 @@ import { MatTableDataSource } from '@angular/material/table';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PortfolioDetailComponent implements OnInit {
-  portfolio!: Portfolio; // Selected portfolio
 
-  // Summary object aggregating all asset data
+  // Selected portfolio object
+  portfolio!: Portfolio;
+
+  // Aggregated summary data for the portfolio (positions, metrics)
   summary: PortfolioSummary = {
     portfolioId: 0,
     byAsset: [],
@@ -61,24 +63,27 @@ export class PortfolioDetailComponent implements OnInit {
   completedTradesExpanded = true;
   sellMode = false;
 
-  // Profit/return metrics
+  // Portfolio performance breakdown
   totalFinalizedProfit = 0;
   totalFinalizedReturnPercent = 0;
   totalOpenProfit = 0;
   totalOpenReturnPercent = 0;
 
-  // Item editing (inline, dialog)
+  // Item form editing state
   itemBeingEdited: PortfolioItem | null = null;
   isEditMode = false;
+
+  // Inline editing state
   editingItemId: number | null = null;
   tempEditValues: any = {};
+
+  // Exit price editing state
   editingSellPriceId: number | null = null;
   tempExitPrice: number | null = null;
-
   editSellMode = false;
   itemToEditSell!: PortfolioItem;
 
-  // Sell modal state
+  // Modal state for selling an item
   itemToSell!: PortfolioItem;
 
   // Allocation chart data
@@ -89,26 +94,27 @@ export class PortfolioDetailComponent implements OnInit {
   openPositions = new MatTableDataSource<any>([]);
   completedPositions = new MatTableDataSource<any>([]);
 
+  // Displayed columns in open and completed positions
   openPositionsColumns: string[] = ['ticker', 'name', 'quantity', 'purchasePrice', 'currentPrice', 'currentValue', 'profitLoss', 'returnPercent', 'actions'];
   completedPositionsColumns: string[] = ['ticker', 'name', 'quantity', 'purchasePrice', 'sellPrice', 'soldDate', 'profitLoss', 'returnPercent', 'actions'];
 
   constructor(
     private route: ActivatedRoute,
-    private portfolioSvc: PortfolioService,
-    private itemSvc: PortfolioItemService,
-    private yahooService: YahooFinanceService,
-    private router: Router
-  ) { }
+    private portfolioSvc: PortfolioService,       // Service for portfolio data
+    private itemSvc: PortfolioItemService,        // Service for item operations
+    private yahooService: YahooFinanceService,    // Service for asset name lookup
+    private router: Router                        // Router for redirection
+  ) {}
 
   ngOnInit(): void {
-    // Redirect to login if token missing
+    // Redirect to login page if no token exists
     const token = localStorage.getItem('headerValue');
     if (!token) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Get portfolio ID from route and load data
+    // Get portfolio ID from route params and load data
     this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
       if (!id) return;
@@ -116,7 +122,7 @@ export class PortfolioDetailComponent implements OnInit {
       this.showForm = false;
       this.isLoading = true;
 
-      // Load selected portfolio
+      // Load portfolio metadata
       this.portfolioSvc.getPortfolio(id).subscribe({
         next: p => {
           this.portfolio = p;
@@ -129,7 +135,7 @@ export class PortfolioDetailComponent implements OnInit {
         }
       });
 
-      // Load portfolio summary (positions)
+      // Load asset summary data
       this.itemSvc.getSummary(id).subscribe({
         next: sum => {
           this.applySummary(id, sum);
@@ -144,7 +150,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
-  // Applies the summary object and prepares view updates
+  // Assign summary data and update views
   private applySummary(id: number, sum: PortfolioSummary | null): void {
     this.summary = sum ?? {
       portfolioId: id,
@@ -154,22 +160,22 @@ export class PortfolioDetailComponent implements OnInit {
       totalProfitLoss: 0,
       changePercent: 0
     };
-    this.fetchNames();
-    this.updateTableData();
+    this.fetchNames();        // Enrich assets with names
+    this.updateTableData();   // Split assets into open/sold
   }
 
-  // Fills material tables with open and sold positions
+  // Populate Material tables with open/sold positions
   private updateTableData(): void {
     this.openPositions.data = this.summary.byAsset.filter(a => !a.isSold);
     this.completedPositions.data = this.summary.byAsset.filter(a => a.isSold);
   }
 
-  // Hides loading spinner when all data is available
+  // Check if loading is complete (both portfolio and summary loaded)
   private checkLoadingFinished(): void {
     this.isLoading = !(this.portfolio && this.summary);
   }
 
-  // Reload summary from backend
+  // Reload summary data from backend
   private loadSummary(id: number): void {
     this.isLoading = true;
     this.itemSvc.getSummary(id).subscribe({
@@ -182,7 +188,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
-  // Resolves company names for tickers
+  // Fetch asset names based on ticker symbols
   private fetchNames(): void {
     if (!this.summary.byAsset?.length) {
       this.calculateProfitMetrics();
@@ -218,13 +224,14 @@ export class PortfolioDetailComponent implements OnInit {
     }
   }
 
+  // Called after all asset names are fetched
   private finalizeSummaryDisplay(): void {
     this.calculateProfitMetrics();
     this.prepareAllocationPie();
     this.isLoading = false;
   }
 
-  // Computes profit/loss statistics from raw asset data
+  // Calculate P&L metrics for open and finalized positions
   private calculateProfitMetrics(): void {
     const openAssets = this.summary.byAsset.filter(a => !a.isSold);
     const finalizedAssets = this.summary.byAsset.filter(a => a.isSold);
@@ -258,7 +265,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.summary.currentValue = openCurrentValue;
   }
 
-  // Prepares pie chart data for asset allocation
+  // Create pie chart input from current holdings
   private prepareAllocationPie(): void {
     const openAssets = this.summary.byAsset.filter(a => !a.isSold);
     const grouped: { [key: string]: number } = {};
@@ -271,17 +278,18 @@ export class PortfolioDetailComponent implements OnInit {
     this.allocationPieData = Object.entries(grouped).map(([name, value]) => ({ name, value }));
   }
 
-  // Handles new item creation callback
+  // Handle callback after new item is created
   onItemCreated(item: PortfolioItem): void {
     this.showForm = false;
     this.loadSummary(this.portfolio.id);
   }
 
+  // Handle callback when form is cancelled
   onCancel(): void {
     this.showForm = false;
   }
 
-  // Inline editing logic
+  // Prepare inline editing state for a given asset
   editAsset(asset: any, isSellEdit: boolean = false): void {
     this.editingItemId = asset.id;
 
@@ -296,12 +304,13 @@ export class PortfolioDetailComponent implements OnInit {
     }
   }
 
+  // Cancel inline editing
   cancelEdit(): void {
     this.editingItemId = null;
     this.tempEditValues = {};
   }
 
-  // Save inline edit changes
+  // Save changes from inline editing
   saveEdit(): void {
     if (!this.editingItemId || !this.tempEditValues) return;
 
@@ -336,7 +345,6 @@ export class PortfolioDetailComponent implements OnInit {
       updateObservable = this.itemSvc.update(updateData as PortfolioItem);
     }
 
-
     updateObservable.subscribe({
       next: () => {
         this.editingItemId = null;
@@ -347,11 +355,12 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
+  // Getter for currently edited asset
   get currentEditingAsset(): AssetPerformance | undefined {
     return this.summary.byAsset.find(a => a.id === this.editingItemId);
   }
 
-  // Confirm and submit a sell request
+  // Confirm sale of item from modal
   confirmSell(): void {
     if (this.itemToSell.exitPrice == null || this.itemToSell.exitPrice <= 0) {
       alert('Please enter a valid Exit Price!');
@@ -380,10 +389,12 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
+  // Cancel sell modal
   cancelSell(): void {
     this.sellMode = false;
   }
 
+  // Start selling an item (opens modal)
   startSell(asset: any): void {
     this.sellMode = true;
     this.itemToSell = {
@@ -399,6 +410,7 @@ export class PortfolioDetailComponent implements OnInit {
     };
   }
 
+  // Delete an asset from the portfolio
   deleteItem(id: number): void {
     if (!confirm('Are you sure you want to delete this asset?')) return;
 
@@ -411,6 +423,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
+  // Start editing an item using the embedded form
   startEdit(asset: any): void {
     this.itemBeingEdited = {
       id: asset.id,
@@ -427,6 +440,7 @@ export class PortfolioDetailComponent implements OnInit {
     this.showForm = true;
   }
 
+  // Callback after item was updated from form
   onItemUpdated(updatedItem: PortfolioItem): void {
     this.showForm = false;
     this.loadSummary(this.portfolio.id);
@@ -434,21 +448,25 @@ export class PortfolioDetailComponent implements OnInit {
     this.itemBeingEdited = null;
   }
 
+  // Start editing exit price in completed table
   editSell(asset: PortfolioItem): void {
     this.editSellMode = true;
     this.itemToEditSell = { ...asset };
   }
 
+  // Start editing exit price inline
   startEditSellPrice(asset: any): void {
     this.editingSellPriceId = asset.id;
     this.tempExitPrice = asset.exitPrice;
   }
 
+  // Cancel exit price inline editing
   cancelEditSellPrice(): void {
     this.editingSellPriceId = null;
     this.tempExitPrice = null;
   }
 
+  // Save updated sell price
   saveEditSellPrice(): void {
     if (this.tempExitPrice == null || this.tempExitPrice <= 0) return;
 
@@ -468,6 +486,7 @@ export class PortfolioDetailComponent implements OnInit {
     });
   }
 
+  // Prevent saving if no asset is selected
   get isSaveDisabled(): boolean {
     return !this.currentEditingAsset;
   }

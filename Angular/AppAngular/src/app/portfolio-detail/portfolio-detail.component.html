@@ -9,53 +9,51 @@ Uses Angular Material components and ngx-charts.
 
 <div class="detail-container">
 
-  <!-- Show loading spinner while data is being fetched -->
+  <!-- ---------- Loading Spinner ---------- -->
   <div *ngIf="isLoading" class="loading-spinner">
     Loading portfolio...
   </div>
 
-  <!-- Main content only appears when loading is complete -->
+  <!-- ---------- Main Content ---------- -->
   <ng-container *ngIf="!isLoading">
 
-    <!-- Portfolio header with back navigation and title -->
+    <!-- ---------- Header ---------- -->
     <header class="detail-header">
       <button class="back-btn" routerLink="/portfolio-list">← Back</button>
       <h1 class="title">{{ portfolio.name || ('Portfolio ' + summary.portfolioId) }}</h1>
     </header>
 
-    <!-- Section: Allocation pie chart visualization -->
+    <!-- ---------- Allocation Chart Section ---------- -->
     <section class="charts-panel">
       <div class="chart-wrapper">
         <div class="chart-title">Allocation Pie</div>
-
-        <!-- Render chart only if allocation data exists -->
-        <ngx-charts-pie-chart *ngIf="allocationPieData?.length" [results]="allocationPieData"
-          [colorScheme]="colorScheme" [view]="[400, 300]" [labels]="true" [doughnut]="true">
+        <ngx-charts-pie-chart *ngIf="allocationPieData?.length"
+                              [results]="allocationPieData"
+                              [colorScheme]="colorScheme"
+                              [view]="[400, 300]"
+                              [labels]="true"
+                              [doughnut]="true">
         </ngx-charts-pie-chart>
       </div>
     </section>
 
-    <!-- Section: Summary financial metrics -->
+    <!-- ---------- Financial Summary Metrics ---------- -->
     <section class="metrics-panel">
       <div class="metric-card">
         <div class="label">Invested</div>
         <div class="value">{{ summary.initialInvestment | currency }}</div>
       </div>
-
       <div class="metric-card">
         <div class="label">Current Value</div>
         <div class="value">{{ summary.currentValue | currency }}</div>
       </div>
-
       <div class="metric-card">
         <div class="label">Total P/L</div>
-        <div class="value" [class.positive]="summary.totalProfitLoss >= 0"
-          [class.negative]="summary.totalProfitLoss < 0">
+        <div class="value" [class.positive]="summary.totalProfitLoss >= 0" [class.negative]="summary.totalProfitLoss < 0">
           {{ summary.totalProfitLoss | currency }}
           <span class="pct">({{ summary.changePercent | number:'1.0-0' }}%)</span>
         </div>
       </div>
-
       <div class="metric-card">
         <div class="label">Finalized P/L</div>
         <div class="value" [class.positive]="totalFinalizedProfit >= 0" [class.negative]="totalFinalizedProfit < 0">
@@ -63,7 +61,6 @@ Uses Angular Material components and ngx-charts.
           <span class="pct">({{ totalFinalizedReturnPercent | number:'1.0-0' }}%)</span>
         </div>
       </div>
-
       <div class="metric-card">
         <div class="label">Open P/L</div>
         <div class="value" [class.positive]="totalOpenProfit >= 0" [class.negative]="totalOpenProfit < 0">
@@ -73,10 +70,10 @@ Uses Angular Material components and ngx-charts.
       </div>
     </section>
 
-    <!-- Section: Portfolio positions (open and completed) -->
+    <!-- ---------- Assets Table Panel ---------- -->
     <section class="assets-panel">
 
-      <!-- Expand/collapse toggle header for open positions -->
+      <!-- ---------- Open Positions ---------- -->
       <div class="assets-header" (click)="openPositionsExpanded = !openPositionsExpanded" style="cursor: pointer;">
         <span>{{ openPositionsExpanded ? '▲' : '▼' }}</span>
         <h2>Open Positions</h2>
@@ -84,7 +81,7 @@ Uses Angular Material components and ngx-charts.
 
       <div *ngIf="openPositionsExpanded">
 
-        <!-- Button to open form for adding a new asset -->
+        <!-- Add Item Button -->
         <div class="add-item-wrapper">
           <button mat-raised-button color="primary" *ngIf="!showForm" (click)="showForm = true">
             <mat-icon>add_circle_outline</mat-icon>
@@ -92,17 +89,21 @@ Uses Angular Material components and ngx-charts.
           </button>
         </div>
 
-        <!-- Embedded asset form for create/edit -->
+        <!-- Item Form Component -->
         <div *ngIf="showForm">
-          <app-portfolio-item-form [portfolioId]="portfolio.id" [itemToEdit]="itemBeingEdited" [editMode]="isEditMode"
-            (created)="onItemCreated($event)" (updated)="onItemUpdated($event)" (cancel)="onCancel()">
+          <app-portfolio-item-form [portfolioId]="portfolio.id"
+                                   [itemToEdit]="itemBeingEdited"
+                                   [editMode]="isEditMode"
+                                   (created)="onItemCreated($event)"
+                                   (updated)="onItemUpdated($event)"
+                                   (cancel)="onCancel()">
           </app-portfolio-item-form>
         </div>
 
-        <!-- Table of open (unsold) positions -->
+        <!-- Open Positions Table -->
         <table mat-table [dataSource]="openPositions" *ngIf="summary.byAsset.length > 0" class="mat-elevation-z8">
 
-          <!-- Column: Actions (edit, sell, delete) -->
+          <!-- Actions Column -->
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let a">
@@ -118,7 +119,7 @@ Uses Angular Material components and ngx-charts.
             </td>
           </ng-container>
 
-          <!-- Other columns: name, ticker, quantity, etc. -->
+          <!-- Asset Data Columns -->
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let a">{{ a.name || 'Loading...' }}</td>
@@ -158,33 +159,29 @@ Uses Angular Material components and ngx-charts.
 
           <ng-container matColumnDef="returnPercent">
             <th mat-header-cell *matHeaderCellDef>Return %</th>
-            <td mat-cell *matCellDef="let a">
-              {{ a.changePercent | number:'1.0-0' }}%
-            </td>
+            <td mat-cell *matCellDef="let a">{{ a.changePercent | number:'1.0-0' }}%</td>
           </ng-container>
 
-          <!-- Header and row renderers -->
+          <!-- Render Header and Row -->
           <tr mat-header-row *matHeaderRowDef="openPositionsColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: openPositionsColumns;"></tr>
         </table>
 
-        <!-- Message when no open positions exist -->
+        <!-- No Open Positions Placeholder -->
         <div *ngIf="summary?.byAsset?.length === 0 && !showForm" class="no-assets-placeholder">
           No open positions yet. Click "+ Add Item" to get started.
         </div>
       </div>
 
-      <!-- Expand/collapse toggle header for sold positions -->
+      <!-- ---------- Completed Positions ---------- -->
       <div class="assets-header" (click)="completedTradesExpanded = !completedTradesExpanded" style="cursor: pointer;">
         <span>{{ completedTradesExpanded ? '▲' : '▼' }}</span>
         <h2>Completed Positions</h2>
       </div>
 
-      <!-- Table of completed (sold) positions -->
-      <table mat-table [dataSource]="completedPositions" *ngIf="summary.byAsset.length > 0 && completedTradesExpanded"
-        class="mat-elevation-z8">
+      <table mat-table [dataSource]="completedPositions" *ngIf="summary.byAsset.length > 0 && completedTradesExpanded" class="mat-elevation-z8">
 
-        <!-- Action column: edit/delete -->
+        <!-- Actions Column -->
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let a">
@@ -199,7 +196,7 @@ Uses Angular Material components and ngx-charts.
           </td>
         </ng-container>
 
-        <!-- Remaining data columns: name, ticker, prices, date -->
+        <!-- Data Columns -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Name</th>
           <td mat-cell *matCellDef="let a">{{ a.name || 'Loading...' }}</td>
@@ -232,23 +229,20 @@ Uses Angular Material components and ngx-charts.
 
         <ng-container matColumnDef="profitLoss">
           <th mat-header-cell *matHeaderCellDef>Profit/Loss</th>
-          <td mat-cell *matCellDef="let a">
-            {{ (a.exitPrice! - a.purchasePrice) * a.quantity | currency }}
-          </td>
+          <td mat-cell *matCellDef="let a">{{ (a.exitPrice! - a.purchasePrice) * a.quantity | currency }}</td>
         </ng-container>
 
         <ng-container matColumnDef="returnPercent">
           <th mat-header-cell *matHeaderCellDef>Return %</th>
-          <td mat-cell *matCellDef="let a">
-            {{ ((a.exitPrice! - a.purchasePrice) / a.purchasePrice) * 100 | number:'1.0-0' }}%
-          </td>
+          <td mat-cell *matCellDef="let a">{{ ((a.exitPrice! - a.purchasePrice) / a.purchasePrice) * 100 | number:'1.0-0' }}%</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="completedPositionsColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: completedPositionsColumns;"></tr>
       </table>
 
-      <!-- Modal for selling an asset (provides exit price and date) -->
+      <!-- ---------- Modals ---------- -->
+      <!-- Sell Modal -->
       <div *ngIf="sellMode" class="modal-overlay">
         <div class="modal-content">
           <h3>Sell {{ itemToSell.ticker }}</h3>
@@ -263,8 +257,7 @@ Uses Angular Material components and ngx-charts.
           </mat-form-field>
 
           <div class="button-row">
-            <button mat-raised-button color='primary' (click)="confirmSell()"
-              [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
+            <button mat-raised-button color='primary' (click)="confirmSell()" [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
               Confirm Sell
             </button>
             <button mat-button (click)="cancelSell()">Cancel</button>
@@ -272,12 +265,11 @@ Uses Angular Material components and ngx-charts.
         </div>
       </div>
 
-      <!-- Modal for editing tiems -->
+      <!-- Edit Modal -->
       <div *ngIf="editingItemId" class="modal-overlay">
         <div class="modal-content">
           <h3 *ngIf="currentEditingAsset && !currentEditingAsset.isSold">Edit Asset</h3>
-          <h3 *ngIf="currentEditingAsset && currentEditingAsset.isSold">Edit Sale for
-            {{ currentEditingAsset.ticker }}</h3>
+          <h3 *ngIf="currentEditingAsset && currentEditingAsset.isSold">Edit Sale for {{ currentEditingAsset.ticker }}</h3>
 
           <ng-container *ngIf="currentEditingAsset">
             <mat-form-field *ngIf="!currentEditingAsset.isSold">
@@ -292,8 +284,7 @@ Uses Angular Material components and ngx-charts.
 
             <mat-form-field *ngIf="!currentEditingAsset.isSold">
               <mat-label>Purchase Date</mat-label>
-              <input matInput [matDatepicker]="editPurchasePicker" [(ngModel)]="tempEditValues.purchaseDate"
-                (dateChange)="editPurchasePicker.close()" name="purchaseDate" required />
+              <input matInput [matDatepicker]="editPurchasePicker" [(ngModel)]="tempEditValues.purchaseDate" (dateChange)="editPurchasePicker.close()" name="purchaseDate" required />
               <mat-datepicker-toggle matSuffix [for]="editPurchasePicker"></mat-datepicker-toggle>
               <mat-datepicker #editPurchasePicker></mat-datepicker>
             </mat-form-field>
@@ -311,7 +302,6 @@ Uses Angular Material components and ngx-charts.
 
           <button mat-raised-button color="primary" (click)="saveEdit()" [disabled]="isSaveDisabled">Save</button>
           <button mat-button (click)="cancelEdit()">Cancel</button>
-
         </div>
       </div>
 
