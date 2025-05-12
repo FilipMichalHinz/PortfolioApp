@@ -318,12 +318,13 @@ export class PortfolioDetailComponent implements OnInit {
       updateData = {
         id: this.editingItemId, // maybe remove this
         ticker: this.tempEditValues.ticker, // maybe remove this
+        portfolioId: this.tempEditValues.portfolioId,
         name: this.tempEditValues.name,
         quantity: this.tempEditValues.quantity,
         purchasePrice: this.tempEditValues.purchasePrice,
         purchaseDate: this.tempEditValues.purchaseDate
       };
-      updateObservable = this.itemSvc.update(updateData);
+      updateObservable = this.itemSvc.update(updateData as PortfolioItem);
     }
     updateObservable.subscribe({
       next: () => {
@@ -389,39 +390,7 @@ export class PortfolioDetailComponent implements OnInit {
     };
   }
 
-  // Confirm asset sale (validates input, then calls service)
-  /*
-  confirmSell(): void {
-    if (this.itemToSell.exitPrice == null || this.itemToSell.exitPrice <= 0) {
-      alert('Please enter a valid Exit Price!');
-      return;
-    }
-
-    if (!this.itemToSell.exitDate) {
-      alert('Please enter an Exit Date!');
-      return;
-    }
-
-    const sellRequest = {
-      id: this.itemToSell.id,
-      exitPrice: this.itemToSell.exitPrice,
-      exitDate: this.itemToSell.exitDate
-    };
-
-    this.itemSvc.sellPortfolioItem(sellRequest).subscribe({
-      next: () => {
-        this.sellMode = false;
-        this.loadSummary(this.portfolio.id);
-      },
-      error: err => {
-        console.error('Error selling asset', err);
-        alert('Error seeling asset. Please check your input.');
-      }
-    });
-  }
-*/
-
-
+  
 
   // Delete a single asset after confirmation
   deleteItem(id: number): void {

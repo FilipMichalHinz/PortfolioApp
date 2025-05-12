@@ -46,6 +46,7 @@ namespace App.Model.Repositories
         protected bool UpdateData(NpgsqlConnection conn, NpgsqlCommand cmd)
         {
             conn.Open();
+            cmd.Connection = conn;
             cmd.ExecuteNonQuery();
             return true;
         }

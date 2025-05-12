@@ -17,8 +17,10 @@ export class PortfolioItemService {
    * Returns authentication headers using the locally stored basic auth token.
    */
   private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('headerValue'); // Expected: "Basic YWxpY2U6cGFzc3dvcmQ="
+    // console.log('Token being sent by PortfolioItemService:', token); // Good for debugging
     return new HttpHeaders({
-      'Authorization': localStorage.getItem('headerValue') ?? ''
+      'Authorization': token ?? '' // Sends: "Authorization: Basic YWxpY2U6cGFzc3dvcmQ="
     });
   }
 

@@ -96,7 +96,8 @@ export interface YahooFinanceData {
 
     //update item (only target price)
     update(id: number, targetPrice: number): Observable<any> {
-        return this.http.put(`${this.baseUrl}/${id}`, targetPrice); // Send the price directly
+        // use getauthheaders to get the token for the getuserid in controller
+        return this.http.put(`${this.baseUrl}/${id}`, targetPrice, this.getAuthHeaders()); // Send the price directly
     }
 
     // delete item
