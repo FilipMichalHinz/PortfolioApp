@@ -1,3 +1,12 @@
+// =============================
+// File: portfolio-card.component.ts
+// Description:
+// Defines a reusable card component that displays a summary view of a single portfolio.
+// Accepts a PortfolioOverview object as input and allows deletion via user confirmation.
+// Emits events back to the parent component to trigger list updates after deletion.
+// Integrates routing and shared modules for UI and behavior.
+// =============================
+
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -10,42 +19,41 @@ import { SharedModule } from '../shared/shared.module';
   standalone: true, // Uses Angular's standalone component architecture
   imports: [CommonModule, RouterModule, SharedModule], // Enables *ngIf, *ngFor, routerLink, etc.
   templateUrl: './portfolio-card.component.html',
-  styleUrls: ['./portfolio-card.component.scss']
+  styleUrls: ['./portfolio-card.component.scss'],
 })
 export class PortfolioCardComponent {
-  // Portfolio object passed in from parent component (e.g. PortfolioListComponent)
+  // Input binding: portfolio summary data to be displayed in the card
   @Input() portfolio!: PortfolioOverview;
 
-  // Emits the portfolio ID back to the parent component after deletion
+  // Output event: notifies parent component when this portfolio is deleted
   @Output() deleted = new EventEmitter<number>();
 
-  // Tracks whether delete operation is currently in progress (e.g., for showing a spinner)
+  // Indicates whether a deletion is in progress (e.g., for disabling the UI)
   isDeleting: boolean = false;
 
   constructor(private portfolioService: PortfolioService) {}
 
   /**
-   * Triggered when user clicks the delete button.
-   * Prompts for confirmation, then calls the PortfolioService to delete the portfolio.
-   * On success, emits an event to notify the parent to update its list.
+   * Triggered when the user clicks the delete button.
+   * Prevents default link behavior, confirms with user, and deletes via service.
+   * Emits deletion event to parent on success.
    */
   confirmDelete(event: Event): void {
-    // Prevent default anchor behavior and event bubbling
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault();   // Prevent navigation if inside a <a> tag
+    event.stopPropagation();  // Prevent event bubbling (e.g., opening the card)
 
-    // Ask the user for confirmation before deleting
+    // Ask for confirmation before proceeding
     if (!confirm(`Are you sure you want to delete "${this.portfolio.name}"?`)) {
-      return; // User cancelled the action
+      return; // Abort if user cancels
     }
 
     this.isDeleting = true;
 
-    // Call the service to delete the portfolio by its ID
+    // Call backend via service to delete the portfolio
     this.portfolioService.deletePortfolio(this.portfolio.id).subscribe({
       next: () => {
         console.log(`Deleted portfolio ${this.portfolio.id}`);
-        this.deleted.emit(this.portfolio.id); // Inform parent component
+        this.deleted.emit(this.portfolio.id); // Emit event for parent to update UI
         this.isDeleting = false;
       },
       error: err => {

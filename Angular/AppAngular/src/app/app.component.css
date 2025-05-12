@@ -1,26 +1,38 @@
+/* =============================
+File: app.component.css (or styles.css / styles.scss)
+Description:
+Defines layout and styling for the root layout, header, navigation bar, and routed content.
+Includes styles for a fixed top toolbar, active navigation links, and general text formatting.
+============================= */
+
+/* Header area styling */
 header {
   background-color: #f5f5f5;
   padding: 1rem;
   border-bottom: 1px solid #ddd;
 }
 
+/* Main heading style */
 h1 {
   margin: 0;
   font-size: 1.8rem;
   color: #333;
 }
 
+/* Paragraph style for secondary text */
 p {
   margin: 0.2rem 0 0;
   color: #666;
 }
 
+/* Navigation bar container */
 nav {
   background-color: #ffffff;
   border-bottom: 1px solid #ddd;
   padding: 0.5rem 1rem;
 }
 
+/* Navigation list styling */
 nav ul {
   list-style: none;
   margin: 0;
@@ -29,10 +41,12 @@ nav ul {
   gap: 1rem;
 }
 
+/* Inline list items (optional with flex display) */
 nav li {
   display: inline;
 }
 
+/* Navigation link styling */
 nav a {
   text-decoration: none;
   color: #333;
@@ -41,46 +55,50 @@ nav a {
   transition: border-bottom 0.2s, color 0.2s;
 }
 
+/* Hover effect for links */
 nav a:hover {
   color: #1976d2;
 }
 
+/* Style for active router link */
 nav a.active {
   border-bottom: 2px solid #1976d2;
   color: #1976d2;
 }
 
+/* Layout padding for main content */
 main {
   padding: 1rem;
 }
 
-/* app.component.css or styles.scss/css */
+/* Fixed-position toolbar at the top of the screen */
 .app-toolbar {
-  position: fixed; /* Make toolbar sticky at the top */
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100; /* Ensure it's above other content if needed */
+  z-index: 100;
 }
 
+/* Spacer to push toolbar items to the right */
 .toolbar-spacer {
-  flex: 1 1 auto; /* Pushes items to the right of the span */
+  flex: 1 1 auto;
 }
 
-.app-toolbar a { /* Style for router links in the toolbar */
+/* Styling for links in the toolbar */
+.app-toolbar a {
   margin: 0 8px;
   text-decoration: none;
-  color: white; /* Assuming primary toolbar has dark text by default or vice-versa */
+  color: white;
 }
 
-.app-toolbar a.active-link { /* Style for the active router link */
+/* Styling for active links in the toolbar */
+.app-toolbar a.active-link {
   font-weight: bold;
-  border-bottom: 2px solid currentColor; /* Or your accent color */
+  border-bottom: 2px solid currentColor;
 }
 
+/* Ensures content is positioned below the fixed toolbar */
 .content-below-toolbar {
-  padding-top: 64px; /* Height of the toolbar (adjust if your toolbar height is different) */
-  /* If using a shorter toolbar on mobile, you'll need media queries to adjust padding-top */
+  padding-top: 64px; /* Adjust this value if toolbar height differs */
 }
-
-

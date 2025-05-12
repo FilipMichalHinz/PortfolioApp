@@ -1,57 +1,107 @@
+<!-- =============================
+File: add-portfolio-item.component.html
+Description:
+Provides a form for adding a new item to the user's investment portfolio.
+Captures key details including ticker symbol, name, purchase price, quantity, and purchase date.
+Uses Angular template-driven forms and Angular Material components for consistent UI and validation.
+Includes save and cancel actions to handle form submission or dismissal.
+============================= -->
 
 <div class="form-wrapper">
   <h3>Add Portfolio Item</h3>
+
+  <!-- Form for creating a new portfolio item -->
   <form (ngSubmit)="create()" #portfolioForm="ngForm" class="form-grid">
 
     <!-- Ticker input field -->
     <!-- User enters a stock symbol (e.g., TSLA) -->
-    <!-- Input is normalized and name will be fetched automatically -->
-    <mat-form-field> 
+    <!-- Input is normalized and triggers lookup for company name -->
+    <mat-form-field>
       <mat-label>Ticker symbol</mat-label>
-      <input matInput id="ticker" name="ticker" type="text" [(ngModel)]="item.ticker"
-                (ngModelChange)="onTickerChange($event)" required placeholder="e.g., TSLA"
-                (blur)="onTickerEntered()" />
-
+      <input matInput 
+             id="ticker" 
+             name="ticker" 
+             type="text" 
+             [(ngModel)]="item.ticker"
+             (ngModelChange)="onTickerChange($event)" 
+             required 
+             placeholder="e.g., TSLA"
+             (blur)="onTickerEntered()" />
     </mat-form-field>
 
+    <!-- Asset name field -->
+    <!-- Automatically filled based on ticker input -->
+    <!-- Read-only to prevent manual editing -->
     <mat-form-field>
       <mat-label>Asset Name</mat-label>
-      <input matInput type="text" id="name" [(ngModel)]="item.name" name="name" required readonly />
-  </mat-form-field>
+      <input matInput 
+             type="text" 
+             id="name" 
+             [(ngModel)]="item.name" 
+             name="name" 
+             required 
+             readonly />
+    </mat-form-field>
 
-  <mat-form-field>
+    <!-- Purchase price input -->
+    <!-- Numeric input with 2 decimal places -->
+    <mat-form-field>
       <mat-label>Purchase Price</mat-label>
-      <input matInput type="number" id="price" [(ngModel)]="item.purchasePrice" name="purchasePrice"
-          required step="0.01" placeholder="e.g., 250.00" />
-  </mat-form-field>
+      <input matInput 
+             type="number" 
+             id="price" 
+             [(ngModel)]="item.purchasePrice" 
+             name="purchasePrice"
+             required 
+             step="0.01" 
+             placeholder="e.g., 250.00" />
+    </mat-form-field>
 
-  <mat-form-field>
+    <!-- Quantity input -->
+    <!-- Accepts integer or fractional quantity -->
+    <mat-form-field>
       <mat-label>Quantity</mat-label>
-      <input matInput type="number" id="quantity" [(ngModel)]="item.quantity" name="quantity" required
-          step="0.01" placeholder="e.g., 5" />
-  </mat-form-field>
+      <input matInput 
+             type="number" 
+             id="quantity" 
+             [(ngModel)]="item.quantity" 
+             name="quantity" 
+             required
+             step="0.01" 
+             placeholder="e.g., 5" />
+    </mat-form-field>
 
-  <mat-form-field>
+    <!-- Purchase date input with calendar popup -->
+    <!-- Uses Angular Material date picker -->
+    <mat-form-field>
       <mat-label for="date">Purchase Date</mat-label>
-      <input 
-      matInput 
-      [matDatepicker]="picker" id="date"
-      [(ngModel)]="item.purchaseDate"
-       name="purchaseDate" 
-       required />
+      <input matInput 
+             [matDatepicker]="picker" 
+             id="date"
+             [(ngModel)]="item.purchaseDate"
+             name="purchaseDate" 
+             required />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker> 
-      </mat-form-field>
-  
-
-    <!-- Form actions: save or cancel -->
+    <!-- Action buttons: Save and Cancel -->
     <div class="button-row">
-      <!-- Save button is disabled if form is invalid -->
-      <button mat-raised-button color="primary" type="submit" [disabled]="portfolioForm.invalid">Save</button>
-      
-      <!-- Cancel button triggers reset and notifies parent -->
-      <button mat-button type="button" class="cancel" (click)="onCancel()">Cancel</button>
+      <!-- Submit button is disabled if form is invalid -->
+      <button mat-raised-button 
+              color="primary" 
+              type="submit" 
+              [disabled]="portfolioForm.invalid">
+        Save
+      </button>
+
+      <!-- Cancel button triggers form reset or closes form -->
+      <button mat-button 
+              type="button" 
+              class="cancel" 
+              (click)="onCancel()">
+        Cancel
+      </button>
     </div>
   </form>
 </div>

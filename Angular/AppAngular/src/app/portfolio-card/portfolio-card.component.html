@@ -1,23 +1,33 @@
-<!-- Wrapper for a single portfolio card -->
+<!-- =============================
+File: portfolio-card.component.html
+Description:
+Template for the PortfolioCardComponent.
+Displays a compact overview of a single portfolio with key metrics.
+Includes styling for profit/loss indicators and a delete button.
+All data is passed in via @Input() and handled locally.
+============================= -->
+
+<!-- Wrapper for the portfolio card layout -->
 <div class="portfolio-card">
-  <!-- Portfolio name as card header -->
+
+  <!-- Portfolio title displayed as the card header -->
   <div class="header">{{ portfolio.name }}</div>
 
-  <!-- Section with key financial metrics -->
+  <!-- Section displaying financial metrics -->
   <div class="metrics">
-    
-    <!-- Total current value of the portfolio -->
+
+    <!-- Metric: Current total value of the portfolio -->
     <div class="metric">
       <span class="icon">💰</span>
       <div>
         <div class="label">Total value</div>
         <div class="value">
-          {{ portfolio.currentValue | currency }} <!-- Formats value as currency -->
+          {{ portfolio.currentValue | currency }} <!-- Format as currency -->
         </div>
       </div>
     </div>
 
-    <!-- Number of assets in the portfolio -->
+    <!-- Metric: Number of assets in this portfolio -->
     <div class="metric">
       <span class="icon">🏦</span>
       <div>
@@ -28,31 +38,30 @@
       </div>
     </div>
 
-    <!-- Total profit or loss -->
+    <!-- Metric: Overall profit or loss -->
     <div class="metric">
       <span class="icon">📈</span>
       <div>
         <div class="label">Profit/Loss</div>
-        <!-- Apply red style if loss, green if gain -->
         <div
           class="value"
           [class.negative]="portfolio.totalProfitLoss < 0"
           [class.positive]="portfolio.totalProfitLoss >= 0"
         >
-          {{ portfolio.totalProfitLoss | currency }}
+          {{ portfolio.totalProfitLoss | currency }} <!-- Display value -->
           <span class="percent">
-            ({{ portfolio.changePercent | number:'1.0-0' }}%) <!-- Rounded percent -->
+            ({{ portfolio.changePercent | number:'1.0-0' }}%) <!-- Show percentage change -->
           </span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Action buttons section -->
+  <!-- Action area below metrics -->
   <div class="actions">
-    <!-- Delete button triggers confirmDelete() in component -->
+    <!-- Delete button (warn color) triggers component method -->
     <button mat-stroked-button color="warn" (click)="confirmDelete($event)">
-      <mat-icon>delete_outline</mat-icon> 
+      <mat-icon>delete_outline</mat-icon>
       Delete
     </button>
   </div>

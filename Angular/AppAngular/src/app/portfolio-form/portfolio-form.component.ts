@@ -1,3 +1,13 @@
+// =============================
+// File: portfolio-form.component.ts
+// Description:
+// Defines the PortfolioFormComponent as a standalone Angular component.
+// Provides a form to create new portfolio entries, validate user input,
+// and communicate results back to the parent via EventEmitters.
+// Handles state toggling, form submission, and cancellation logic.
+// Integrates shared and core Angular modules for form functionality.
+// =============================
+
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,20 +17,22 @@ import { SharedModule } from '../shared/shared.module';
 
 @Component({
   selector: 'app-portfolio-form',
-  standalone: true, // This component does not rely on an NgModule
-  imports: [CommonModule, FormsModule, SharedModule], // Required for template syntax like ngIf and ngModel
+  standalone: true, // Component uses Angular standalone API
+  imports: [CommonModule, FormsModule, SharedModule], // Provides common directives and shared components
   templateUrl: './portfolio-form.component.html',
   styleUrls: ['./portfolio-form.component.css']
 })
 export class PortfolioFormComponent {
-  // Emits the newly created Portfolio object to the parent component
+  // Emits the created portfolio to the parent component after successful form submission
   @Output() created = new EventEmitter<Portfolio>();
+
+  // Emits a signal to parent when the form is canceled
   @Output() cancelled = new EventEmitter<void>();
 
-  // Controls whether the form is visible
+  // Controls whether the form is currently visible in the UI
   showForm = false;
 
-  // Object bound to the input fields in the form
+  // Form model object bound to user input fields
   newPortfolio: Portfolio = {
     id: 0,
     name: '',
@@ -29,37 +41,35 @@ export class PortfolioFormComponent {
 
   constructor(private portfolioService: PortfolioService) {}
 
-  // Toggles visibility of the form
+  // Toggles visibility of the form section (used e.g. by a button click)
   toggleForm() {
     this.showForm = !this.showForm;
   }
 
-  // Triggered when the form is submitted
+  // Handles form submission logic
   onSubmit(): void {
-    // Only proceed if input is valid (non-empty portfolio name)
+    // Proceed only if the input passes validation
     if (this.isValid()) {
-      this.newPortfolio.createdAt = new Date(); // Set current timestamp
+      // Stamp creation time
+      this.newPortfolio.createdAt = new Date();
 
-      // Call the service to persist the new portfolio
+      // Send data to backend service and wait for response
       this.portfolioService.createPortfolio(this.newPortfolio).subscribe({
         next: created => {
-          // Notify parent component with newly created portfolio
+          // Emit event with the newly created portfolio object
           this.created.emit(created);
 
-          // Reset form state and hide form
+          // Reset the form for future input
           this.resetForm();
-          
         }
       });
-    }
-    else {
-      // ✅ ADDED: show alert if the name is empty
+    } else {
+      // Notify user about missing or invalid input
       alert('Please fill in all required fields correctly.');
+    }
   }
 
-  }
-
-  // Resets the form input model to initial state
+  // Resets the form input to default state
   resetForm() {
     this.newPortfolio = {
       id: 0,
@@ -68,13 +78,13 @@ export class PortfolioFormComponent {
     };
   }
 
-  // Triggered when user cancels the form input
-  onCancel() : void {
+  // Cancels form input and notifies parent component
+  onCancel(): void {
     this.resetForm();
     this.cancelled.emit();
   }
 
-  // Returns true if the form input is valid (non-empty name)
+  // Validates form input (name must be non-empty and non-whitespace)
   isValid(): boolean {
     return this.newPortfolio.name.trim() !== '';
   }

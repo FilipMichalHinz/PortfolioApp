@@ -1,10 +1,42 @@
+<!-- =============================
+File: dashboard.component.html
+Description:
+Template for the DashboardComponent.
+Displays a personalized welcome message and two navigation buttons
+leading to the user's portfolios and the watchlist.
+Uses Angular routerLink for navigation and Material buttons for styling.
+============================= -->
+
 <div class="dashboard-container">
+  
+  <!-- Welcome message with optional username -->
   <h2 class="welcome-message">
     Welcome<ng-container *ngIf="username">, {{ username }}</ng-container>!
   </h2>
-  <p class="tagline">Your central hub for managing financial assets and insights.</p>
-  <div class="button-row" >
-    <a routerLink="/portfolio-list" mat-raised-button color="primary" class="dashboard-button">View My Portfolios</a>
-    <a routerLink="/watchlist" mat-stroked-button color="accent" class="dashboard-button">Explore Watchlist</a>
+
+  <!-- Short description or tagline below heading -->
+  <p class="tagline">
+    Your central hub for managing financial assets and insights.
+  </p>
+
+  <!-- Navigation buttons to key areas of the app -->
+  <div class="button-row">
+    <!-- Primary button to navigate to portfolio list -->
+    <a
+      routerLink="/portfolio-list"
+      mat-raised-button
+      color="primary"
+      class="dashboard-button">
+      View My Portfolios
+    </a>
+
+    <!-- Secondary button to navigate to the watchlist -->
+    <a
+      routerLink="/watchlist"
+      mat-stroked-button
+      color="accent"
+      class="dashboard-button">
+      Explore Watchlist
+    </a>
   </div>
 </div>

@@ -8,10 +8,10 @@
 .add-item-wrapper {
     display: flex;
     
-    margin-bottom: 1.5rem; /* Space below the button */
+    margin-bottom: 1.5rem;
 }
 
-/* to center Action column */
+
 .mat-column-actions .mat-header-cell {
     text-align: center;
   }

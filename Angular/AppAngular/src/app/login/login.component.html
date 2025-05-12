@@ -1,25 +1,34 @@
-<!-- Container for login form styling -->
+<!-- =============================
+File: login.component.html
+Description:
+Template for the LoginComponent.
+Presents a basic login form with input fields for username and password.
+Triggers authentication logic and shows feedback on login failure.
+Uses Angular two-way binding and conditional rendering.
+============================= -->
+
+<!-- Container for the login form -->
 <div class="login-container">
   <h2>Login</h2>
 
-  <!-- Username input field bound to 'username' property in the component -->
+  <!-- Username input field, bound via [(ngModel)] to component property -->
   <div>
     <label for="username">Username</label><br>
     <input id="username" type="text" [(ngModel)]="username" />
   </div>
 
-  <!-- Password input field bound to 'password' property in the component -->
+  <!-- Password input field, bound via [(ngModel)] to component property -->
   <div>
     <label for="password">Password</label><br>
     <input id="password" type="password" [(ngModel)]="password" />
   </div>
 
-  <!-- Login button triggers the login() method when clicked -->
+  <!-- Button to submit the login form -->
   <div style="margin-top: 1rem;">
     <button type="button" (click)="login()">Login</button>
   </div>
 
-  <!-- Error message shown only when login has failed -->
+  <!-- Conditional message shown if login fails -->
   <div *ngIf="loginFailed" style="color: red; margin-top: 0.5rem;">
     Login failed: Invalid username or password!
   </div>

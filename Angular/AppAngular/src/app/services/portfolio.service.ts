@@ -1,3 +1,11 @@
+// =============================
+// File: portfolio.service.ts
+// Description:
+// Service responsible for interacting with the backend API to manage portfolios.
+// Includes methods for fetching portfolio details, creating, deleting, and fetching high-level overviews.
+// All requests are authenticated using the header stored in localStorage.
+// =============================
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Portfolio } from '../model/portfolio';
@@ -19,7 +27,7 @@ export class PortfolioService {
    */
   private getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'Authorization': localStorage.getItem('headerValue') ?? ''
+      'Authorization': localStorage.getItem('headerValue') ?? '' // Get token from localStorage
     });
   }
 
@@ -29,7 +37,7 @@ export class PortfolioService {
    */
   getPortfolios(): Observable<Portfolio[]> {
     return this.http.get<Portfolio[]>(`${this.baseUrl}/portfolio`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders() // Include authorization header
     });
   }
 
@@ -40,7 +48,7 @@ export class PortfolioService {
    */
   getPortfolio(id: number): Observable<Portfolio> {
     return this.http.get<Portfolio>(`${this.baseUrl}/portfolio/${id}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders() // Include authorization header
     });
   }
 
@@ -51,7 +59,7 @@ export class PortfolioService {
    */
   createPortfolio(portfolio: Portfolio): Observable<Portfolio> {
     return this.http.post<Portfolio>(`${this.baseUrl}/portfolio`, portfolio, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders() // Include authorization header
     });
   }
 
@@ -62,7 +70,7 @@ export class PortfolioService {
    */
   deletePortfolio(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/portfolio/${id}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders() // Include authorization header
     });
   }
 
@@ -73,7 +81,7 @@ export class PortfolioService {
    */
   getAllOverviews(): Observable<PortfolioOverview[]> {
     return this.http.get<PortfolioOverview[]>(`${this.baseUrl}/portfolio/overview`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders() // Include authorization header
     });
   }
 }

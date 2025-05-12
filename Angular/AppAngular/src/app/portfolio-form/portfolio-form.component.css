@@ -2,8 +2,6 @@
   margin-top: 2rem;
 }
 
-
-
 button.cancel {
   background-color: #aaa;
 }
@@ -37,6 +35,3 @@ input {
   gap: 8px; /* Adds 8px space BETWEEN the buttons */
   margin-top: 16px; 
 }
-
-
-

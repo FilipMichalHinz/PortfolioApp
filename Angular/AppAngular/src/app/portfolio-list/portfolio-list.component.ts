@@ -1,3 +1,12 @@
+// =============================
+// File: portfolio-list.component.ts
+// Description:
+// Displays a list of portfolio overviews for the authenticated user.
+// Loads data from the backend and computes aggregate metrics (total value, profit/loss).
+// Supports creating and deleting portfolios via child components.
+// Utilizes Angular's standalone component structure and shared UI modules.
+// =============================
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -16,27 +25,24 @@ import { SharedModule } from '../shared/shared.module';
   standalone: true,
   imports: [
     CommonModule,
-    PortfolioCardComponent,   // Used to display each portfolio as a card
-    PortfolioFormComponent,   // Used to add a new portfolio
+    PortfolioCardComponent,    // Reusable component for displaying individual portfolios
+    PortfolioFormComponent,    // Embedded form for creating new portfolios
     RouterModule,
-    SharedModule             // Shared components and directives
+    SharedModule
   ],
   templateUrl: './portfolio-list.component.html',
   styleUrls: ['./portfolio-list.component.css']
 })
 export class PortfolioListComponent implements OnInit {
-  // List of portfolio overviews returned by the backend
-  portfolios: PortfolioOverview[] = [];
+  portfolios: PortfolioOverview[] = [];  // Loaded portfolio summaries
+  isLoading = false;                     // Tracks loading state during data fetch
 
-  // Used to show loading state while fetching data
-  isLoading = false;
-
-  // Summary metrics for dashboard display
+  // Aggregated statistics across all portfolios
   totalPortfolioCount = 0;
   totalPortfolioValue = 0;
   totalProfitLoss = 0;
 
-  showAddPortfolioForm = false; // Controls visibility of the portfolio creation form
+  showAddPortfolioForm = false; // Controls visibility of the "Add Portfolio" form
 
   constructor(
     private portfolioService: PortfolioService,
@@ -44,19 +50,17 @@ export class PortfolioListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Check if user is authenticated
-    // If not, redirect to login page
+    // Redirect to login page if no auth token found
     const token = localStorage.getItem('headerValue');
     if (!token) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Load portfolio summaries after login check
-    this.loadOverviews();
+    this.loadOverviews(); // Fetch portfolio summaries
   }
 
-  // Loads portfolio overview data and calculates aggregates
+  // Fetches all portfolio overviews and calculates summary values
   loadOverviews(): void {
     this.isLoading = true;
 
@@ -64,10 +68,7 @@ export class PortfolioListComponent implements OnInit {
       next: (list) => {
         this.portfolios = list;
 
-        // Compute total number of portfolios
         this.totalPortfolioCount = list.length;
-
-        // Compute total value and total profit/loss
         this.totalPortfolioValue = list.reduce((acc, p) => acc + p.currentValue, 0);
         this.totalProfitLoss = list.reduce((acc, p) => acc + p.totalProfitLoss, 0);
 
@@ -80,25 +81,24 @@ export class PortfolioListComponent implements OnInit {
     });
   }
 
-  // Called when a portfolio is deleted from a child component
+  // Removes a portfolio from the local list (used after deletion)
   onPortfolioDeleted(id: number): void {
-    // Remove the portfolio from the local list
     this.portfolios = this.portfolios.filter(p => p.id !== id);
-    
   }
 
-  // Called when a new portfolio is created
+  // Reloads all portfolios after a new one is added
   onPortfolioCreated(created: Portfolio): void {
-    // Reload all overviews to include the new one
     this.loadOverviews();
-    this.showAddPortfolioForm = false; // Hide the form after creation
+    this.showAddPortfolioForm = false;
   }
 
-openAddPortfolioForm(): void {
-    this.showAddPortfolioForm = true; // Show the form for creating a new portfolio
+  // Opens the "Add Portfolio" form
+  openAddPortfolioForm(): void {
+    this.showAddPortfolioForm = true;
   }
 
-onAddPortfolioFormCancelled(): void {
-    this.showAddPortfolioForm = false; // Hide the form when cancelled
+  // Closes the "Add Portfolio" form
+  onAddPortfolioFormCancelled(): void {
+    this.showAddPortfolioForm = false;
   }
 }

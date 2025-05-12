@@ -1,15 +1,31 @@
+<!-- =============================
+File: app.component.html
+Description:
+Defines the main layout of the root component.
+Displays a toolbar for authenticated users (excluding the login page),
+with navigation links to key application areas.
+Below the toolbar, routed components are rendered via <router-outlet>.
+============================= -->
 
+<!-- Application toolbar shown only when user is logged in and not on login page -->
 <mat-toolbar color="primary" *ngIf="isLoggedIn && !isLoginPage" class="app-toolbar">
   <span>SmartPortfolio</span>
+
+  <!-- Spacer pushes navigation links and logout button to the right -->
   <span class="toolbar-spacer"></span>
+
+  <!-- Navigation links to different parts of the application -->
   <a mat-button routerLink="/dashboard" routerLinkActive="active-link">Dashboard</a>
   <a mat-button routerLink="/portfolio-list" routerLinkActive="active-link">Portfolios</a>
   <a mat-button routerLink="/watchlist" routerLinkActive="active-link">Watchlist</a>
+
+  <!-- Logout button (icon) -->
   <button mat-icon-button (click)="logout()" aria-label="Logout">
     <mat-icon>exit_to_app</mat-icon>
   </button>
 </mat-toolbar>
 
+<!-- Routed views are rendered here -->
 <main class="content-below-toolbar">
   <router-outlet></router-outlet>
 </main>

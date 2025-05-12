@@ -1,13 +1,11 @@
-/**
- * PortfolioListComponent Test Suite
- *
- * This test verifies:
- * 1. Component can be created.
- * 2. If no token exists, it redirects to /login.
- * 3. loadOverviews() sets portfolio list and totals correctly.
- * 4. onPortfolioDeleted removes a portfolio from the list.
- * 5. onPortfolioCreated reloads data and hides the form.
- */
+// =============================
+// File: portfolio-list.component.spec.ts
+// Description:
+// Contains unit tests for the PortfolioListComponent.
+// Verifies component creation, authentication logic, data loading with totals calculation,
+// handling of deletion from the list, and response to portfolio creation events.
+// Uses Jasmine spies and Angular's TestBed for isolation and mocking.
+// =============================
 
 import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { PortfolioListComponent } from './portfolio-list.component';
@@ -31,9 +29,9 @@ describe('PortfolioListComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        PortfolioListComponent,
-        HttpClientTestingModule,
-        NoopAnimationsModule
+        PortfolioListComponent,      // Standalone component under test
+        HttpClientTestingModule,     // Mocks HttpClient
+        NoopAnimationsModule         // Prevents animation-related issues
       ],
       providers: [
         { provide: PortfolioService, useValue: serviceSpy },
@@ -50,40 +48,53 @@ describe('PortfolioListComponent', () => {
   });
 
   it('should redirect to /login if no token found', () => {
-    // Remove token from localStorage before init
+    // Simulate missing authentication token
     localStorage.removeItem('headerValue');
 
     component.ngOnInit();
 
+    // Router should redirect to login
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 
   it('should load overviews and update totals', fakeAsync(() => {
     const sampleData: PortfolioOverview[] = [
-      { id: 1, name: 'P1', initialInvestment: 1000, currentValue: 1100, assetCount: 2, totalProfitLoss: 100, changePercent: 10 },
-      { id: 2, name: 'P2', initialInvestment: 2000, currentValue: 1800, assetCount: 3, totalProfitLoss: -200, changePercent: -10 }
+      {
+        id: 1, name: 'P1', initialInvestment: 1000, currentValue: 1100,
+        assetCount: 2, totalProfitLoss: 100, changePercent: 10
+      },
+      {
+        id: 2, name: 'P2', initialInvestment: 2000, currentValue: 1800,
+        assetCount: 3, totalProfitLoss: -200, changePercent: -10
+      }
     ];
 
-    // Provide a fake token so it doesn't redirect
+    // Prevent redirect by setting a token
     localStorage.setItem('headerValue', 'test');
 
-    // Mock service call
+    // Mock backend response
     serviceSpy.getAllOverviews.and.returnValue(of(sampleData));
 
-    component.ngOnInit();  // triggers loadOverviews
-    tick();                // process observable
+    component.ngOnInit();  // Automatically calls loadOverviews
+    tick();                // Complete observables
 
     expect(component.portfolios.length).toBe(2);
     expect(component.totalPortfolioCount).toBe(2);
-    expect(component.totalPortfolioValue).toBe(2900);  // 1100 + 1800
-    expect(component.totalProfitLoss).toBe(-100);      // 100 - 200
+    expect(component.totalPortfolioValue).toBe(2900);    // 1100 + 1800
+    expect(component.totalProfitLoss).toBe(-100);        // 100 - 200
     expect(component.isLoading).toBeFalse();
   }));
 
   it('should remove a portfolio from the list when deleted', () => {
     component.portfolios = [
-      { id: 1, name: 'A', initialInvestment: 100, currentValue: 120, assetCount: 1, totalProfitLoss: 20, changePercent: 20 },
-      { id: 2, name: 'B', initialInvestment: 100, currentValue: 100, assetCount: 2, totalProfitLoss: 0, changePercent: 0 }
+      {
+        id: 1, name: 'A', initialInvestment: 100, currentValue: 120,
+        assetCount: 1, totalProfitLoss: 20, changePercent: 20
+      },
+      {
+        id: 2, name: 'B', initialInvestment: 100, currentValue: 100,
+        assetCount: 2, totalProfitLoss: 0, changePercent: 0
+      }
     ];
 
     component.onPortfolioDeleted(1);
@@ -96,8 +107,14 @@ describe('PortfolioListComponent', () => {
     spyOn(component, 'loadOverviews');
     component.showAddPortfolioForm = true;
 
-    component.onPortfolioCreated({ id: 3, name: 'New', createdAt: new Date() });
-    tick();
+    const newPortfolio: Portfolio = {
+      id: 3,
+      name: 'New',
+      createdAt: new Date()
+    };
+
+    component.onPortfolioCreated(newPortfolio);
+    tick(); // Simulate passage of time
 
     expect(component.loadOverviews).toHaveBeenCalled();
     expect(component.showAddPortfolioForm).toBeFalse();
