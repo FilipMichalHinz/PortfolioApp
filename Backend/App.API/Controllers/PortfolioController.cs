@@ -1,7 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+// =============================
+// File: PortfolioController.cs
+// Description:
+// Provides authenticated CRUD endpoints for managing user portfolios.
+// Includes advanced aggregation logic to compute current portfolio value and performance metrics,
+// using real-time market prices from Yahoo Finance.
+// =============================
+
 using App.Model.Entities;
 using App.Model.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +20,7 @@ namespace App.API.Controllers
         private readonly PortfolioRepository _portfolioRepo;
         private readonly AssetRepository _itemRepo;
 
+        // Constructor injection of repositories
         public PortfolioController(
             PortfolioRepository portfolioRepo,
             AssetRepository itemRepo)
@@ -24,6 +29,7 @@ namespace App.API.Controllers
             _itemRepo = itemRepo;
         }
 
+        // Retrieves authenticated user ID from HTTP context
         private int GetAuthenticatedUserId()
         {
             if (HttpContext.Items.TryGetValue("UserId", out var userIdObj) && userIdObj is int userId)
@@ -32,6 +38,8 @@ namespace App.API.Controllers
             throw new UnauthorizedAccessException("User is not authenticated.");
         }
 
+        // GET /api/portfolio/{id}
+        // Returns a specific portfolio if it belongs to the authenticated user
         [HttpGet("{id}")]
         public ActionResult<Portfolio> GetPortfolio([FromRoute] int id)
         {
@@ -40,6 +48,8 @@ namespace App.API.Controllers
             return portfolio == null ? NotFound() : Ok(portfolio);
         }
 
+        // GET /api/portfolio
+        // Returns all portfolios owned by the authenticated user
         [HttpGet]
         public ActionResult<IEnumerable<Portfolio>> GetPortfolios()
         {
@@ -48,6 +58,8 @@ namespace App.API.Controllers
             return Ok(list);
         }
 
+        // GET /api/portfolio/overview
+        // Returns summaries for each portfolio, including market-based performance metrics
         [HttpGet("overview")]
         public async Task<ActionResult<IEnumerable<PortfolioOverview>>> GetOverviews()
         {
@@ -59,6 +71,7 @@ namespace App.API.Controllers
             {
                 var items = _itemRepo.GetByPortfolio(p.Id);
 
+                // Handle empty portfolios
                 if (items == null || items.Count == 0)
                 {
                     overviews.Add(new PortfolioOverview
@@ -74,6 +87,7 @@ namespace App.API.Controllers
                     continue;
                 }
 
+                // Collect distinct tickers for price query
                 var tickers = items
                     .Select(i => i.Ticker)
                     .Where(t => !string.IsNullOrWhiteSpace(t))
@@ -87,6 +101,7 @@ namespace App.API.Controllers
                 {
                     try
                     {
+                        // Fetch current market prices from Yahoo Finance
                         var priceData = await Yahoo
                             .Symbols(tickers)
                             .Fields(Field.RegularMarketPrice)
@@ -94,9 +109,11 @@ namespace App.API.Controllers
 
                         foreach (var itm in items)
                         {
+                            // Accumulate cost based on purchase price
                             var cost = itm.PurchasePrice * itm.Quantity;
                             totalCost += cost;
 
+                            // Accumulate current value based on real-time price
                             if (priceData.ContainsKey(itm.Ticker))
                             {
                                 var security = priceData[itm.Ticker];
@@ -107,14 +124,18 @@ namespace App.API.Controllers
                     }
                     catch (Exception)
                     {
+                        // Swallow exception silently for price fetching issues
+                        // (could be improved with logging)
                     }
                 }
 
+                // Calculate profit/loss and percentage change
                 var profitLoss = totalValue - totalCost;
                 var changePct = totalCost == 0
                     ? 0
                     : Math.Round((profitLoss / totalCost) * 100, 2);
 
+                // Construct summary object
                 overviews.Add(new PortfolioOverview
                 {
                     Id = p.Id,
@@ -130,6 +151,8 @@ namespace App.API.Controllers
             return Ok(overviews);
         }
 
+        // POST /api/portfolio
+        // Creates a new portfolio for the authenticated user
         [HttpPost]
         public ActionResult<Portfolio> Post([FromBody] Portfolio portfolio)
         {
@@ -142,6 +165,8 @@ namespace App.API.Controllers
             return success ? Ok(portfolio) : BadRequest("Unable to insert portfolio");
         }
 
+        // PUT /api/portfolio
+        // Updates an existing portfolio
         [HttpPut]
         public ActionResult UpdatePortfolio([FromBody] Portfolio portfolio)
         {
@@ -158,6 +183,8 @@ namespace App.API.Controllers
             return success ? Ok() : BadRequest("Something went wrong");
         }
 
+        // DELETE /api/portfolio/{id}
+        // Deletes a portfolio owned by the authenticated user
         [HttpDelete("{id}")]
         public ActionResult DeletePortfolio([FromRoute] int id)
         {

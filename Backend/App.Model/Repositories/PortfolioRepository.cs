@@ -1,3 +1,11 @@
+// =============================
+// File: PortfolioRepository.cs
+// Description:
+// Provides data access logic for Portfolio entities using PostgreSQL (via Npgsql).
+// Supports full CRUD operations and ensures that user-specific access rules are enforced.
+// Inherits common DB helper logic from BaseRepository.
+// =============================
+
 using App.Model.Entities;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -9,10 +17,11 @@ namespace App.Model.Repositories
     {
         public PortfolioRepository(IConfiguration configuration) : base(configuration) { }
 
-        // Neu: Portfolios nach UserId filtern
+        // Retrieves all portfolios owned by a specific user
         public List<Portfolio> GetPortfoliosByUser(int userId)
         {
             var portfolios = new List<Portfolio>();
+
             using var conn = new NpgsqlConnection(ConnectionString);
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM portfolios WHERE userid = @userId";
@@ -32,6 +41,7 @@ namespace App.Model.Repositories
             return portfolios;
         }
 
+        // Retrieves a specific portfolio by ID, only if it belongs to the given user
         public Portfolio GetPortfolioById(int id, int userId)
         {
             using var conn = new NpgsqlConnection(ConnectionString);
@@ -54,6 +64,7 @@ namespace App.Model.Repositories
             return null;
         }
 
+        // Retrieves a portfolio by ID without user ownership check (used internally or with prior validation)
         public Portfolio GetPortfolioById(int id)
         {
             using var conn = new NpgsqlConnection(ConnectionString);
@@ -75,6 +86,7 @@ namespace App.Model.Repositories
             return null;
         }
 
+        // Inserts a new portfolio and assigns the generated ID to the portfolio object
         public bool InsertPortfolio(Portfolio portfolio)
         {
             using var conn = new NpgsqlConnection(ConnectionString);
@@ -82,7 +94,7 @@ namespace App.Model.Repositories
             cmd.CommandText = @"
                 INSERT INTO portfolios (name, createdat, userid) 
                 VALUES (@Name, @createdAt, @userId)
-                RETURNING id";
+                RETURNING id"; // Returns the generated ID
 
             cmd.Parameters.AddWithValue("@Name", NpgsqlDbType.Text, portfolio.Name);
             cmd.Parameters.AddWithValue("@createdAt", NpgsqlDbType.Timestamp, portfolio.CreatedAt.ToLocalTime());
@@ -99,6 +111,7 @@ namespace App.Model.Repositories
             return false;
         }
 
+        // Updates the name of a portfolio, enforcing user ownership
         public bool UpdatePortfolio(Portfolio portfolio)
         {
             using var conn = new NpgsqlConnection(ConnectionString);
@@ -106,7 +119,7 @@ namespace App.Model.Repositories
             cmd.CommandText = @"
                 UPDATE portfolios SET 
                     name = @Name
-                WHERE id = @id AND userid = @userId";
+                WHERE id = @id AND userid = @userId"; // Prevents updates on others' portfolios
 
             cmd.Parameters.AddWithValue("@Name", NpgsqlDbType.Text, portfolio.Name);
             cmd.Parameters.AddWithValue("@id", NpgsqlDbType.Integer, portfolio.Id);
@@ -115,6 +128,7 @@ namespace App.Model.Repositories
             return UpdateData(conn, cmd);
         }
 
+        // Deletes a portfolio by ID (access control must be ensured by caller)
         public bool DeletePortfolio(int id)
         {
             using var conn = new NpgsqlConnection(ConnectionString);

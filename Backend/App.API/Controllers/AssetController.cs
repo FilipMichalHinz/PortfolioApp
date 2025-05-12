@@ -1,3 +1,11 @@
+// =============================
+// File: AssetController.cs
+// Description:
+// Manages assets (stocks, ETFs, etc.) linked to user portfolios. 
+// Supports adding, updating, deleting, and querying assets, 
+// as well as computing real-time valuation and performance metrics using Yahoo Finance.
+// =============================
+
 using App.Model.Entities;
 using App.Model.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +26,7 @@ namespace App.API.Controllers
             PortfolioRepository = portfolioRepository;
         }
 
+        // Helper to get authenticated user ID from HTTP context
         private int GetAuthenticatedUserId()
         {
             if (HttpContext.Items.TryGetValue("UserId", out var userIdObj) && userIdObj is int userId)
@@ -26,6 +35,8 @@ namespace App.API.Controllers
             throw new UnauthorizedAccessException("User is not authenticated.");
         }
 
+        // GET /api/asset/portfolios/{portfolioId}
+        // Returns all assets associated with a given portfolio, owned by the authenticated user
         [HttpGet("portfolios/{portfolioId}")]
         public ActionResult<IEnumerable<Asset>> GetByUser([FromRoute] int portfolioId)
         {
@@ -38,23 +49,8 @@ namespace App.API.Controllers
             return Ok(items);
         }
 
-        /*
-        [HttpPost]
-        public ActionResult Post([FromBody] Asset item)
-        {
-            if (item == null)
-                return BadRequest("Asset info not correct");
-
-            var userId = GetAuthenticatedUserId();
-            var portfolio = PortfolioRepository.GetPortfolioById(item.PortfolioId, userId);
-            if (portfolio == null)
-                return Unauthorized("You do not own this portfolio.");
-
-            bool ok = Repository.InsertAsset(item);
-            return ok ? Ok(item) : BadRequest("Unable to insert asset");
-        }
-        */
-
+        // POST /api/asset
+        // Adds a new asset to the user's portfolio
         [HttpPost]
         public ActionResult Post([FromBody] Asset item)
         {
@@ -70,7 +66,8 @@ namespace App.API.Controllers
             return result != null ? Ok(result) : BadRequest("Unable to insert asset");
         }
 
-
+        // DELETE /api/asset/{id}
+        // Deletes a specific asset if it belongs to the authenticated user's portfolio
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
@@ -87,6 +84,8 @@ namespace App.API.Controllers
             return status ? NoContent() : BadRequest($"Unable to delete asset with id {id}");
         }
 
+        // GET /api/asset/value?ticker=XYZ
+        // Returns current valuation and profit/loss of a specific asset by ticker
         [HttpGet("value")]
         public async Task<ActionResult> GetValue([FromQuery] string ticker)
         {
@@ -135,6 +134,8 @@ namespace App.API.Controllers
             }
         }
 
+        // GET /api/asset/summary/{portfolioId}
+        // Returns detailed valuation and performance summary of all assets in a given portfolio
         [HttpGet("summary/{portfolioId}")]
         public async Task<IActionResult> GetPortfolioSummary(int portfolioId)
         {
@@ -162,33 +163,30 @@ namespace App.API.Controllers
 
             decimal totalInvestment = 0;
             decimal totalCurrentValue = 0;
-
             var summaryList = new List<object>();
 
             foreach (var item in items)
             {
                 decimal initialInvestment = item.PurchasePrice * item.Quantity;
+                decimal currentPrice;
                 decimal currentValue;
                 decimal profitLoss;
                 decimal changePercent;
-                decimal currentPrice;
 
                 if (item.IsSold)
                 {
                     currentPrice = item.ExitPrice ?? 0;
                     currentValue = currentPrice * item.Quantity;
-                    profitLoss = currentValue - initialInvestment;
-                    changePercent = initialInvestment == 0 ? 0 : (profitLoss / initialInvestment) * 100;
                 }
                 else
                 {
                     if (!prices.ContainsKey(item.Ticker)) continue;
-
                     currentPrice = (decimal)prices[item.Ticker][Field.RegularMarketPrice];
                     currentValue = currentPrice * item.Quantity;
-                    profitLoss = currentValue - initialInvestment;
-                    changePercent = initialInvestment == 0 ? 0 : (profitLoss / initialInvestment) * 100;
                 }
+
+                profitLoss = currentValue - initialInvestment;
+                changePercent = initialInvestment == 0 ? 0 : (profitLoss / initialInvestment) * 100;
 
                 totalInvestment += initialInvestment;
                 totalCurrentValue += currentValue;
@@ -224,6 +222,8 @@ namespace App.API.Controllers
             });
         }
 
+        // PUT /api/asset/update
+        // Updates general details of an asset (not sell-specific)
         [HttpPut("update")]
         public ActionResult UpdateItem([FromBody] Asset item)
         {
@@ -239,6 +239,8 @@ namespace App.API.Controllers
             return ok ? Ok(item) : BadRequest("Update failed");
         }
 
+        // PUT /api/asset/sell
+        // Marks an asset as sold and records exit price and date
         [HttpPut("sell")]
         public ActionResult SellAsset([FromBody] SellAssetRequest request)
         {
@@ -263,6 +265,7 @@ namespace App.API.Controllers
         }
     }
 
+    // Payload model for selling an asset
     public class SellAssetRequest
     {
         public int Id { get; set; }

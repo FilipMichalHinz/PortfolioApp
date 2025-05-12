@@ -1,22 +1,24 @@
+// =============================
+// File: WatchlistResponse.cs
+// Description:
+// Represents the structure of a watchlist item as returned by the API.
+// Used in integration tests to deserialize and assert correct response data.
+// =============================
+
 namespace App.Tests.Models
 {
-    /* Summary
-    Represents the structure of a watchlist item returned from the API,
-    used specifically in integration tests to deserialize and validate responses.
-    */
-
     public class WatchlistResponse
     {
-        /// Unique identifier of the watchlist item.
+        // Unique identifier of the watchlist item
         public int Id { get; set; }
 
-        /// The stock ticker symbol, e.g. "AAPL", "GOOGL".
+        // Stock ticker symbol (e.g. "AAPL", "GOOGL")
         public string Ticker { get; set; }
 
-        /// The readable name of the asset, e.g. "Apple Inc.".
+        // Human-readable name of the asset (e.g. "Apple Inc.")
         public string AssetName { get; set; }
 
-        /// The target price set by the user for tracking.
+        // User-defined target price used for alerting or monitoring
         public decimal TargetPrice { get; set; }
     }
 }

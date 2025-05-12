@@ -1,37 +1,42 @@
+// =============================
+// File: Program.cs
+// Description:
+// This is the entry point of the Portfolio API backend. It sets up the web application,
+// configures services like controllers, Swagger, repositories, and middleware (e.g. authentication).
+// It integrates the application's core layers (API, middleware, repositories) and launches the web server.
+// =============================
+
 using App.API.Middleware;
 using App.Model.Entities;
 using App.Model.Repositories;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-
-/*
-var hasher = new PasswordHasher<User>();
-var hash2 = hasher.HashPassword(new User(), "Tofire24");
-Console.WriteLine(hash2);
-return;
-*/
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register essential services
+// Register MVC controllers (API endpoints)
 builder.Services.AddControllers();
 
-// Swagger configuration
+// Enable Swagger/ OpenAPI documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Portfolio API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "Portfolio API", 
+        Version = "v1" 
+    });
 
-    // 🔐 Basic Auth configuration for Swagger UI
+    // Configure Swagger to use Basic Authentication
     c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "basic",
-        In = ParameterLocation.Header,
+        Name = "Authorization",                    // HTTP header name
+        Type = SecuritySchemeType.Http,            // Type: HTTP-based auth
+        Scheme = "basic",                          // Use HTTP Basic scheme
+        In = ParameterLocation.Header,             // Location of the header
         Description = "Basic Authentication header"
     });
 
+    // Apply the Basic Auth security requirement globally
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -43,12 +48,12 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "basic"
                 }
             },
-            Array.Empty<string>()
+            Array.Empty<string>() // No specific scopes required
         }
     });
 });
 
-// Register repositories
+// Register custom repositories for dependency injection
 builder.Services.AddScoped<PortfolioRepository>();
 builder.Services.AddScoped<AssetRepository>();
 builder.Services.AddScoped<WatchlistRepository>();
@@ -56,35 +61,31 @@ builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 
-// Middleware
+// Enable Swagger only in development environment
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger();            // Enable Swagger middleware
+    app.UseSwaggerUI();         // Enable Swagger UI
 }
 
+// Enable Cross-Origin Resource Sharing (CORS) with permissive settings
 app.UseCors(policy =>
     policy.AllowAnyHeader()
           .AllowAnyMethod()
           .AllowAnyOrigin()
 );
 
+// Register custom middleware for Basic Authentication
 app.UseBasicAuthenticationMiddleware();
 
+// Enable authorization middleware (enforces [Authorize] attributes)
 app.UseAuthorization();
 
+// Map controller routes to endpoints
 app.MapControllers();
 
-
+// Start the application
 app.Run();
 
+// Partial Program class is required for integration testing
 public partial class Program { }
-
-/*
-var hash2 = hasher.HashPassword(new User(), "password");
-var hash3 = hasher.HashPassword(new User(), "password");
-
-Console.WriteLine(hash1);
-Console.WriteLine(hash2);
-Console.WriteLine(hash3);
-*/

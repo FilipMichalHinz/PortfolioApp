@@ -1,3 +1,11 @@
+// =============================
+// File: WatchlistControllerTests.cs
+// Description:
+// Integration tests for the WatchlistController using a real HTTP client via WebApplicationFactory.
+// These tests verify the full login + CRUD flow for authenticated users,
+// including creation, retrieval, and deletion of watchlist items.
+// =============================
+
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -13,6 +21,7 @@ namespace App.Tests.Controllers
     {
         private HttpClient _client;
 
+        // Set up a fresh HTTP client before each test using the in-memory test server
         [TestInitialize]
         public void Setup()
         {
@@ -23,6 +32,7 @@ namespace App.Tests.Controllers
         [TestMethod]
         public async Task CreateAndRetrieveWatchlistItem_ShouldSucceed()
         {
+            // Step 1: Authenticate as known test user
             var loginPayload = new Login
             {
                 Username = "alice",
@@ -31,11 +41,13 @@ namespace App.Tests.Controllers
 
             var loginResponse = await _client.PostAsJsonAsync("/api/login", loginPayload);
             var loginResult = await loginResponse.Content.ReadFromJsonAsync<LoginResponse>();
-            Assert.IsNotNull(loginResult?.AuthHeader);
+            Assert.IsNotNull(loginResult?.AuthHeader, "Authentication should return an auth header");
 
+            // Step 2: Add Basic Auth header to subsequent requests
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", loginResult.AuthHeader.Split(" ")[1]);
 
+            // Step 3: Create new watchlist item
             var ticker = "AAPL";
             var item = new Watchlist
             {
@@ -47,18 +59,21 @@ namespace App.Tests.Controllers
             var postResponse = await _client.PostAsJsonAsync("/api/watchlist", item);
             Assert.AreEqual(HttpStatusCode.OK, postResponse.StatusCode, "Watchlist POST should succeed");
 
+            // Step 4: Retrieve current watchlist
             var getResponse = await _client.GetAsync("/api/watchlist");
-            Assert.AreEqual(HttpStatusCode.OK, getResponse.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, getResponse.StatusCode, "Watchlist GET should succeed");
 
             var json = await getResponse.Content.ReadAsStringAsync();
             Console.WriteLine("Watchlist Response: " + json);
 
+            // Step 5: Verify that the created item appears in the list
             Assert.IsTrue(json.Contains(ticker), $"Watchlist should contain the ticker '{ticker}'");
         }
 
         [TestMethod]
         public async Task DeleteWatchlistItem_ShouldRemoveItemSuccessfully()
         {
+            // Step 1: Authenticate
             var loginPayload = new Login
             {
                 Username = "alice",
@@ -73,6 +88,7 @@ namespace App.Tests.Controllers
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", loginResult.AuthHeader.Split(" ")[1]);
 
+            // Step 2: Create a watchlist item to be deleted later
             var itemPayload = new Watchlist
             {
                 Ticker = "NFLX",
@@ -87,9 +103,11 @@ namespace App.Tests.Controllers
             Assert.IsNotNull(created);
             Console.WriteLine($"Created Watchlist Item ID: {created.Id}");
 
+            // Step 3: Delete the created watchlist item
             var deleteResponse = await _client.DeleteAsync($"/api/watchlist/{created.Id}");
             Assert.AreEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode, "Expected 204 NoContent from DELETE.");
 
+            // Step 4: Retrieve list to ensure the item was removed
             var getResponse = await _client.GetAsync("/api/watchlist");
             Assert.AreEqual(HttpStatusCode.OK, getResponse.StatusCode);
 

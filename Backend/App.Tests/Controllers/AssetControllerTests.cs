@@ -1,11 +1,17 @@
+// =============================
+// File: AssetControllerTests.cs
+// Description:
+// Integration tests for the AssetController (/api/asset).
+// These tests simulate real authenticated and unauthenticated requests, verifying correct asset creation,
+// retrieval, deletion, and authorization behavior in the portfolio context.
+// =============================
+
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using App.API;
 using App.Tests.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using App.Tests.Models;
 
 namespace App.Tests.Controllers
 {
@@ -24,20 +30,16 @@ namespace App.Tests.Controllers
         [TestMethod]
         public async Task CreateAsset_ForOwnPortfolio_ShouldSucceed()
         {
-            // Step 1: Login
-            var loginPayload = new Login
-            {
-                Username = "alice",
-                Password = "password"
-            };
-
+            // Step 1: Login as test user
+            var loginPayload = new Login { Username = "alice", Password = "password" };
             var loginResponse = await _client.PostAsJsonAsync("/api/login", loginPayload);
             var loginResult = await loginResponse.Content.ReadFromJsonAsync<LoginResponse>();
             Assert.IsNotNull(loginResult?.AuthHeader);
+
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", loginResult.AuthHeader.Split(" ")[1]);
 
-            // Step 2: Create a portfolio
+            // Step 2: Create a new portfolio
             var portfolioName = $"AssetTest_{Guid.NewGuid()}";
             var createPortfolio = new { name = portfolioName };
             var portfolioResponse = await _client.PostAsJsonAsync("/api/portfolio", createPortfolio);
@@ -46,7 +48,7 @@ namespace App.Tests.Controllers
             var portfolio = await portfolioResponse.Content.ReadFromJsonAsync<PortfolioResponse>();
             Assert.IsNotNull(portfolio);
 
-            // Step 3: Create a new asset in that portfolio
+            // Step 3: Create asset in the new portfolio
             var assetPayload = new
             {
                 portfolioId = portfolio.Id,
@@ -58,9 +60,7 @@ namespace App.Tests.Controllers
             };
 
             var assetResponse = await _client.PostAsJsonAsync("/api/asset", assetPayload);
-
-            // Step 4: Assert result
-            Assert.AreEqual(HttpStatusCode.OK, assetResponse.StatusCode, "Expected 200 OK after asset creation.");
+            Assert.AreEqual(HttpStatusCode.OK, assetResponse.StatusCode);
 
             var responseText = await assetResponse.Content.ReadAsStringAsync();
             Console.WriteLine("Asset POST Response: " + responseText);
@@ -73,19 +73,15 @@ namespace App.Tests.Controllers
         public async Task GetAssets_ForOwnPortfolio_ShouldReturnCreatedAsset()
         {
             // Step 1: Login
-            var loginPayload = new Login
-            {
-                Username = "alice",
-                Password = "password"
-            };
-
+            var loginPayload = new Login { Username = "alice", Password = "password" };
             var loginResponse = await _client.PostAsJsonAsync("/api/login", loginPayload);
             var loginResult = await loginResponse.Content.ReadFromJsonAsync<LoginResponse>();
             Assert.IsNotNull(loginResult?.AuthHeader);
+
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", loginResult.AuthHeader.Split(" ")[1]);
 
-            // Step 2: Create a portfolio
+            // Step 2: Create portfolio
             var portfolioName = $"AssetGetTest_{Guid.NewGuid()}";
             var createPortfolio = new { name = portfolioName };
             var portfolioResponse = await _client.PostAsJsonAsync("/api/portfolio", createPortfolio);
@@ -94,7 +90,7 @@ namespace App.Tests.Controllers
             var portfolio = await portfolioResponse.Content.ReadFromJsonAsync<PortfolioResponse>();
             Assert.IsNotNull(portfolio);
 
-            // Step 3: Add an asset
+            // Step 3: Add asset
             var assetPayload = new
             {
                 portfolioId = portfolio.Id,
@@ -108,7 +104,7 @@ namespace App.Tests.Controllers
             var assetResponse = await _client.PostAsJsonAsync("/api/asset", assetPayload);
             Assert.AreEqual(HttpStatusCode.OK, assetResponse.StatusCode);
 
-            // Step 4: GET assets for that portfolio
+            // Step 4: GET asset list
             var getResponse = await _client.GetAsync($"/api/asset/portfolios/{portfolio.Id}");
             Assert.AreEqual(HttpStatusCode.OK, getResponse.StatusCode);
 
@@ -122,22 +118,16 @@ namespace App.Tests.Controllers
         [TestMethod]
         public async Task DeleteAsset_ForOwnPortfolio_ShouldSucceed()
         {
-            // Step 1: Login
-            var loginPayload = new Login
-            {
-                Username = "alice",
-                Password = "password"
-            };
-
+            // Step 1: Login and authorize
+            var loginPayload = new Login { Username = "alice", Password = "password" };
             var loginResponse = await _client.PostAsJsonAsync("/api/login", loginPayload);
             var loginResult = await loginResponse.Content.ReadFromJsonAsync<LoginResponse>();
             Assert.IsNotNull(loginResult?.AuthHeader);
 
-            // Set auth header
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", loginResult.AuthHeader.Split(" ")[1]);
 
-            // Step 2: Create a new portfolio for the test
+            // Step 2: Create portfolio
             var createPortfolio = new { name = $"DeleteAsset_{Guid.NewGuid()}" };
             var portfolioResponse = await _client.PostAsJsonAsync("/api/portfolio", createPortfolio);
             Assert.AreEqual(HttpStatusCode.OK, portfolioResponse.StatusCode);
@@ -145,7 +135,7 @@ namespace App.Tests.Controllers
             var portfolio = await portfolioResponse.Content.ReadFromJsonAsync<PortfolioResponse>();
             Assert.IsNotNull(portfolio);
 
-            // Step 3: Add a new asset to that portfolio
+            // Step 3: Add asset
             var assetPayload = new
             {
                 portfolioId = portfolio.Id,
@@ -161,39 +151,28 @@ namespace App.Tests.Controllers
 
             var asset = await assetResponse.Content.ReadFromJsonAsync<AssetResponse>();
             Assert.IsNotNull(asset);
-            var assetId = asset.Id;
 
-            Console.WriteLine("Created Asset ID: " + assetId);
+            Console.WriteLine("Created Asset ID: " + asset.Id);
 
-            // Step 4: Delete the asset
-            var deleteResponse = await _client.DeleteAsync($"/api/asset/{assetId}");
-            Assert.AreEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode, "Expected 204 NoContent after delete.");
+            // Step 4: Delete asset
+            var deleteResponse = await _client.DeleteAsync($"/api/asset/{asset.Id}");
+            Assert.AreEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-            // Step 5: Verify the asset no longer exists
+            // Step 5: Verify asset no longer in portfolio
             var getResponse = await _client.GetAsync($"/api/asset/portfolios/{portfolio.Id}");
             var content = await getResponse.Content.ReadAsStringAsync();
 
             Console.WriteLine("Remaining Assets After Delete: " + content);
-
             Assert.IsFalse(content.Contains("TSLA"), "Asset should no longer be listed after deletion.");
         }
-
 
         [TestMethod]
         public async Task PostAsset_WithoutAuthHeader_ShouldReturnUnauthorized()
         {
-            // This test verifies that accessing a protected endpoint (POST /api/asset)
-            // without providing authentication credentials results in a 401 Unauthorized response.
-
-            // Step 1: We do NOT log in and we do NOT set any Authorization header.
-            // The client is anonymous.
-
-            // Step 2: Attempt to POST a new asset without being authenticated.
-            // The actual values of the payload are not important for this test,
-            // since the request should be rejected purely based on missing authentication.
+            // Attempt to create asset without authentication
             var assetPayload = new
             {
-                portfolioId = 1,  // Arbitrary portfolio ID (can be valid or invalid)
+                portfolioId = 1, // dummy ID
                 ticker = "FAKE",
                 name = "Unauthorized Asset",
                 purchasePrice = 100.0m,
@@ -201,15 +180,11 @@ namespace App.Tests.Controllers
                 purchaseDate = DateTime.UtcNow.ToString("yyyy-MM-dd")
             };
 
-            // Send POST request without Authorization header
             var response = await _client.PostAsJsonAsync("/api/asset", assetPayload);
 
-            // Step 3: Verify that the response status code is 401 Unauthorized,
-            // indicating that access is denied for unauthenticated requests.
-            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode, 
+            // Expect rejection due to missing Authorization header
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode,
                 "Expected 401 Unauthorized for request without auth header.");
         }
-
-
     }
 }

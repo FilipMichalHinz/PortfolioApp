@@ -1,3 +1,12 @@
+// =============================
+// File: AssetRepository.cs
+// Description:
+// Manages database operations for the Asset entity. Supports full CRUD functionality,
+// as well as methods to filter assets by portfolio, lookup by ticker, and selectively
+// update either investment or sales information.
+// Inherits database utility functions from BaseRepository.
+// =============================
+
 using App.Model.Entities;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -28,8 +37,7 @@ namespace App.Model.Repositories
                 {
                     while (data.Read())
                     {
-                        // Map the database fields to a Asset object
-                        Asset item = new Asset(Convert.ToInt32(data["id"]))
+                        items.Add(new Asset(Convert.ToInt32(data["id"]))
                         {
                             PortfolioId = Convert.ToInt32(data["portfolioid"]),
                             Ticker = data["ticker"].ToString()!,
@@ -37,11 +45,10 @@ namespace App.Model.Repositories
                             PurchasePrice = Convert.ToDecimal(data["purchaseprice"]),
                             Quantity = Convert.ToDecimal(data["quantity"]),
                             PurchaseDate = Convert.ToDateTime(data["purchasedate"]),
-                            ExitPrice = data.IsDBNull(data.GetOrdinal("exitprice")) ? (decimal?)null : Convert.ToDecimal(data["exitprice"]),
-                            ExitDate = data.IsDBNull(data.GetOrdinal("exitdate")) ? (DateTime?)null : Convert.ToDateTime(data["exitdate"]),
+                            ExitPrice = data.IsDBNull(data.GetOrdinal("exitprice")) ? null : Convert.ToDecimal(data["exitprice"]),
+                            ExitDate = data.IsDBNull(data.GetOrdinal("exitdate")) ? null : Convert.ToDateTime(data["exitdate"]),
                             IsSold = data.IsDBNull(data.GetOrdinal("issold")) ? false : data.GetBoolean(data.GetOrdinal("issold"))
-                        };
-                        items.Add(item);
+                        });
                     }
                 }
                 return items;
@@ -52,37 +59,7 @@ namespace App.Model.Repositories
             }
         }
 
-        /*
-        // Inserts a new Asset into the database
-        public bool InsertAsset(Asset item)
-        {
-            NpgsqlConnection dbConn = null;
-            try
-            {
-                dbConn = new NpgsqlConnection(ConnectionString);
-                var cmd = dbConn.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT INTO assets
-                    (portfolioid, ticker, name, purchaseprice, quantity, purchasedate) 
-                    VALUES 
-                    (@portfolioId, @ticker, @name, @purchasePrice, @quantity, @purchaseDate)";
-
-                cmd.Parameters.AddWithValue("@portfolioId", NpgsqlDbType.Integer, item.PortfolioId);
-                cmd.Parameters.AddWithValue("@ticker", NpgsqlDbType.Text, item.Ticker);
-                cmd.Parameters.AddWithValue("@name", NpgsqlDbType.Text, item.Name);
-                cmd.Parameters.AddWithValue("@purchasePrice", NpgsqlDbType.Numeric, item.PurchasePrice);
-                cmd.Parameters.AddWithValue("@quantity", NpgsqlDbType.Numeric, item.Quantity);
-                cmd.Parameters.AddWithValue("@purchaseDate", NpgsqlDbType.Date, item.PurchaseDate);
-
-                return InsertData(dbConn, cmd);
-            }
-            finally
-            {
-                dbConn?.Close();
-            }
-        }
-        */
-
+        // Inserts a new asset and returns the inserted object with its new ID
         public Asset? InsertAssetAndReturn(Asset item)
         {
             using var conn = new NpgsqlConnection(ConnectionString);
@@ -110,8 +87,7 @@ namespace App.Model.Repositories
             return null;
         }
 
-
-        // Deletes a Asset by its ID
+        // Deletes an asset by ID
         public bool DeleteAsset(int id)
         {
             NpgsqlConnection dbConn = null;
@@ -130,7 +106,7 @@ namespace App.Model.Repositories
             }
         }
 
-        // Retrieves a Asset by its ticker (symbol)
+        // Retrieves a single asset by its ticker symbol
         public Asset? GetByTicker(string ticker)
         {
             NpgsqlConnection dbConn = null;
@@ -164,7 +140,7 @@ namespace App.Model.Repositories
             }
         }
 
-        // Retrieves a Asset by its ID
+        // Retrieves an asset by its internal ID
         public Asset? GetById(int id)
         {
             NpgsqlConnection dbConn = null;
@@ -188,8 +164,8 @@ namespace App.Model.Repositories
                         PurchasePrice = Convert.ToDecimal(reader["purchaseprice"]),
                         Quantity = Convert.ToDecimal(reader["quantity"]),
                         PurchaseDate = Convert.ToDateTime(reader["purchasedate"]),
-                        ExitPrice = reader.IsDBNull(reader.GetOrdinal("exitprice")) ? (decimal?)null : Convert.ToDecimal(reader["exitprice"]),
-                        ExitDate = reader.IsDBNull(reader.GetOrdinal("exitdate")) ? (DateTime?)null : Convert.ToDateTime(reader["exitdate"]),
+                        ExitPrice = reader.IsDBNull(reader.GetOrdinal("exitprice")) ? null : Convert.ToDecimal(reader["exitprice"]),
+                        ExitDate = reader.IsDBNull(reader.GetOrdinal("exitdate")) ? null : Convert.ToDateTime(reader["exitdate"]),
                         IsSold = reader.GetBoolean(reader.GetOrdinal("issold"))
                     };
                 }
@@ -202,7 +178,7 @@ namespace App.Model.Repositories
             }
         }
 
-        // Updates all fields of a Asset, including sale-related data
+        // Updates all fields of an asset, including sale info (ExitPrice, ExitDate, IsSold)
         public bool UpdateAsset(Asset item)
         {
             NpgsqlConnection dbConn = null;
@@ -244,7 +220,7 @@ namespace App.Model.Repositories
             }
         }
 
-        // Updates only basic item details (not sale-related fields)
+        // Updates core asset info only (no sale tracking fields)
         public bool UpdateAssetDetails(Asset item)
         {
             using var conn = new NpgsqlConnection(ConnectionString);
@@ -253,7 +229,8 @@ namespace App.Model.Repositories
             var cmd = conn.CreateCommand();
             cmd.CommandText = @"
                 UPDATE assets
-                SET ticker = @ticker,
+                SET 
+                    ticker = @ticker,
                     name = @name,
                     purchaseprice = @purchasePrice,
                     quantity = @quantity,
