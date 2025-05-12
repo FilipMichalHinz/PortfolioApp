@@ -19,7 +19,7 @@ export class PortfolioItemService {
   // Base URL for all portfolio item-related endpoints
   baseUrl: string = 'http://localhost:5215/api/asset';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Returns authentication headers using the locally stored basic auth token.
@@ -28,7 +28,11 @@ export class PortfolioItemService {
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('headerValue'); // Fetch the token from localStorage
     // Debugging: Uncomment the line below if needed to debug token
-    // console.log('Token being sent by PortfolioItemService:', token);
+    if (!token) {
+      console.warn('⚠️ No auth token found in localStorage!');
+    } else {
+      console.log('✅ Using token from localStorage:', token);
+    }
     return new HttpHeaders({
       'Authorization': token ?? '' // Sends: "Authorization: Basic YWxpY2U6cGFzc3dvcmQ="
     });
@@ -99,8 +103,11 @@ export class PortfolioItemService {
    * @returns Observable of the updated PortfolioItem
    */
   update(item: PortfolioItem): Observable<PortfolioItem> {
+    const headers = this.getAuthHeaders();
+    console.log('Sending PUT to backend with headers:', headers, 'and item:', item);
+
     return this.http.put<PortfolioItem>(`${this.baseUrl}/update`, item, {
-      headers: this.getAuthHeaders() // Include the Authorization header
+      headers
     });
   }
 }

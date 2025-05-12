@@ -90,7 +90,7 @@ export class PortfolioDetailComponent implements OnInit {
   completedPositions = new MatTableDataSource<any>([]);
 
   openPositionsColumns: string[] = ['ticker', 'name', 'quantity', 'purchasePrice', 'currentPrice', 'currentValue', 'profitLoss', 'returnPercent', 'actions'];
-  completedPositionsColumns: string[] = ['ticker', 'name', 'quantity', 'purchasePrice', 'sellPrice', 'soldDate', 'profitLoss','returnPercent', 'actions'];
+  completedPositionsColumns: string[] = ['ticker', 'name', 'quantity', 'purchasePrice', 'sellPrice', 'soldDate', 'profitLoss', 'returnPercent', 'actions'];
 
   constructor(
     private route: ActivatedRoute,
@@ -98,7 +98,7 @@ export class PortfolioDetailComponent implements OnInit {
     private itemSvc: PortfolioItemService,
     private yahooService: YahooFinanceService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Redirect to login if token missing
@@ -284,9 +284,15 @@ export class PortfolioDetailComponent implements OnInit {
   // Inline editing logic
   editAsset(asset: any, isSellEdit: boolean = false): void {
     this.editingItemId = asset.id;
-    this.tempEditValues = { ...asset };
+
+    this.tempEditValues = {
+      ...asset,
+      purchaseDate: asset.purchaseDate ? new Date(asset.purchaseDate) : new Date(),
+      exitDate: asset.exitDate ? new Date(asset.exitDate) : null
+    };
+
     if (isSellEdit) {
-      this.tempEditValues.exitDate = this.tempEditValues.exitDate ? new Date(this.tempEditValues.exitDate) : new Date();
+      this.tempEditValues.exitDate = this.tempEditValues.exitDate || new Date();
     }
   }
 
@@ -314,17 +320,22 @@ export class PortfolioDetailComponent implements OnInit {
       updateData.exitDate = this.tempEditValues.exitDate;
       updateObservable = this.itemSvc.sellPortfolioItem(updateData);
     } else {
+      const formattedPurchaseDate = this.tempEditValues.purchaseDate instanceof Date
+        ? this.tempEditValues.purchaseDate.toISOString().split('T')[0]
+        : this.tempEditValues.purchaseDate;
+
       updateData = {
         id: this.editingItemId,
-        portfolioId: this.tempEditValues.portfolioId,
+        portfolioId: this.portfolio.id,
         name: this.tempEditValues.name,
         ticker: this.tempEditValues.ticker,
         quantity: this.tempEditValues.quantity,
         purchasePrice: this.tempEditValues.purchasePrice,
-        purchaseDate: this.tempEditValues.purchaseDate
+        purchaseDate: formattedPurchaseDate
       };
       updateObservable = this.itemSvc.update(updateData as PortfolioItem);
     }
+
 
     updateObservable.subscribe({
       next: () => {

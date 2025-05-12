@@ -29,13 +29,8 @@ Uses Angular Material components and ngx-charts.
         <div class="chart-title">Allocation Pie</div>
 
         <!-- Render chart only if allocation data exists -->
-        <ngx-charts-pie-chart
-          *ngIf="allocationPieData?.length"
-          [results]="allocationPieData"
-          [colorScheme]="colorScheme"
-          [view]="[400, 300]"
-          [labels]="true"
-          [doughnut]="true">
+        <ngx-charts-pie-chart *ngIf="allocationPieData?.length" [results]="allocationPieData"
+          [colorScheme]="colorScheme" [view]="[400, 300]" [labels]="true" [doughnut]="true">
         </ngx-charts-pie-chart>
       </div>
     </section>
@@ -54,9 +49,7 @@ Uses Angular Material components and ngx-charts.
 
       <div class="metric-card">
         <div class="label">Total P/L</div>
-        <div
-          class="value"
-          [class.positive]="summary.totalProfitLoss >= 0"
+        <div class="value" [class.positive]="summary.totalProfitLoss >= 0"
           [class.negative]="summary.totalProfitLoss < 0">
           {{ summary.totalProfitLoss | currency }}
           <span class="pct">({{ summary.changePercent | number:'1.0-0' }}%)</span>
@@ -65,10 +58,7 @@ Uses Angular Material components and ngx-charts.
 
       <div class="metric-card">
         <div class="label">Finalized P/L</div>
-        <div
-          class="value"
-          [class.positive]="totalFinalizedProfit >= 0"
-          [class.negative]="totalFinalizedProfit < 0">
+        <div class="value" [class.positive]="totalFinalizedProfit >= 0" [class.negative]="totalFinalizedProfit < 0">
           {{ totalFinalizedProfit | currency }}
           <span class="pct">({{ totalFinalizedReturnPercent | number:'1.0-0' }}%)</span>
         </div>
@@ -76,10 +66,7 @@ Uses Angular Material components and ngx-charts.
 
       <div class="metric-card">
         <div class="label">Open P/L</div>
-        <div
-          class="value"
-          [class.positive]="totalOpenProfit >= 0"
-          [class.negative]="totalOpenProfit < 0">
+        <div class="value" [class.positive]="totalOpenProfit >= 0" [class.negative]="totalOpenProfit < 0">
           {{ totalOpenProfit | currency }}
           <span class="pct">({{ totalOpenReturnPercent | number:'1.0-0' }}%)</span>
         </div>
@@ -107,13 +94,8 @@ Uses Angular Material components and ngx-charts.
 
         <!-- Embedded asset form for create/edit -->
         <div *ngIf="showForm">
-          <app-portfolio-item-form
-            [portfolioId]="portfolio.id"
-            [itemToEdit]="itemBeingEdited"
-            [editMode]="isEditMode"
-            (created)="onItemCreated($event)"
-            (updated)="onItemUpdated($event)"
-            (cancel)="onCancel()">
+          <app-portfolio-item-form [portfolioId]="portfolio.id" [itemToEdit]="itemBeingEdited" [editMode]="isEditMode"
+            (created)="onItemCreated($event)" (updated)="onItemUpdated($event)" (cancel)="onCancel()">
           </app-portfolio-item-form>
         </div>
 
@@ -274,15 +256,15 @@ Uses Angular Material components and ngx-charts.
             <mat-label for="exitPrice">Exit Price:</mat-label>
             <input matInput type="number" [(ngModel)]="itemToSell.exitPrice" name="exitPrice">
           </mat-form-field>
-          
+
           <mat-form-field>
             <mat-label for="exitPrice">Exit Date:</mat-label>
             <input matInput type="date" [(ngModel)]="itemToSell.exitDate" name="exitDate">
           </mat-form-field>
 
           <div class="button-row">
-            <button mat-raised-button color='primary' (click)="confirmSell()" 
-            [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
+            <button mat-raised-button color='primary' (click)="confirmSell()"
+              [disabled]="!itemToSell.exitPrice || !itemToSell.exitDate">
               Confirm Sell
             </button>
             <button mat-button (click)="cancelSell()">Cancel</button>
@@ -295,39 +277,41 @@ Uses Angular Material components and ngx-charts.
         <div class="modal-content">
           <h3 *ngIf="currentEditingAsset && !currentEditingAsset.isSold">Edit Asset</h3>
           <h3 *ngIf="currentEditingAsset && currentEditingAsset.isSold">Edit Sale for
-              {{ currentEditingAsset.ticker }}</h3>
+            {{ currentEditingAsset.ticker }}</h3>
 
-              <ng-container *ngIf="currentEditingAsset">
-                <mat-form-field *ngIf="!currentEditingAsset.isSold">
-                  <mat-label for="editPrice">Purchase Price</mat-label>
-                  <input matInput type="number" [(ngModel)]="tempEditValues.purchasePrice" name="editPrice">
-                </mat-form-field>
-            
-                <mat-form-field *ngIf="!currentEditingAsset.isSold">
-                  <mat-label for="editQuantity">Quantity</mat-label>
-                  <input matInput type="number" [(ngModel)]="tempEditValues.quantity" name="editQuantity">
-                </mat-form-field>
-            
-                <mat-form-field *ngIf="!currentEditingAsset.isSold">
-                  <mat-label for="editDate">Purchase Date</mat-label>
-                  <input matInput type="date" [(ngModel)]="tempEditValues.purchaseDate" name="editDate">
-                </mat-form-field>
-            
-                <mat-form-field *ngIf="currentEditingAsset.isSold">
-                  <mat-label for="editExitPrice">Exit Price:</mat-label>
-                  <input matInput type="number" [(ngModel)]="tempEditValues.exitPrice" name="editExitPrice">
-                </mat-form-field>
-            
-                <mat-form-field *ngIf="currentEditingAsset.isSold">
-                  <mat-label for="editExitDate">Exit Date:</mat-label>
-                  <input matInput type="date" [(ngModel)]="tempEditValues.exitDate" name="editExitDate">
-                </mat-form-field>
-            </ng-container>
+          <ng-container *ngIf="currentEditingAsset">
+            <mat-form-field *ngIf="!currentEditingAsset.isSold">
+              <mat-label for="editPrice">Purchase Price</mat-label>
+              <input matInput type="number" [(ngModel)]="tempEditValues.purchasePrice" name="editPrice">
+            </mat-form-field>
 
-            <button mat-raised-button color="primary" (click)="saveEdit()"
-            [disabled]="isSaveDisabled">Save</button>
-            <button mat-button (click)="cancelEdit()">Cancel</button>
-            
+            <mat-form-field *ngIf="!currentEditingAsset.isSold">
+              <mat-label for="editQuantity">Quantity</mat-label>
+              <input matInput type="number" [(ngModel)]="tempEditValues.quantity" name="editQuantity">
+            </mat-form-field>
+
+            <mat-form-field *ngIf="!currentEditingAsset.isSold">
+              <mat-label>Purchase Date</mat-label>
+              <input matInput [matDatepicker]="editPurchasePicker" [(ngModel)]="tempEditValues.purchaseDate"
+                (dateChange)="editPurchasePicker.close()" name="purchaseDate" required />
+              <mat-datepicker-toggle matSuffix [for]="editPurchasePicker"></mat-datepicker-toggle>
+              <mat-datepicker #editPurchasePicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="currentEditingAsset.isSold">
+              <mat-label for="editExitPrice">Exit Price:</mat-label>
+              <input matInput type="number" [(ngModel)]="tempEditValues.exitPrice" name="editExitPrice">
+            </mat-form-field>
+
+            <mat-form-field *ngIf="currentEditingAsset.isSold">
+              <mat-label for="editExitDate">Exit Date:</mat-label>
+              <input matInput type="date" [(ngModel)]="tempEditValues.exitDate" name="editExitDate">
+            </mat-form-field>
+          </ng-container>
+
+          <button mat-raised-button color="primary" (click)="saveEdit()" [disabled]="isSaveDisabled">Save</button>
+          <button mat-button (click)="cancelEdit()">Cancel</button>
+
         </div>
       </div>
 
